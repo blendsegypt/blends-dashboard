@@ -1,15 +1,15 @@
-import React from "react"
-import { Row, Col } from "reactstrap"
-import SalesCard from "./SalesCard"
-import SuberscribersGained from "../../ui-elements/cards/statistics/SubscriberGained"
-import OrdersReceived from "../../ui-elements/cards/statistics/OrdersReceived"
-import AvgSession from "../../ui-elements/cards/analytics/AvgSessions"
-import SupportTracker from "../../ui-elements/cards/analytics/SupportTracker"
-import ProductOrders from "../../ui-elements/cards/analytics/ProductOrders"
-import SalesStat from "../../ui-elements/cards/analytics/Sales"
-import ActivityTimeline from "./ActivityTimeline"
-import DispatchedOrders from "./DispatchedOrders"
-import "../../../assets/scss/pages/dashboard-analytics.scss"
+import React from "react";
+import { Row, Col } from "reactstrap";
+import SalesCard from "./SalesCard";
+import NewUsers from "../../ui-elements/cards/statistics/NewUsers";
+import OrdersReceived from "../../ui-elements/cards/statistics/OrdersReceived";
+import AvgSession from "../../ui-elements/cards/analytics/AvgSessions";
+import SupportTracker from "../../ui-elements/cards/analytics/SupportTracker";
+import ProductOrders from "../../ui-elements/cards/analytics/ProductOrders";
+import SalesStat from "../../ui-elements/cards/analytics/Sales";
+import ActivityTimeline from "./ActivityTimeline";
+import DispatchedOrders from "./DispatchedOrders";
+import "../../../assets/scss/pages/dashboard-analytics.scss";
 
 let $primary = "#7367F0",
   $danger = "#EA5455",
@@ -21,7 +21,7 @@ let $primary = "#7367F0",
   $info_light = "#1edec5",
   $stroke_color = "#e8e8e8",
   $label_color = "#e7eef7",
-  $white = "#fff"
+  $white = "#fff";
 
 class AnalyticsDashboard extends React.Component {
   render() {
@@ -32,7 +32,7 @@ class AnalyticsDashboard extends React.Component {
             <SalesCard />
           </Col>
           <Col lg="3" md="6" sm="12">
-            <SuberscribersGained />
+            <NewUsers />
           </Col>
           <Col lg="3" md="6" sm="12">
             <OrdersReceived />
@@ -79,8 +79,8 @@ class AnalyticsDashboard extends React.Component {
           </Col>
         </Row>
       </React.Fragment>
-    )
+    );
   }
 }
 
-export default AnalyticsDashboard
+export default AnalyticsDashboard;
