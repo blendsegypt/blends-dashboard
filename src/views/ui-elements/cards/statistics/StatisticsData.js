@@ -1,4 +1,4 @@
-export const subscribersGained = {
+export const newUsersGraphOptions = {
   chart: {
     id: "subscribers",
     toolbar: {
@@ -46,13 +46,6 @@ export const subscribersGained = {
     x: { show: false },
   },
 };
-
-export const subscribersGainedSeries = [
-  {
-    name: "Subscribers",
-    data: [28, 40, 36, 52, 38, 60, 55],
-  },
-];
 
 export const revenueGenerated = {
   chart: {
