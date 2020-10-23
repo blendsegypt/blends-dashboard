@@ -92,7 +92,6 @@ export const revenueGeneratedGraphOptions = {
     },
   },
   tooltip: {
-    enabled: false,
     x: { show: false },
   },
 };

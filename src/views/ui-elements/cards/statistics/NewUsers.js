@@ -7,24 +7,30 @@ class NewUsers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      newUsersThisMonth: 32,
-      newUsersGraphData: [
-        {
-          name: "New Users (Week)",
-          data: [10, 11, 0, 0],
-        },
-      ],
+      hideChart: true,
+      newUsers: 0,
+      newUsersGraphData: [],
     };
+  }
+  componentDidMount() {
+    this.setState({ newUsers: this.props.newUsers });
+    if (this.props.newUsersGraphData) {
+      this.setState({
+        newUsersGraphData: this.props.newUsersGraphData,
+        hideChart: false,
+      });
+    }
   }
   render() {
     return (
       <StatisticsCard
         icon={<Users className="primary" size={22} />}
-        stat={this.state.newUsersThisMonth}
-        statTitle="New Users (This Month)"
+        stat={this.state.newUsers}
+        statTitle="New Users"
         options={newUsersGraphOptions}
         series={this.state.newUsersGraphData}
         type="area"
+        hideChart={this.state.hideChart}
       />
     );
   }

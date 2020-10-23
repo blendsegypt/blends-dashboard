@@ -7,25 +7,31 @@ class RevenueGenerated extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      revenueGeneratedToday: "220 EGP",
-      newUsersGraphData: [
-        {
-          name: "Revenue",
-          data: [10, 10, 10, 10],
-        },
-      ],
+      hideChart: true,
+      revenue: 0,
+      revenueGraphData: [],
     };
+  }
+  componentDidMount() {
+    this.setState({ revenue: this.props.revenue });
+    if (this.props.revenueGraphData) {
+      this.setState({
+        revenueGraphData: this.props.revenueGraphData,
+        hideChart: false,
+      });
+    }
   }
   render() {
     return (
       <StatisticsCard
         icon={<CreditCard className="success" size={22} />}
         iconBg="success"
-        stat={this.state.revenueGeneratedToday}
-        statTitle="Revenue Generated (Today)"
+        stat={this.state.revenue}
+        statTitle="Revenue Generated"
         options={revenueGeneratedGraphOptions}
-        series={this.state.newUsersGraphData}
+        series={this.state.revenueGraphData}
         type="area"
+        hideChart={this.state.hideChart}
       />
     );
   }

@@ -3,7 +3,7 @@ import { Row, Col } from "reactstrap";
 import Breadcrumbs from "../../../../components/@vuexy/breadCrumbs/BreadCrumb";
 import NewUsers from "./NewUsers";
 import RevenueGenerated from "./RevenueGenerated";
-import QuaterlySales from "./QuaterlySales";
+import AppDownloads from "./AppDownloads";
 import OrdersReceived from "./OrdersReceived";
 import StatisticsCard from "../../../../components/@vuexy/statisticsCard/StatisticsCard";
 import {
@@ -142,7 +142,7 @@ class StatisticsCards extends React.Component {
             <RevenueGenerated />
           </Col>
           <Col lg="3" md="6" sm="12">
-            <QuaterlySales />
+            <AppDownloads />
           </Col>
           <Col lg="3" md="6" sm="12">
             <OrdersReceived />
