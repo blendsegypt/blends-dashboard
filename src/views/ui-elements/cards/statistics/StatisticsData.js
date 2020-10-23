@@ -47,7 +47,7 @@ export const newUsersGraphOptions = {
   },
 };
 
-export const revenueGenerated = {
+export const revenueGeneratedGraphOptions = {
   chart: {
     id: "revenue",
     toolbar: {
@@ -92,6 +92,7 @@ export const revenueGenerated = {
     },
   },
   tooltip: {
+    enabled: false,
     x: { show: false },
   },
 };
