@@ -30,16 +30,16 @@ class EcommerceDashboard extends React.Component {
       <React.Fragment>
         <Row className="match-height">
           <Col lg="3" md="6" sm="6">
-            <NewUsers />
+            <OrdersReceived />
           </Col>
           <Col lg="3" md="6" sm="6">
             <RevenueGenerated />
           </Col>
           <Col lg="3" md="6" sm="6">
-            <QuaterlySales />
+            <NewUsers />
           </Col>
           <Col lg="3" md="6" sm="6">
-            <OrdersReceived />
+            <QuaterlySales />
           </Col>
         </Row>
         <Row className="match-height">
