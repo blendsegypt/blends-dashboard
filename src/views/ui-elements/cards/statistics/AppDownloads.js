@@ -1,7 +1,7 @@
 import React from "react";
 import StatisticsCard from "../../../../components/@vuexy/statisticsCard/StatisticsCard";
 import { DownloadCloud } from "react-feather";
-import { quaterlySales, quaterlySalesSeries } from "./StatisticsData";
+import { quaterlySales } from "./StatisticsData";
 
 class AppDownloads extends React.Component {
   constructor(props) {
