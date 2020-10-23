@@ -25,7 +25,7 @@ class EcommerceDashboard extends React.Component {
       },
       revenue: {
         today: "232 EGP",
-        yesterday: "322 EGP",
+        yesterday: "923 EGP",
         thisMonth: {
           value: 2499,
           series: [300, 242, 502, 1023],
