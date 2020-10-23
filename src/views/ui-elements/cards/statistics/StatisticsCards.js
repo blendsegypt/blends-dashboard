@@ -1,11 +1,11 @@
-import React from "react"
-import { Row, Col } from "reactstrap"
-import Breadcrumbs from "../../../../components/@vuexy/breadCrumbs/BreadCrumb"
-import SubscribersGained from "./SubscriberGained"
-import RevenueGenerated from "./RevenueGenerated"
-import QuaterlySales from "./QuaterlySales"
-import OrdersReceived from "./OrdersReceived"
-import StatisticsCard from "../../../../components/@vuexy/statisticsCard/StatisticsCard"
+import React from "react";
+import { Row, Col } from "reactstrap";
+import Breadcrumbs from "../../../../components/@vuexy/breadCrumbs/BreadCrumb";
+import NewUsers from "./NewUsers";
+import RevenueGenerated from "./RevenueGenerated";
+import QuaterlySales from "./QuaterlySales";
+import OrdersReceived from "./OrdersReceived";
+import StatisticsCard from "../../../../components/@vuexy/statisticsCard/StatisticsCard";
 import {
   Monitor,
   UserCheck,
@@ -19,16 +19,16 @@ import {
   Cpu,
   Server,
   Activity,
-  AlertOctagon
-} from "react-feather"
+  AlertOctagon,
+} from "react-feather";
 import {
   siteTraffic,
   siteTrafficSeries,
   activeUsers,
   activeUsersSeries,
   newsLetter,
-  newsLetterSeries
-} from "./StatisticsData2"
+  newsLetterSeries,
+} from "./StatisticsData2";
 
 class StatisticsCards extends React.Component {
   render() {
@@ -136,7 +136,7 @@ class StatisticsCards extends React.Component {
             />
           </Col>
           <Col lg="3" md="6" sm="12">
-            <SubscribersGained />
+            <NewUsers />
           </Col>
           <Col lg="3" md="6" sm="12">
             <RevenueGenerated />
@@ -184,8 +184,8 @@ class StatisticsCards extends React.Component {
           </Col>
         </Row>
       </React.Fragment>
-    )
+    );
   }
 }
 
-export default StatisticsCards
+export default StatisticsCards;
