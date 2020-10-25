@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import {
   Media,
   Row,
@@ -8,82 +8,69 @@ import {
   Input,
   Label,
   FormGroup,
-  Table
-} from "reactstrap"
-import userImg from "../../../../assets/img/portrait/small/avatar-s-18.jpg"
-import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy"
-import { Check, Lock } from "react-feather"
+} from "reactstrap";
+import Flatpickr from "react-flatpickr";
 class UserAccountTab extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dob: new Date(),
+    };
+  }
   render() {
     return (
       <Row>
         <Col sm="12">
           <Media className="mb-2">
-            <Media className="mr-2 my-25" left href="#">
-              <Media
-                className="users-avatar-shadow rounded"
-                object
-                src={userImg}
-                alt="user profile image"
-                height="84"
-                width="84"
-              />
-            </Media>
             <Media className="mt-2" body>
               <Media className="font-medium-1 text-bold-600" tag="p" heading>
-                Crystal Hamilton
+                Khalid Khalil
               </Media>
-              <div className="d-flex flex-wrap">
-                <Button.Ripple className="mr-1" color="primary" outline>
-                  Change
-                </Button.Ripple>
-                <Button.Ripple color="flat-danger">Remove Avatar</Button.Ripple>
-              </div>
             </Media>
           </Media>
         </Col>
         <Col sm="12">
-          <Form onSubmit={e => e.preventDefault()}>
+          <Form onSubmit={(e) => e.preventDefault()}>
             <Row>
               <Col md="6" sm="12">
                 <FormGroup>
-                  <Label for="username">Username</Label>
+                  <Label for="firstname">First Name</Label>
                   <Input
                     type="text"
-                    defaultValue="crystal"
-                    id="username"
-                    placeholder="Username"
+                    defaultValue="Khalid"
+                    id="firstName"
+                    placeholder="First Name"
                   />
                 </FormGroup>
               </Col>
               <Col md="6" sm="12">
                 <FormGroup>
-                  <Label for="status">Status</Label>
+                  <Label for="lastname">Last Name</Label>
+                  <Input
+                    type="text"
+                    defaultValue="Khalil"
+                    id="lastname"
+                    placeholder="Last Name"
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="6" sm="12">
+                <FormGroup>
+                  <Label for="phonenumber">Phone Number</Label>
+                  <Input
+                    type="text"
+                    defaultValue="01149050646"
+                    id="phonenumber"
+                    placeholder="Phone Number"
+                  />
+                </FormGroup>
+              </Col>
+              <Col md="6" sm="12">
+                <FormGroup>
+                  <Label for="phonenumberstatus">Phone Number Status</Label>
                   <Input type="select" name="status" id="status">
-                    <option>Active</option>
-                    <option>Banned</option>
-                    <option>Closed</option>
-                  </Input>
-                </FormGroup>
-              </Col>
-
-              <Col md="6" sm="12">
-                <FormGroup>
-                  <Label for="name">Name</Label>
-                  <Input
-                    type="text"
-                    defaultValue="Crystal Hamilton"
-                    id="name"
-                    placeholder="Name"
-                  />
-                </FormGroup>
-              </Col>
-              <Col md="6" sm="12">
-                <FormGroup>
-                  <Label for="role">Role</Label>
-                  <Input type="select" name="role" id="role">
-                    <option>User</option>
-                    <option>Staff</option>
+                    <option>Verified</option>
+                    <option>Non-Verified</option>
                   </Input>
                 </FormGroup>
               </Col>
@@ -92,7 +79,7 @@ class UserAccountTab extends React.Component {
                   <Label for="email">Email</Label>
                   <Input
                     type="text"
-                    defaultValue="crystalhamilton@gmail.com"
+                    defaultValue=""
                     id="email"
                     placeholder="Email"
                   />
@@ -100,146 +87,45 @@ class UserAccountTab extends React.Component {
               </Col>
               <Col md="6" sm="12">
                 <FormGroup>
-                  <Label for="company">Company</Label>
-                  <Input
-                    type="text"
-                    id="company"
-                    defaultValue="North Star Aviation Pvt Ltd"
-                    placeholder="company"
+                  <Label for="emailstatus">Email Status</Label>
+                  <Input type="select" name="status" id="status">
+                    <option>Non-Verified</option>
+                    <option>Verified</option>
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="6" sm="12">
+                <FormGroup>
+                  <Label for="company">Data of Birth</Label>
+                  <Flatpickr
+                    className="form-control"
+                    value={this.state.dob}
+                    onChange={(date) => {
+                      this.setState({ dob: date });
+                    }}
                   />
                 </FormGroup>
               </Col>
-              <Col sm="12">
-                <div className="permissions border px-2">
-                  <div className="title pt-2 pb-0">
-                    <Lock size={19} />
-                    <span className="text-bold-500 font-medium-2 ml-50">
-                      Permissions
-                    </span>
-                    <hr />
-                  </div>
-                  <Table borderless responsive>
-                    <thead>
-                      <tr>
-                        <th>Module Permission</th>
-                        <th>Read</th>
-                        <th>Write</th>
-                        <th>Create</th>
-                        <th>Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Users</td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={true}
-                          />
-                        </td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={false}
-                          />
-                        </td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={false}
-                          />
-                        </td>
-                        <td>
-                          {" "}
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={true}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Articles</td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={false}
-                          />
-                        </td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={true}
-                          />
-                        </td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={false}
-                          />
-                        </td>
-                        <td>
-                          {" "}
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={true}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Staff</td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={true}
-                          />
-                        </td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={true}
-                          />
-                        </td>
-                        <td>
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={false}
-                          />
-                        </td>
-                        <td>
-                          {" "}
-                          <Checkbox
-                            color="primary"
-                            icon={<Check className="vx-icon" size={16} />}
-                            label=""
-                            defaultChecked={false}
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </div>
+              <Col md="6" sm="12">
+                <FormGroup>
+                  <FormGroup check inline>
+                    <Label for="company">Gender</Label>
+                    <Label check>
+                      <Input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                        defaultChecked
+                      />{" "}
+                      Male
+                    </Label>
+                  </FormGroup>
+                  <FormGroup check inline>
+                    <Label check>
+                      <Input type="radio" name="gender" value="female" /> Female
+                    </Label>
+                  </FormGroup>
+                </FormGroup>
               </Col>
               <Col
                 className="d-flex justify-content-end flex-wrap mt-2"
@@ -248,13 +134,12 @@ class UserAccountTab extends React.Component {
                 <Button.Ripple className="mr-1" color="primary">
                   Save Changes
                 </Button.Ripple>
-                <Button.Ripple color="flat-warning">Reset</Button.Ripple>
               </Col>
             </Row>
           </Form>
         </Col>
       </Row>
-    )
+    );
   }
 }
-export default UserAccountTab
+export default UserAccountTab;

@@ -1,21 +1,23 @@
-import React from "react"
-import ScrollToTop from "react-scroll-up"
-import { Button } from "reactstrap"
-import { Heart, ArrowUp } from "react-feather"
-import classnames from "classnames"
+import React from "react";
+import ScrollToTop from "react-scroll-up";
+import { Button } from "reactstrap";
+import { Heart, ArrowUp } from "react-feather";
+import classnames from "classnames";
 
-const Footer = props => {
-  let footerTypeArr = ["sticky", "static", "hidden"]
+const Footer = (props) => {
+  let footerTypeArr = ["sticky", "static", "hidden"];
   return (
     <footer
       className={classnames("footer footer-light", {
-        "footer-static": props.footerType === "static" || !footerTypeArr.includes(props.footerType),
-        "d-none": props.footerType === "hidden"
+        "footer-static":
+          props.footerType === "static" ||
+          !footerTypeArr.includes(props.footerType),
+        "d-none": props.footerType === "hidden",
       })}
     >
       <p className="mb-0 clearfix">
         <span className="float-md-left d-block d-md-inline-block mt-25">
-          COPYRIGHT © {new Date().getFullYear()}
+          Designed By © {new Date().getFullYear()}
           <a
             href="https://themeforest.net/user/pixinvent/portfolio?ref=pixinvent"
             target="_blank"
@@ -23,7 +25,6 @@ const Footer = props => {
           >
             Pixinvent,
           </a>
-          All rights reserved
         </span>
         <span className="float-md-right d-none d-md-block">
           <span className="align-middle">Hand-crafted & Made with</span>{" "}
@@ -38,7 +39,7 @@ const Footer = props => {
         </ScrollToTop>
       ) : null}
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
