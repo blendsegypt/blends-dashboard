@@ -2,16 +2,12 @@ import React, { Suspense, lazy } from "react";
 import { Router, Switch, Route } from "react-router-dom";
 import { history } from "./history";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 import Spinner from "./components/@vuexy/spinner/Loading-spinner";
 import knowledgeBaseCategory from "./views/pages/knowledge-base/Category";
 import knowledgeBaseQuestion from "./views/pages/knowledge-base/Questions";
 import { ContextLayout } from "./utility/context/Layout";
 
 // Route-based code splitting
-const ecommerceDashboard = lazy(() =>
-  import("./views/dashboard/ecommerce/EcommerceDashboard")
-);
 const grid = lazy(() => import("./views/ui-elements/grid/Grid"));
 const typography = lazy(() =>
   import("./views/ui-elements/typography/Typography")
@@ -163,8 +159,6 @@ const Export = lazy(() => import("./extensions/import-export/Export"));
 const ExportSelected = lazy(() =>
   import("./extensions/import-export/ExportSelected")
 );
-const userList = lazy(() => import("./views/apps/user/list/List"));
-const userEdit = lazy(() => import("./views/apps/user/edit/Edit"));
 const userView = lazy(() => import("./views/apps/user/view/View"));
 const Login = lazy(() => import("./views/pages/authentication/login/Login"));
 const forgotPassword = lazy(() =>
@@ -182,6 +176,14 @@ const register = lazy(() =>
 const accessControl = lazy(() =>
   import("./extensions/access-control/AccessControl")
 );
+
+// Blends Routes
+const ecommerceDashboard = lazy(() =>
+  import("./views/Blends/dashboard/EcommerceDashboard")
+);
+const userList = lazy(() => import("./views/Blends/resources/user/list/List"));
+const userEdit = lazy(() => import("./views/Blends/resources/user/edit/Edit"));
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
