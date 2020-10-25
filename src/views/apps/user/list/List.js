@@ -14,14 +14,7 @@ import {
 import axios from "axios";
 import { ContextLayout } from "../../../../utility/context/Layout";
 import { AgGridReact } from "ag-grid-react";
-import {
-  Edit,
-  Trash2,
-  ChevronDown,
-  Clipboard,
-  Printer,
-  Download,
-} from "react-feather";
+import { Edit, Trash2, ChevronDown } from "react-feather";
 import { history } from "../../../../history";
 import "../../../../assets/scss/plugins/tables/_agGridStyleOverride.scss";
 import "../../../../assets/scss/pages/users.scss";
