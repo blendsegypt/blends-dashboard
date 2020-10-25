@@ -45,91 +45,28 @@ class UsersList extends React.Component {
         headerCheckboxSelection: true,
       },
       {
-        headerName: "Username",
-        field: "username",
-        filter: true,
-        width: 250,
-        cellRendererFramework: (params) => {
-          return (
-            <div
-              className="d-flex align-items-center cursor-pointer"
-              onClick={() => history.push("/app/user/edit")}
-            >
-              <img
-                className="rounded-circle mr-50"
-                src={params.data.avatar}
-                alt="user avatar"
-                height="30"
-                width="30"
-              />
-              <span>{params.data.name}</span>
-            </div>
-          );
-        },
-      },
-      {
-        headerName: "Email",
-        field: "email",
-        filter: true,
-        width: 250,
-      },
-      {
-        headerName: "Name",
-        field: "name",
-        filter: true,
-        width: 200,
-      },
-      {
-        headerName: "Country",
-        field: "country",
-        filter: true,
-        width: 200,
-      },
-      {
-        headerName: "Role",
-        field: "role",
+        headerName: "First Name",
+        field: "firstName",
         filter: true,
         width: 150,
       },
       {
-        headerName: "Status",
-        field: "status",
+        headerName: "Last Name",
+        field: "lastName",
         filter: true,
         width: 150,
-        cellRendererFramework: (params) => {
-          return params.value === "active" ? (
-            <div className="badge badge-pill badge-light-success">
-              {params.value}
-            </div>
-          ) : params.value === "blocked" ? (
-            <div className="badge badge-pill badge-light-danger">
-              {params.value}
-            </div>
-          ) : params.value === "deactivated" ? (
-            <div className="badge badge-pill badge-light-warning">
-              {params.value}
-            </div>
-          ) : null;
-        },
       },
       {
-        headerName: "Verified",
-        field: "is_verified",
+        headerName: "Phone Number",
+        field: "phoneNumber",
         filter: true,
-        width: 125,
-        cellRendererFramework: (params) => {
-          return params.value === true ? (
-            <div className="bullet bullet-sm bullet-primary"></div>
-          ) : params.value === false ? (
-            <div className="bullet bullet-sm bullet-secondary"></div>
-          ) : null;
-        },
+        width: 200,
       },
       {
-        headerName: "Department",
-        field: "department",
+        headerName: "Platform",
+        field: "platform",
         filter: true,
-        width: 160,
+        width: 200,
       },
       {
         headerName: "Actions",
