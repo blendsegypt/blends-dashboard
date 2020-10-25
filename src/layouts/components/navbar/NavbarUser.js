@@ -250,7 +250,10 @@ class NavbarUser extends React.PureComponent {
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
           <DropdownToggle tag="a" className="nav-link dropdown-user-link">
             <div className="user-nav d-sm-flex d-none">
-              <span className="user-name text-bold-600">
+              <span
+                className="user-name text-bold-600"
+                style={{ color: "#10173A" }}
+              >
                 {this.props.userName}
               </span>
               <span className="user-status">Online</span>

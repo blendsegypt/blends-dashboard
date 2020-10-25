@@ -24,7 +24,8 @@ class NewUsers extends React.Component {
   render() {
     return (
       <StatisticsCard
-        icon={<Users className="primary" size={22} />}
+        icon={<Users color="#7367f0" size={22} />}
+        iconBg="secondary"
         stat={this.state.newUsers}
         statTitle="New Users"
         options={newUsersGraphOptions}

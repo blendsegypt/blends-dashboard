@@ -113,8 +113,8 @@ $border-radius-sm: 0.25rem;
 // Font, line-height, and color for body text, headings, and more.
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif: "Montserrat", Helvetica, Arial, serif;
-$font-family-monospace: "Montserrat", Helvetica, Arial, serif;
+$font-family-sans-serif: "Fira Sans", Helvetica, Arial, serif;
+$font-family-monospace: "Fira Sans", Helvetica, Arial, serif;
 
 // stylelint-enable value-keyword-case
 $font-size-base: 1rem;
@@ -133,7 +133,7 @@ $headings-margin-bottom: ($spacer / 2);
 $headings-font-family: inherit;
 $headings-font-weight: 500;
 
-$headings-color: #2c2c2c;
+$headings-color: #0c213f;
 
 $small-font-size: smaller;
 

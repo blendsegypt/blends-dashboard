@@ -22,7 +22,7 @@
   width: 260px;
   transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   &.menu-light {
-    @include menu-theme($body-color, $white);
+    @include menu-theme($menu-dark-color, $menu-dark-bg-color);
   }
 
   &.menu-dark {
@@ -165,7 +165,6 @@
   &:not(.hide-sidebar) {
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-
 }
 
 // Main Navigation
@@ -275,7 +274,7 @@
 // Navigation Themes
 
 .horizontal-layout,
-.vertical-layout{
+.vertical-layout {
   &.theme-primary {
     .navbar-container,
     .navbar-header {
@@ -415,8 +414,6 @@ body {
     }
   }
 }
-
-
 
 // for collapsed static layout
 body.menu-collapsed {
