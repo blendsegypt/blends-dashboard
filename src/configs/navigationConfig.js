@@ -2,20 +2,12 @@ import React from "react";
 import * as Icon from "react-feather";
 const navigationConfig = [
   {
-    id: "dashboard",
-    title: "Dashboard",
-    type: "collapse",
-    icon: <Icon.Home size={20} />,
-    children: [
-      {
-        id: "statistics",
-        title: "Statistics",
-        type: "item",
-        icon: <Icon.PieChart size={15} />,
-        permissions: ["admin"],
-        navLink: "/",
-      },
-    ],
+    id: "statistics",
+    title: "Statistics",
+    type: "item",
+    icon: <Icon.PieChart size={18} />,
+    permissions: ["admin"],
+    navLink: "/",
   },
   {
     type: "groupHeader",
