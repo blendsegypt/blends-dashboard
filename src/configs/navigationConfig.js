@@ -13,7 +13,7 @@ const navigationConfig = [
         type: "item",
         icon: <Icon.PieChart size={15} />,
         permissions: ["admin"],
-        navLink: "/ecommerce-dashboard",
+        navLink: "/",
       },
     ],
   },

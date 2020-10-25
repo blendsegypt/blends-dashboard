@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Router, Switch, Route } from "react-router-dom";
 import { history } from "./history";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import Spinner from "./components/@vuexy/spinner/Loading-spinner";
 import knowledgeBaseCategory from "./views/pages/knowledge-base/Category";
 import knowledgeBaseQuestion from "./views/pages/knowledge-base/Questions";
@@ -222,7 +223,7 @@ class AppRouter extends React.Component {
       // Set the directory path if you are deploying in sub-folder
       <Router history={history}>
         <Switch>
-          <AppRoute path="/" component={ecommerceDashboard} />
+          <AppRoute path="/" component={ecommerceDashboard} exact />
           <AppRoute path="/data-list/list-view" component={listView} />
           <AppRoute path="/data-list/thumb-view" component={thumbView} />
           <AppRoute path="/ui-element/grid" component={grid} />
