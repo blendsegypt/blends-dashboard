@@ -48,19 +48,19 @@ class UsersList extends React.Component {
         headerName: "First Name",
         field: "firstName",
         filter: true,
-        width: 150,
+        width: 200,
       },
       {
         headerName: "Last Name",
         field: "lastName",
         filter: true,
-        width: 150,
+        width: 200,
       },
       {
         headerName: "Phone Number",
         field: "phoneNumber",
         filter: true,
-        width: 200,
+        width: 250,
       },
       {
         headerName: "Platform",
@@ -71,7 +71,7 @@ class UsersList extends React.Component {
       {
         headerName: "Actions",
         field: "transactions",
-        width: 150,
+        width: 250,
         cellRendererFramework: (params) => {
           return (
             <div className="actions cursor-pointer">
