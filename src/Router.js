@@ -196,6 +196,11 @@ const BranchesList = lazy(() =>
   import("./views/Blends/resources/branches/ListView")
 );
 
+//Orders
+const OrdersList = lazy(() =>
+  import("./views/Blends/resources/orders/ListView")
+);
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -239,6 +244,7 @@ class AppRouter extends React.Component {
         <Switch>
           <AppRoute path="/" component={ecommerceDashboard} exact />
           <AppRoute path="/branch/list" component={BranchesList} />
+          <AppRoute path="/orders/list" component={OrdersList} />
           <AppRoute path="/data-list/list-view" component={listView} />
           <AppRoute path="/data-list/thumb-view" component={thumbView} />
           <AppRoute path="/ui-element/grid" component={grid} />
