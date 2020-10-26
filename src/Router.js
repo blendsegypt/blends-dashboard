@@ -201,6 +201,11 @@ const OrdersList = lazy(() =>
   import("./views/Blends/resources/orders/ListView")
 );
 
+//Internal Categories
+const InternalCategoriesList = lazy(() =>
+  import("./views/Blends/resources/internal-categories/ListView")
+);
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -242,9 +247,15 @@ class AppRouter extends React.Component {
       // Set the directory path if you are deploying in sub-folder
       <Router history={history}>
         <Switch>
+          {/* Blends Start */}
           <AppRoute path="/" component={ecommerceDashboard} exact />
           <AppRoute path="/branch/list" component={BranchesList} />
           <AppRoute path="/orders/list" component={OrdersList} />
+          <AppRoute
+            path="/internal_categories/list"
+            component={InternalCategoriesList}
+          />
+          {/* Blends End */}
           <AppRoute path="/data-list/list-view" component={listView} />
           <AppRoute path="/data-list/thumb-view" component={thumbView} />
           <AppRoute path="/ui-element/grid" component={grid} />
