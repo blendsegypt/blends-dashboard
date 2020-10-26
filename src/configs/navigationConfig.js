@@ -25,7 +25,7 @@ const navigationConfig = [
     title: "Branches",
     type: "item",
     icon: <Icon.Home size={20} />,
-    navLink: "/app/branch/list",
+    navLink: "/branch/list",
   },
   {
     type: "groupHeader",
