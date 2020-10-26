@@ -1,14 +1,14 @@
-import React from "react"
+import React from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
   UncontrolledButtonDropdown,
   DropdownMenu,
   DropdownItem,
-  DropdownToggle
-} from "reactstrap"
-import { Home, Settings } from "react-feather"
-import { NavLink } from "react-router-dom"
+  DropdownToggle,
+} from "reactstrap";
+import { Home, Settings } from "react-feather";
+import { NavLink } from "react-router-dom";
 class BreadCrumbs extends React.Component {
   render() {
     return (
@@ -55,43 +55,8 @@ class BreadCrumbs extends React.Component {
             </div>
           </div>
         </div>
-        <div className="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-          <div className="form-group breadcrum-right dropdown">
-            <UncontrolledButtonDropdown>
-              <DropdownToggle
-                color="primary"
-                size="sm"
-                className="btn-icon btn-round dropdown-toggle"
-              >
-                <Settings
-                  size={14}
-                  style={{
-                    left: 0
-                  }}
-                />
-              </DropdownToggle>
-              <DropdownMenu tag="ul" right>
-                <DropdownItem tag="li">
-                  <NavLink className="text-dark w-100" to="/chat">
-                    Chat
-                  </NavLink>
-                </DropdownItem>
-                <DropdownItem tag="li">
-                  <NavLink className="text-dark w-100" to="/email/inbox">
-                    Email
-                  </NavLink>
-                </DropdownItem>
-                <DropdownItem tag="li">
-                  <NavLink className="text-dark w-100" to="/calendar">
-                    Calendar
-                  </NavLink>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledButtonDropdown>
-          </div>
-        </div>
       </div>
-    )
+    );
   }
 }
-export default BreadCrumbs
+export default BreadCrumbs;
