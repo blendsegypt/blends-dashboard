@@ -11,7 +11,7 @@ const navigationConfig = [
   },
   {
     type: "groupHeader",
-    groupTitle: "RESOURCES",
+    groupTitle: "MANAGEMENT",
   },
   {
     id: "users",
