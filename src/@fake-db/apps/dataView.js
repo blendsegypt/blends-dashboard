@@ -1,4 +1,4 @@
-import mock from "../mock"
+import mock from "../mock";
 export let dataList = [
   {
     id: 1,
@@ -7,7 +7,7 @@ export let dataList = [
     category: "Computers",
     price: "69.99",
     popularity: { popValue: "97", color: "success" },
-    img: require("../../assets/img/elements/apple-watch.png")
+    img: require("../../assets/img/elements/apple-watch.png"),
   },
   {
     id: 2,
@@ -16,7 +16,7 @@ export let dataList = [
     order_status: "delivered",
     name: "Beats HeadPhones",
     category: "Computers",
-    price: "69.99"
+    price: "69.99",
   },
   {
     id: 3,
@@ -25,7 +25,7 @@ export let dataList = [
     img: require("../../assets/img/elements/homepod.png"),
     order_status: "canceled",
     name: "Altec Lansing - Bluetooth Speaker",
-    category: "Audio"
+    category: "Audio",
   },
   {
     id: 4,
@@ -34,7 +34,7 @@ export let dataList = [
     name: "Altec Lansing - Bluetooth Speaker",
     category: "Computers",
     price: "199.99",
-    popularity: { popValue: "65", color: "primary" }
+    popularity: { popValue: "65", color: "primary" },
   },
   {
     id: 5,
@@ -43,7 +43,7 @@ export let dataList = [
     popularity: { popValue: "87", color: "success" },
     img: require("../../assets/img/elements/homepod.png"),
     order_status: "canceled",
-    name: "Altec Lansing - Portable Bluetooth Speaker"
+    name: "Altec Lansing - Portable Bluetooth Speaker",
   },
   {
     id: 6,
@@ -52,7 +52,7 @@ export let dataList = [
     popularity: { popValue: "55", color: "warning" },
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "canceled",
-    name: "Altec Lansing - Bluetooth Speaker"
+    name: "Altec Lansing - Bluetooth Speaker",
   },
   {
     id: 7,
@@ -61,7 +61,7 @@ export let dataList = [
     name: "Altec Lansing - Mini H2O Bluetooth Speaker",
     category: "Computers",
     price: "39.99",
-    popularity: { popValue: "99", color: "success" }
+    popularity: { popValue: "99", color: "success" },
   },
   {
     id: 8,
@@ -70,7 +70,7 @@ export let dataList = [
     name: "Altec Lansing - Bluetooth Speaker",
     category: "Fitness",
     price: "39.99",
-    popularity: { popValue: "91", color: "success" }
+    popularity: { popValue: "91", color: "success" },
   },
   {
     id: 9,
@@ -79,7 +79,7 @@ export let dataList = [
     category: "Fitness",
     price: "39.99",
     popularity: { popValue: "52", color: "warning" },
-    img: require("../../assets/img/elements/iphone-x.png")
+    img: require("../../assets/img/elements/iphone-x.png"),
   },
   {
     id: 10,
@@ -88,7 +88,7 @@ export let dataList = [
     popularity: { popValue: "64", color: "primary" },
     img: require("../../assets/img/elements/apple-watch.png"),
     order_status: "canceled",
-    name: "Altec Lansing - Mini H2O Bluetooth Speaker"
+    name: "Altec Lansing - Mini H2O Bluetooth Speaker",
   },
   {
     id: 11,
@@ -97,7 +97,7 @@ export let dataList = [
     name: "Altec Lansing - Bluetooth Speaker",
     category: "Fitness",
     price: "99.99",
-    popularity: { popValue: "93", color: "success" }
+    popularity: { popValue: "93", color: "success" },
   },
   {
     id: 12,
@@ -106,7 +106,7 @@ export let dataList = [
     order_status: "pending",
     name: "Altec Lansing - Bluetooth Speaker",
     category: "Fitness",
-    price: "99.99"
+    price: "99.99",
   },
   {
     id: 13,
@@ -115,7 +115,7 @@ export let dataList = [
     name: "Altec Lansing - Bluetooth Speaker",
     category: "Audio",
     price: "99.99",
-    popularity: { popValue: "88", color: "success" }
+    popularity: { popValue: "88", color: "success" },
   },
   {
     id: 14,
@@ -124,7 +124,7 @@ export let dataList = [
     category: "Computers",
     price: "99.99",
     popularity: { popValue: "86", color: "success" },
-    img: require("../../assets/img/elements/ipad-pro.png")
+    img: require("../../assets/img/elements/ipad-pro.png"),
   },
   {
     id: 15,
@@ -133,7 +133,7 @@ export let dataList = [
     category: "Computers",
     price: "29.99",
     popularity: { popValue: "62", color: "primary" },
-    img: require("../../assets/img/elements/iphone-x.png")
+    img: require("../../assets/img/elements/iphone-x.png"),
   },
   {
     id: 16,
@@ -142,7 +142,7 @@ export let dataList = [
     name: "Aluratek - Bluetooth Audio Transmitter",
     category: "Audio",
     price: "29.99",
-    popularity: { popValue: "51", color: "warning" }
+    popularity: { popValue: "51", color: "warning" },
   },
   {
     id: 17,
@@ -151,7 +151,7 @@ export let dataList = [
     name: "Aluratek - iStream Bluetooth Audio Receiver",
     category: "Fitness",
     price: "29.99",
-    popularity: { popValue: "51", color: "warning" }
+    popularity: { popValue: "51", color: "warning" },
   },
   {
     id: 18,
@@ -160,7 +160,7 @@ export let dataList = [
     category: "Fitness",
     price: "14.99",
     popularity: { popValue: "65", color: "primary" },
-    img: require("../../assets/img/elements/macbook-pro.png")
+    img: require("../../assets/img/elements/macbook-pro.png"),
   },
   {
     id: 19,
@@ -169,7 +169,7 @@ export let dataList = [
     category: "Computers",
     price: "39.99",
     popularity: { popValue: "63", color: "primary" },
-    img: require("../../assets/img/elements/iphone-x.png")
+    img: require("../../assets/img/elements/iphone-x.png"),
   },
   {
     id: 20,
@@ -178,7 +178,7 @@ export let dataList = [
     name: "Basis - Peak Fitness and Sleep Tracker",
     category: "Fitness",
     price: "199.99",
-    popularity: { popValue: "72", color: "success" }
+    popularity: { popValue: "72", color: "success" },
   },
   {
     id: 21,
@@ -187,7 +187,7 @@ export let dataList = [
     name: "Basis - Peak Fitness and Sleep Tracker",
     category: "Fitness",
     price: "199.99",
-    popularity: { popValue: "77", color: "success" }
+    popularity: { popValue: "77", color: "success" },
   },
   {
     id: 22,
@@ -196,7 +196,7 @@ export let dataList = [
     name: "Beats by Dr. Dre - 3' USB-to-Micro USB Cable",
     category: "Computers",
     price: "19.99",
-    popularity: { popValue: "65", color: "primary" }
+    popularity: { popValue: "65", color: "primary" },
   },
   {
     id: 23,
@@ -205,7 +205,7 @@ export let dataList = [
     name: "Beats by Dr. Dre - Bike Mount for Pill Speakers",
     category: "Audio",
     price: "49.99",
-    popularity: { popValue: "60", color: "primary" }
+    popularity: { popValue: "60", color: "primary" },
   },
   {
     id: 24,
@@ -214,7 +214,7 @@ export let dataList = [
     img: require("../../assets/img/elements/homepod.png"),
     order_status: "on hold",
     name: "Beats by Dr. Dre - Support Stand for Speakers",
-    category: "Audio"
+    category: "Audio",
   },
   {
     id: 25,
@@ -223,7 +223,7 @@ export let dataList = [
     order_status: "on hold",
     name: "Beats by Dr. Dre - Support Stand for Pill Speakers",
     category: "Computers",
-    price: "49.99"
+    price: "49.99",
   },
   {
     id: 26,
@@ -232,7 +232,7 @@ export let dataList = [
     name: "Beats by Dr. Dre - Support Stand for Pill Speakers",
     category: "Fitness",
     price: "49.99",
-    popularity: { popValue: "95", color: "success" }
+    popularity: { popValue: "95", color: "success" },
   },
   {
     id: 27,
@@ -241,7 +241,7 @@ export let dataList = [
     name: "Beats by Dr. Dre - Support Stand for Speakers",
     category: "Audio",
     price: "49.99",
-    popularity: { popValue: "98", color: "success" }
+    popularity: { popValue: "98", color: "success" },
   },
   {
     id: 28,
@@ -250,7 +250,7 @@ export let dataList = [
     popularity: { popValue: "75", color: "success" },
     img: require("../../assets/img/elements/jbl-speaker.png"),
     order_status: "delivered",
-    name: "Beats by Dr. Dre - Support Stand"
+    name: "Beats by Dr. Dre - Support Stand",
   },
   {
     id: 29,
@@ -259,7 +259,7 @@ export let dataList = [
     name: "Beats by Dr. Dre - Pill 2.0 Bluetooth Speaker",
     category: "Audio",
     price: "199.99",
-    popularity: { popValue: "81", color: "success" }
+    popularity: { popValue: "81", color: "success" },
   },
   {
     id: 30,
@@ -268,7 +268,7 @@ export let dataList = [
     popularity: { popValue: "91", color: "success" },
     img: require("../../assets/img/elements/macbook-pro.png"),
     order_status: "canceled",
-    name: "Beats by Dr. Dre - Pill 2.0 Bluetooth Speaker"
+    name: "Beats by Dr. Dre - Pill 2.0 Bluetooth Speaker",
   },
   {
     id: 31,
@@ -277,7 +277,7 @@ export let dataList = [
     order_status: "canceled",
     name: "Beats by Dr. Dre - Bluetooth Speaker",
     category: "Fitness",
-    price: "199.99"
+    price: "199.99",
   },
   {
     id: 32,
@@ -286,7 +286,7 @@ export let dataList = [
     category: "Fitness",
     price: "699.99",
     popularity: { popValue: "95", color: "success" },
-    img: require("../../assets/img/elements/ipad-pro.png")
+    img: require("../../assets/img/elements/ipad-pro.png"),
   },
   {
     id: 33,
@@ -295,7 +295,7 @@ export let dataList = [
     img: require("../../assets/img/elements/jbl-speaker.png"),
     order_status: "on hold",
     name: "Beats by Dr. Dre - Pill 2.0 Portable Stereo Speaker",
-    category: "Fitness"
+    category: "Fitness",
   },
   {
     id: 34,
@@ -304,7 +304,7 @@ export let dataList = [
     category: "Fitness",
     price: "34.99",
     popularity: { popValue: "81", color: "success" },
-    img: require("../../assets/img/elements/iphone-x.png")
+    img: require("../../assets/img/elements/iphone-x.png"),
   },
   {
     id: 35,
@@ -313,7 +313,7 @@ export let dataList = [
     name: "Bose® - Bose® SoundLink® III Cover",
     category: "Computers",
     price: "34.99",
-    popularity: { popValue: "81", color: "success" }
+    popularity: { popValue: "81", color: "success" },
   },
   {
     id: 36,
@@ -322,7 +322,7 @@ export let dataList = [
     name: "Bose® - SoundLink® III Cover",
     category: "Audio",
     price: "34.99",
-    popularity: { popValue: "69", color: "success" }
+    popularity: { popValue: "69", color: "success" },
   },
   {
     id: 37,
@@ -331,7 +331,7 @@ export let dataList = [
     popularity: { popValue: "95", color: "success" },
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "canceled",
-    name: "Bose® - SoundLink® Mini Soft Cover"
+    name: "Bose® - SoundLink® Mini Soft Cover",
   },
   {
     id: 38,
@@ -340,7 +340,7 @@ export let dataList = [
     category: "Audio",
     price: "129.99",
     popularity: { popValue: "100", color: "success" },
-    img: require("../../assets/img/elements/apple-watch.png")
+    img: require("../../assets/img/elements/apple-watch.png"),
   },
   {
     id: 39,
@@ -349,7 +349,7 @@ export let dataList = [
     name: "Bose® - SoundLink® Color Bluetooth Speaker",
     category: "Fitness",
     price: "129.99",
-    popularity: { popValue: "89", color: "success" }
+    popularity: { popValue: "89", color: "success" },
   },
   {
     id: 40,
@@ -358,7 +358,7 @@ export let dataList = [
     category: "Computers",
     price: "129.99",
     popularity: { popValue: "75", color: "success" },
-    img: require("../../assets/img/elements/magic-mouse.png")
+    img: require("../../assets/img/elements/magic-mouse.png"),
   },
   {
     id: 41,
@@ -367,7 +367,7 @@ export let dataList = [
     name: "Bose® - SoundLink® Color Bluetooth Speaker",
     category: "Fitness",
     price: "129.99",
-    popularity: { popValue: "54", color: "warning" }
+    popularity: { popValue: "54", color: "warning" },
   },
   {
     id: 42,
@@ -376,7 +376,7 @@ export let dataList = [
     order_status: "delivered",
     name: "Bose® - SoundLink® Color Bluetooth Speaker",
     category: "Computers",
-    price: "129.99"
+    price: "129.99",
   },
   {
     id: 43,
@@ -385,7 +385,7 @@ export let dataList = [
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "pending",
     name: "Bose® - SoundLink® Color Carry Case",
-    category: "Computers"
+    category: "Computers",
   },
   {
     id: 44,
@@ -394,7 +394,7 @@ export let dataList = [
     order_status: "on hold",
     name: "Bose® - SoundLink® III Cover",
     category: "Fitness",
-    price: "34.99"
+    price: "34.99",
   },
   {
     id: 45,
@@ -403,7 +403,7 @@ export let dataList = [
     order_status: "canceled",
     name: "Bose® - SoundLink® III Cover",
     category: "Audio",
-    price: "34.99"
+    price: "34.99",
   },
   {
     id: 46,
@@ -412,7 +412,7 @@ export let dataList = [
     name: "Bose® - SoundLink® III Cover",
     category: "Fitness",
     price: "34.99",
-    popularity: { popValue: "70", color: "success" }
+    popularity: { popValue: "70", color: "success" },
   },
   {
     id: 48,
@@ -421,7 +421,7 @@ export let dataList = [
     category: "Computers",
     price: "199.99",
     popularity: { popValue: "62", color: "primary" },
-    img: require("../../assets/img/elements/magic-mouse.png")
+    img: require("../../assets/img/elements/magic-mouse.png"),
   },
   {
     id: 49,
@@ -430,7 +430,7 @@ export let dataList = [
     category: "Audio",
     price: "199.99",
     popularity: { popValue: "63", color: "primary" },
-    img: require("../../assets/img/elements/iphone-x.png")
+    img: require("../../assets/img/elements/iphone-x.png"),
   },
   {
     id: 50,
@@ -439,7 +439,7 @@ export let dataList = [
     popularity: { popValue: "90", color: "success" },
     img: require("../../assets/img/elements/iphone-x.png"),
     order_status: "on hold",
-    name: "Bose® - SoundLink® Mini Bluetooth Speaker Soft Cover"
+    name: "Bose® - SoundLink® Mini Bluetooth Speaker Soft Cover",
   },
   {
     id: 51,
@@ -448,7 +448,7 @@ export let dataList = [
     order_status: "canceled",
     name: "Bose® - Bluetooth Speaker Soft Cover",
     category: "Fitness",
-    price: "24.99"
+    price: "24.99",
   },
   {
     id: 52,
@@ -457,7 +457,7 @@ export let dataList = [
     category: "Computers",
     price: "24.99",
     popularity: { popValue: "55", color: "warning" },
-    img: require("../../assets/img/elements/ipad-pro.png")
+    img: require("../../assets/img/elements/ipad-pro.png"),
   },
   {
     id: 53,
@@ -466,7 +466,7 @@ export let dataList = [
     category: "Audio",
     price: "24.99",
     popularity: { popValue: "53", color: "warning" },
-    img: require("../../assets/img/elements/ipad-pro.png")
+    img: require("../../assets/img/elements/ipad-pro.png"),
   },
   {
     id: 54,
@@ -475,7 +475,7 @@ export let dataList = [
     popularity: { popValue: "82", color: "success" },
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "pending",
-    name: "Bose® - SoundLink® Mini Bluetooth Speaker Soft Cover"
+    name: "Bose® - SoundLink® Mini Bluetooth Speaker Soft Cover",
   },
   {
     id: 55,
@@ -484,7 +484,7 @@ export let dataList = [
     name: "Bose® - Bluetooth Speaker Travel Bag",
     category: "Computers",
     price: "44.99",
-    popularity: { popValue: "78", color: "success" }
+    popularity: { popValue: "78", color: "success" },
   },
   {
     id: 56,
@@ -493,7 +493,7 @@ export let dataList = [
     order_status: "canceled",
     name: "Bose® - SoundLink® Mini Soft Cover",
     category: "Computers",
-    price: "24.99"
+    price: "24.99",
   },
   {
     id: 57,
@@ -502,7 +502,7 @@ export let dataList = [
     img: require("../../assets/img/elements/macbook-pro.png"),
     order_status: "pending",
     name: "Bose® - SoundLink® Mini Soft Cover",
-    category: "Computers"
+    category: "Computers",
   },
   {
     id: 58,
@@ -511,7 +511,7 @@ export let dataList = [
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "pending",
     name: "Bose® - Bluetooth Speaker III",
-    category: "Fitness"
+    category: "Fitness",
   },
   {
     id: 59,
@@ -520,7 +520,7 @@ export let dataList = [
     order_status: "delivered",
     name: "Bose® - SoundLink® Soft Cover",
     category: "Computers",
-    price: "24.99"
+    price: "24.99",
   },
   {
     id: 60,
@@ -529,7 +529,7 @@ export let dataList = [
     img: require("../../assets/img/elements/iphone-x.png"),
     order_status: "on hold",
     name: "Bose® - Bluetooth Music Adapter",
-    category: "Computers"
+    category: "Computers",
   },
   {
     id: 61,
@@ -538,7 +538,7 @@ export let dataList = [
     category: "Computers",
     price: "349.98",
     popularity: { popValue: "79", color: "success" },
-    img: require("../../assets/img/elements/jbl-speaker.png")
+    img: require("../../assets/img/elements/jbl-speaker.png"),
   },
   {
     id: 62,
@@ -547,7 +547,7 @@ export let dataList = [
     name: "BRAVEN - Balance Portable Bluetooth Speaker",
     category: "Fitness",
     price: "129.99",
-    popularity: { popValue: "82", color: "success" }
+    popularity: { popValue: "82", color: "success" },
   },
   {
     id: 63,
@@ -556,7 +556,7 @@ export let dataList = [
     popularity: { popValue: "80", color: "success" },
     img: require("../../assets/img/elements/apple-watch.png"),
     order_status: "pending",
-    name: "BRAVEN - Balance Portable Bluetooth Speaker"
+    name: "BRAVEN - Balance Portable Bluetooth Speaker",
   },
   {
     id: 64,
@@ -565,7 +565,7 @@ export let dataList = [
     img: require("../../assets/img/elements/homepod.png"),
     order_status: "pending",
     name: "BRAVEN - Outdoor Speaker",
-    category: "Computers"
+    category: "Computers",
   },
   {
     id: 65,
@@ -574,7 +574,7 @@ export let dataList = [
     popularity: { popValue: "61", color: "primary" },
     img: require("../../assets/img/elements/jbl-speaker.png"),
     order_status: "pending",
-    name: "BRAVEN - BRV-X Outdoor Speaker"
+    name: "BRAVEN - BRV-X Outdoor Speaker",
   },
   {
     id: 66,
@@ -583,7 +583,7 @@ export let dataList = [
     name: "BRAVEN - Portable Bluetooth Speaker",
     category: "Fitness",
     price: "299.99",
-    popularity: { popValue: "85", color: "success" }
+    popularity: { popValue: "85", color: "success" },
   },
   {
     id: 67,
@@ -592,7 +592,7 @@ export let dataList = [
     order_status: "on hold",
     name: "BRAVEN - Portable Bluetooth Speaker",
     category: "Fitness",
-    price: "99.99"
+    price: "99.99",
   },
   {
     id: 68,
@@ -601,7 +601,7 @@ export let dataList = [
     name: "BRAVEN - Wireless Bluetooth Speaker",
     category: "Audio",
     price: "99.99",
-    popularity: { popValue: "50", color: "warning" }
+    popularity: { popValue: "50", color: "warning" },
   },
   {
     id: 69,
@@ -610,7 +610,7 @@ export let dataList = [
     name: "BRAVEN - Wireless Bluetooth Speaker",
     category: "Fitness",
     price: "99.99",
-    popularity: { popValue: "93", color: "success" }
+    popularity: { popValue: "93", color: "success" },
   },
   {
     id: 70,
@@ -619,7 +619,7 @@ export let dataList = [
     name: "BRAVEN - Wireless Bluetooth Speaker",
     category: "Fitness",
     price: "99.99",
-    popularity: { popValue: "51", color: "warning" }
+    popularity: { popValue: "51", color: "warning" },
   },
   {
     id: 71,
@@ -628,7 +628,7 @@ export let dataList = [
     name: "Craig - Tower Speaker",
     category: "Fitness",
     price: "69.99",
-    popularity: { popValue: "77", color: "success" }
+    popularity: { popValue: "77", color: "success" },
   },
   {
     id: 72,
@@ -637,7 +637,7 @@ export let dataList = [
     name: "Craig - Portable Wireless Speaker",
     category: "Computers",
     price: "29.99",
-    popularity: { popValue: "89", color: "success" }
+    popularity: { popValue: "89", color: "success" },
   },
   {
     id: 73,
@@ -646,7 +646,7 @@ export let dataList = [
     name: "Definitive Technology - Wireless Speaker",
     category: "Computers",
     price: "399.98",
-    popularity: { popValue: "81", color: "success" }
+    popularity: { popValue: "81", color: "success" },
   },
   {
     id: 74,
@@ -655,7 +655,7 @@ export let dataList = [
     img: require("../../assets/img/elements/jbl-speaker.png"),
     order_status: "pending",
     name: "Definitive Technology - Wireless Speaker",
-    category: "Fitness"
+    category: "Fitness",
   },
   {
     id: 75,
@@ -664,7 +664,7 @@ export let dataList = [
     popularity: { popValue: "88", color: "success" },
     img: require("../../assets/img/elements/magic-mouse.png"),
     order_status: "pending",
-    name: "Denon - Wireless Speaker"
+    name: "Denon - Wireless Speaker",
   },
   {
     id: 76,
@@ -673,7 +673,7 @@ export let dataList = [
     order_status: "canceled",
     name: "Denon - HEOS 7 Wireless Speaker",
     category: "Audio",
-    price: "599.98"
+    price: "599.98",
   },
   {
     id: 77,
@@ -682,7 +682,7 @@ export let dataList = [
     category: "Computers",
     price: "129.99",
     popularity: { popValue: "52", color: "warning" },
-    img: require("../../assets/img/elements/iphone-x.png")
+    img: require("../../assets/img/elements/iphone-x.png"),
   },
   {
     id: 78,
@@ -691,7 +691,7 @@ export let dataList = [
     name: "Fitbit - Charge HR Activity Tracker + Heart Rate (Large)",
     category: "Audio",
     price: "149.99",
-    popularity: { popValue: "66", color: "primary" }
+    popularity: { popValue: "66", color: "primary" },
   },
   {
     id: 79,
@@ -700,7 +700,7 @@ export let dataList = [
     img: require("../../assets/img/elements/apple-watch.png"),
     order_status: "delivered",
     name: "Fitbit - Charge HR Activity Tracker + Heart Rate (Large)",
-    category: "Audio"
+    category: "Audio",
   },
   {
     id: 80,
@@ -709,7 +709,7 @@ export let dataList = [
     name: "Fitbit - Activity Tracker + Heart Rate (Large)",
     category: "Computers",
     price: "149.99",
-    popularity: { popValue: "96", color: "success" }
+    popularity: { popValue: "96", color: "success" },
   },
   {
     id: 81,
@@ -718,7 +718,7 @@ export let dataList = [
     name: "Fitbit - Charge HR Activity Tracker + Heart Rate (Small)",
     category: "Fitness",
     price: "149.99",
-    popularity: { popValue: "92", color: "success" }
+    popularity: { popValue: "92", color: "success" },
   },
   {
     id: 82,
@@ -727,7 +727,7 @@ export let dataList = [
     popularity: { popValue: "82", color: "success" },
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "delivered",
-    name: "Fitbit - Charge HR Activity Tracker + Heart Rate (Small)"
+    name: "Fitbit - Charge HR Activity Tracker + Heart Rate (Small)",
   },
   {
     id: 83,
@@ -736,7 +736,7 @@ export let dataList = [
     name: "Fitbit - Activity Tracker + Heart Rate (Small)",
     category: "Computers",
     price: "149.99",
-    popularity: { popValue: "100", color: "success" }
+    popularity: { popValue: "100", color: "success" },
   },
   {
     id: 84,
@@ -745,7 +745,7 @@ export let dataList = [
     name: "Fitbit - Activity Tracker + Sleep Wristband",
     category: "Fitness",
     price: "149.99",
-    popularity: { popValue: "100", color: "success" }
+    popularity: { popValue: "100", color: "success" },
   },
   {
     id: 85,
@@ -754,7 +754,7 @@ export let dataList = [
     order_status: "pending",
     name: "Fitbit - Activity Tracker (Large)",
     category: "Fitness",
-    price: "129.99"
+    price: "129.99",
   },
   {
     id: 86,
@@ -763,7 +763,7 @@ export let dataList = [
     order_status: "on hold",
     name: "Fitbit - Charge Wireless Activity Tracker (Large)",
     category: "Computers",
-    price: "129.99"
+    price: "129.99",
   },
   {
     id: 87,
@@ -772,7 +772,7 @@ export let dataList = [
     popularity: { popValue: "80", color: "success" },
     img: require("../../assets/img/elements/jbl-speaker.png"),
     order_status: "pending",
-    name: "Fitbit - Charge Wireless Activity Tracker (Large)"
+    name: "Fitbit - Charge Wireless Activity Tracker (Large)",
   },
   {
     id: 88,
@@ -781,7 +781,7 @@ export let dataList = [
     img: require("../../assets/img/elements/iphone-x.png"),
     order_status: "on hold",
     name: "Fitbit - Charge Wireless Activity Tracker (Small)",
-    category: "Fitness"
+    category: "Fitness",
   },
   {
     id: 89,
@@ -790,7 +790,7 @@ export let dataList = [
     popularity: { popValue: "75", color: "success" },
     img: require("../../assets/img/elements/macbook-pro.png"),
     order_status: "on hold",
-    name: "Fitbit - Activity Tracker (Small)"
+    name: "Fitbit - Activity Tracker (Small)",
   },
   {
     id: 90,
@@ -799,7 +799,7 @@ export let dataList = [
     category: "Fitness",
     price: "129.99",
     popularity: { popValue: "80", color: "success" },
-    img: require("../../assets/img/elements/macbook-pro.png")
+    img: require("../../assets/img/elements/macbook-pro.png"),
   },
   {
     id: 91,
@@ -808,7 +808,7 @@ export let dataList = [
     category: "Fitness",
     price: "19.99",
     popularity: { popValue: "50", color: "warning" },
-    img: require("../../assets/img/elements/macbook-pro.png")
+    img: require("../../assets/img/elements/macbook-pro.png"),
   },
   {
     id: 92,
@@ -817,7 +817,7 @@ export let dataList = [
     name: "Fitbit - Clip for Activity and Sleep Trackers",
     category: "Fitness",
     price: "14.99",
-    popularity: { popValue: "57", color: "warning" }
+    popularity: { popValue: "57", color: "warning" },
   },
   {
     id: 93,
@@ -826,7 +826,7 @@ export let dataList = [
     name: "Fitbit - Clip for Wireless Activity and Sleep Trackers",
     category: "Audio",
     price: "14.99",
-    popularity: { popValue: "80", color: "success" }
+    popularity: { popValue: "80", color: "success" },
   },
   {
     id: 94,
@@ -835,7 +835,7 @@ export let dataList = [
     category: "Audio",
     price: "14.99",
     popularity: { popValue: "78", color: "success" },
-    img: require("../../assets/img/elements/jbl-speaker.png")
+    img: require("../../assets/img/elements/jbl-speaker.png"),
   },
   {
     id: 95,
@@ -844,7 +844,7 @@ export let dataList = [
     order_status: "on hold",
     name: 'Fitbit - Flex 1" USB Charging Cable',
     category: "Fitness",
-    price: "14.99"
+    price: "14.99",
   },
   {
     id: 96,
@@ -853,7 +853,7 @@ export let dataList = [
     category: "Audio",
     price: "14.99",
     popularity: { popValue: "51", color: "warning" },
-    img: require("../../assets/img/elements/jbl-speaker.png")
+    img: require("../../assets/img/elements/jbl-speaker.png"),
   },
   {
     id: 97,
@@ -862,7 +862,7 @@ export let dataList = [
     popularity: { popValue: "56", color: "warning" },
     img: require("../../assets/img/elements/jbl-speaker.png"),
     order_status: "canceled",
-    name: "Fitbit - Flex Clasp for Activity Trackers"
+    name: "Fitbit - Flex Clasp for Activity Trackers",
   },
   {
     id: 98,
@@ -871,7 +871,7 @@ export let dataList = [
     name: "Fitbit - Flex Wireless Activity + Sleep Tracker Wristband",
     category: "Computers",
     price: "99.99",
-    popularity: { popValue: "95", color: "success" }
+    popularity: { popValue: "95", color: "success" },
   },
   {
     id: 99,
@@ -880,7 +880,7 @@ export let dataList = [
     category: "Audio",
     price: "99.99",
     popularity: { popValue: "85", color: "success" },
-    img: require("../../assets/img/elements/ipad-pro.png")
+    img: require("../../assets/img/elements/ipad-pro.png"),
   },
   {
     id: 100,
@@ -889,86 +889,89 @@ export let dataList = [
     popularity: { popValue: "50", color: "warning" },
     img: require("../../assets/img/elements/ipad-pro.png"),
     order_status: "pending",
-    name: "Fitbit - Flex Wireless Activity and Sleep Wristband"
-  }
-]
+    name: "Fitbit - Flex Wireless Activity and Sleep Wristband",
+  },
+];
 
-const determinePopularity = val => {
-  if (val >= 75) return { popValue: val, color: "success" }
-  else if (val < 75 && val >= 55) return { popValue: val, color: "primary" }
-  else if (val < 55 && val >= 35) return { popValue: val, color: "warning" }
-  else if (val < 35 && val >= 0) return { popValue: val, color: "danger" }
-  else return { popValue: 0, color: "danger" }
-}
+const determinePopularity = (val) => {
+  if (val >= 75) return { popValue: val, color: "success" };
+  else if (val < 75 && val >= 55) return { popValue: val, color: "primary" };
+  else if (val < 55 && val >= 35) return { popValue: val, color: "warning" };
+  else if (val < 35 && val >= 0) return { popValue: val, color: "danger" };
+  else return { popValue: 0, color: "danger" };
+};
 
 // GET DATA
-mock.onGet("/api/datalist/initial-data").reply(response => {
-  return [200, dataList]
-})
+mock.onGet("/api/datalist/initial-data").reply((response) => {
+  return [200, dataList];
+});
 
-mock.onGet("/api/datalist/data").reply(response => {
-  let { page, perPage } = response
-  let totalPages = Math.ceil(dataList.length / perPage)
+mock.onGet("/api/datalist/data").reply((response) => {
+  let { page, perPage } = response;
+  let totalPages = Math.ceil(dataList.length / perPage);
   if (page !== undefined && perPage !== undefined) {
-    let calculatedPage = (page - 1) * perPage
-    let calculatedPerPage = page * perPage
+    let calculatedPage = (page - 1) * perPage;
+    let calculatedPerPage = page * perPage;
     return [
       200,
-      { data: dataList.slice(calculatedPage, calculatedPerPage), totalPages }
-    ]
+      { data: dataList.slice(calculatedPage, calculatedPerPage), totalPages },
+    ];
   } else {
     return [
       200,
-      { data: dataList.slice(0, 4), totalPages: Math.ceil(dataList.length / 4) }
-    ]
+      {
+        data: dataList.slice(0, 4),
+        totalPages: Math.ceil(dataList.length / 4),
+      },
+    ];
   }
-})
+});
 
 // UPDATE DATA
-mock.onPost("/api/datalist/update-data").reply(request => {
-  let data = JSON.parse(request.data).obj
-  dataList.map(item => {
+mock.onPost("/api/datalist/update-data").reply((request) => {
+  let data = JSON.parse(request.data).obj;
+  dataList.map((item) => {
     if (item.id === data.id) {
-      let popularity = determinePopularity(data.popularity.popValue)
-      return Object.assign(item, { ...data, popularity })
+      let popularity = determinePopularity(data.popularity.popValue);
+      return Object.assign(item, { ...data, popularity });
     } else {
-      return item
+      return item;
     }
-  })
-  return [200]
-})
+  });
+  return [200];
+});
 
 // Add DATA
-mock.onPost("/api/datalist/add-data").reply(request => {
-  let data = JSON.parse(request.data).obj
+mock.onPost("/api/datalist/add-data").reply((request) => {
+  let data = JSON.parse(request.data).obj;
   let highestId = Math.max.apply(
     Math,
-    dataList.map(i => i.id)
-  )
+    dataList.map((i) => i.id)
+  );
   dataList.unshift({
     ...data,
     id: highestId + 1,
-    popularity: determinePopularity(data.popularity.popValue)
-  })
-  return [200]
-})
+    popularity: determinePopularity(data.popularity.popValue),
+  });
+  return [200];
+});
 
 // DELETE DATA
-mock.onPost("/api/datalist/delete-data").reply(request => {
-  let data = JSON.parse(request.data).obj
-  let index = dataList.findIndex(item => item.id === data.id)
-  dataList.splice(index, 1)
-  return [200]
-})
+mock.onPost("/api/datalist/delete-data").reply((request) => {
+  let data = JSON.parse(request.data).obj;
+  let index = dataList.findIndex((item) => item.id === data.id);
+  dataList.splice(index, 1);
+  return [200];
+});
 
 // DELETE SELECTED DATA
-mock.onPost("/api/datalist/delete-selected").reply(request => {
-  let data = JSON.parse(request.data).arr
-  let reducedArray
-  ;[dataList, data].reduce((a, b) => {
-    let c = b.map(j => j.id)
-    return (reducedArray = a.filter(i => !c.includes(i.id)))
-  })
-  dataList = reducedArray
-  return [200]
-})
+mock.onPost("/api/datalist/delete-selected").reply((request) => {
+  let data = JSON.parse(request.data).arr;
+  let reducedArray;
+  [dataList, data].reduce((a, b) => {
+    let c = b.map((j) => j.id);
+    return (reducedArray = a.filter((i) => !c.includes(i.id)));
+  });
+  dataList = reducedArray;
+  return [200];
+});

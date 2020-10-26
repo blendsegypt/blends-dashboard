@@ -177,12 +177,24 @@ const accessControl = lazy(() =>
   import("./extensions/access-control/AccessControl")
 );
 
-// Blends Routes
+/*
+ *
+ * Blends Routes
+ *
+ */
+
+// Dashboard
 const ecommerceDashboard = lazy(() =>
   import("./views/Blends/dashboard/EcommerceDashboard")
 );
+// Users
 const userList = lazy(() => import("./views/Blends/resources/user/list/List"));
 const userEdit = lazy(() => import("./views/Blends/resources/user/edit/Edit"));
+
+//Branches
+const BranchesList = lazy(() =>
+  import("./views/Blends/resources/branches/ListView")
+);
 
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
@@ -226,6 +238,7 @@ class AppRouter extends React.Component {
       <Router history={history}>
         <Switch>
           <AppRoute path="/" component={ecommerceDashboard} exact />
+          <AppRoute path="/branch/list" component={BranchesList} />
           <AppRoute path="/data-list/list-view" component={listView} />
           <AppRoute path="/data-list/thumb-view" component={thumbView} />
           <AppRoute path="/ui-element/grid" component={grid} />

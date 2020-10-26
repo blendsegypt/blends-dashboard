@@ -21,6 +21,13 @@ const navigationConfig = [
     navLink: "/app/user/list",
   },
   {
+    id: "branches",
+    title: "Branches",
+    type: "item",
+    icon: <Icon.Home size={20} />,
+    navLink: "/branch/list",
+  },
+  {
     type: "groupHeader",
     groupTitle: "UI ELEMENTS",
   },
