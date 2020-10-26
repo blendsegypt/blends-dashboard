@@ -211,6 +211,11 @@ const ProductsCategories = lazy(() =>
   import("./views/Blends/resources/categories/ListView")
 );
 
+//Products Tags
+const ProductsTags = lazy(() =>
+  import("./views/Blends/resources/products-tags/ListView")
+);
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -261,6 +266,7 @@ class AppRouter extends React.Component {
             component={InternalCategoriesList}
           />
           <AppRoute path="/categories/list" component={ProductsCategories} />
+          <AppRoute path="/products_tags/list" component={ProductsTags} />
           {/* Blends End */}
           <AppRoute path="/data-list/list-view" component={listView} />
           <AppRoute path="/data-list/thumb-view" component={thumbView} />
