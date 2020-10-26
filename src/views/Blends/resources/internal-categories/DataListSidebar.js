@@ -3,7 +3,6 @@ import { Label, Input, FormGroup, Button } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
-import Select from "react-select";
 
 class DataListSidebar extends Component {
   state = {
