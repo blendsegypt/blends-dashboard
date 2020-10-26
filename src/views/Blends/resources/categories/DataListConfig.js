@@ -85,15 +85,21 @@ class DataListConfig extends Component {
     const data = [
       {
         id: 1,
-        name: "Food",
+        name: "Hot Coffee",
+        internal_category: "Drinks",
+        internal_category_id: 1,
       },
       {
         id: 2,
-        name: "Drinks",
+        name: "Iced Coffee",
+        internal_category: "Drinks",
+        internal_category_id: 1,
       },
       {
         id: 3,
-        name: "Merchandise",
+        name: "Snacks",
+        internal_category: "Food",
+        internal_category_id: 2,
       },
     ];
 
@@ -124,10 +130,16 @@ class DataListConfig extends Component {
         ),
       },
       {
-        name: "name",
+        name: "Name",
         selector: "name",
         sortable: true,
         cell: (row) => `${row.name}`,
+      },
+      {
+        name: "Internal Category",
+        selector: "name",
+        sortable: true,
+        cell: (row) => `${row.internal_category}`,
       },
       {
         name: "Actions",
