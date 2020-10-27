@@ -221,6 +221,11 @@ const ProductsOptions = lazy(() =>
   import("./views/Blends/resources/products-options/ListView")
 );
 
+//Inventory Page
+const Inventory = lazy(() =>
+  import("./views/Blends/resources/inventory/ListView")
+);
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -273,6 +278,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/categories/list" component={ProductsCategories} />
           <AppRoute path="/products_tags/list" component={ProductsTags} />
           <AppRoute path="/products_options/list" component={ProductsOptions} />
+          <AppRoute path="/inventory/list" component={Inventory} />
           {/* Blends End */}
           <AppRoute path="/data-list/list-view" component={listView} />
           <AppRoute path="/data-list/thumb-view" component={thumbView} />
