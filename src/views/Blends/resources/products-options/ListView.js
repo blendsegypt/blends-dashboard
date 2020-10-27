@@ -10,6 +10,7 @@ class ListView extends React.Component {
         <Breadcrumbs
           breadCrumbTitle="Products Options"
           breadCrumbParent="Management"
+          breadCrumbParent2="Products"
           breadCrumbActive="Products Options List"
         />
         <Row>
