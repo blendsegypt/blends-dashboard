@@ -2,17 +2,8 @@ import React, { Component } from "react";
 import { Button } from "reactstrap";
 import DataTable from "react-data-table-component";
 import classnames from "classnames";
-import ReactPaginate from "react-paginate";
 import { history } from "../../../../history";
-import {
-  Edit,
-  Trash,
-  ChevronDown,
-  Plus,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-} from "react-feather";
+import { Edit, Trash, ChevronDown, Plus, Check } from "react-feather";
 import { connect } from "react-redux";
 import {
   getData,
@@ -23,10 +14,18 @@ import {
   filterData,
 } from "../../../../redux/actions/data-list/";
 import Sidebar from "./DataListSidebar";
+import Chip from "../../../../components/@vuexy/chips/ChipComponent";
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy";
 
 import "../../../../assets/scss/plugins/extensions/react-paginate.scss";
 import "../../../../assets/scss/pages/data-list.scss";
+
+const chipColors = {
+  "In Stock": "success",
+  "Below Safe": "warning",
+  "Below Minimum": "danger",
+  "Out of Stock": "danger",
+};
 
 const selectedStyle = {
   rows: {
@@ -51,31 +50,6 @@ const ActionsComponent = (props) => {
           return props.currentData(props.row);
         }}
       />
-      <Trash
-        className="cursor-pointer"
-        style={{ marginLeft: "20px" }}
-        size={20}
-        onClick={() => {
-          //Delete Item
-        }}
-      />
-    </div>
-  );
-};
-
-const CustomHeader = (props) => {
-  return (
-    <div className="data-list-header d-flex justify-content-between flex-wrap">
-      <div className="actions-left d-flex flex-wrap">
-        <Button
-          className="add-new-btn"
-          color="primary"
-          onClick={() => props.handleSidebar(true, true)}
-        >
-          <Plus size={15} />
-          <span className="align-middle">Add New</span>
-        </Button>
-      </div>
     </div>
   );
 };
@@ -84,16 +58,36 @@ class DataListConfig extends Component {
   componentDidMount() {
     const data = [
       {
-        id: 1,
-        name: "Food",
+        product_id: 1,
+        branch: "Fleming",
+        product_name: "Lay's Tomatoes Chips (30g)",
+        actual_stock: 50,
+        safe_stock: 30,
+        min_stock: 10,
       },
       {
-        id: 2,
-        name: "Drinks",
+        product_id: 2,
+        branch: "Fleming",
+        product_name: "Lay's Chicken Chips (30g)",
+        actual_stock: 20,
+        safe_stock: 30,
+        min_stock: 10,
       },
       {
-        id: 3,
-        name: "Merchandise",
+        product_id: 1,
+        branch: "Smouha",
+        product_name: "Lay's Tomatoes Chips (30g)",
+        actual_stock: 0,
+        safe_stock: 0,
+        min_stock: 0,
+      },
+      {
+        product_id: 2,
+        branch: "Smouha",
+        product_name: "Lay's Chicken Chips (30g)",
+        actual_stock: 0,
+        safe_stock: 0,
+        min_stock: 0,
       },
     ];
 
@@ -113,21 +107,67 @@ class DataListConfig extends Component {
     currentPage: 0,
     columns: [
       {
-        name: "ID",
-        selector: "id",
+        name: "Product ID",
+        selector: "product_id",
         sortable: true,
-        minWidth: "150px",
+        minWidth: "30px",
         cell: (row) => (
-          <p title={row.name} className="text-truncate text-bold-500 mb-0">
-            {row.id}
+          <p
+            title={row.product_id}
+            className="text-truncate text-bold-500 mb-0"
+          >
+            {row.product_id}
           </p>
         ),
       },
       {
-        name: "name",
-        selector: "name",
+        name: "Branch",
+        selector: "branch",
         sortable: true,
-        cell: (row) => `${row.name}`,
+        cell: (row) => `${row.branch}`,
+      },
+      {
+        name: "Product Name",
+        selector: "product_name",
+        sortable: true,
+        cell: (row) => `${row.product_name}`,
+      },
+      {
+        name: "Stock Status",
+        sortable: true,
+        cell: (row) => {
+          let status;
+          if (row.actual_stock > row.safe_stock) {
+            status = "In Stock";
+          } else if (row.actual_stock > row.min_stock) {
+            status = "Below Safe";
+          } else if (row.actual_stock > 0) {
+            status = "Below Minimum";
+          } else {
+            status = "Out of Stock";
+          }
+          return (
+            <Chip className="m-0" color={chipColors[status]} text={status} />
+          );
+        },
+      },
+      {
+        name: "Actual Stock",
+        selector: "actual_stock",
+        sortable: true,
+        cell: (row) => <b>{row.actual_stock}</b>,
+      },
+      {
+        name: "Safe Stock",
+        selector: "safe_stock",
+        sortable: true,
+        cell: (row) => `${row.safe_stock}`,
+      },
+      {
+        name: "Minimum Stock",
+        selector: "min_stock",
+        sortable: true,
+        cell: (row) => `${row.min_stock}`,
       },
       {
         name: "Actions",
@@ -189,18 +229,7 @@ class DataListConfig extends Component {
   };
 
   render() {
-    let {
-      columns,
-      data,
-      allData,
-      totalPages,
-      value,
-      rowsPerPage,
-      currentData,
-      sidebar,
-      totalRecords,
-      sortIndex,
-    } = this.state;
+    let { columns, data, allData, value, currentData, sidebar } = this.state;
     return (
       <div
         className={`data-list ${
@@ -210,27 +239,7 @@ class DataListConfig extends Component {
         <DataTable
           columns={columns}
           data={value.length ? allData : data}
-          pagination
-          paginationServer
-          paginationComponent={() => (
-            <ReactPaginate
-              previousLabel={<ChevronLeft size={15} />}
-              nextLabel={<ChevronRight size={15} />}
-              breakLabel="..."
-              breakClassName="break-me"
-              pageCount={totalPages}
-              containerClassName="vx-pagination pagination-center separated-pagination pagination-sm mb-0 mt-2"
-              activeClassName="active"
-              forcePage={
-                this.props.parsedFilter.page
-                  ? parseInt(this.props.parsedFilter.page - 1)
-                  : 0
-              }
-              onPageChange={(page) => this.handlePagination(page)}
-            />
-          )}
           noHeader
-          subHeader
           selectableRows
           responsive
           pointerOnHover
@@ -239,16 +248,6 @@ class DataListConfig extends Component {
             this.setState({ selected: data.selectedRows })
           }
           customStyles={selectedStyle}
-          subHeaderComponent={
-            <CustomHeader
-              handleSidebar={this.handleSidebar}
-              handleFilter={this.handleFilter}
-              handleRowsPerPage={this.handleRowsPerPage}
-              rowsPerPage={rowsPerPage}
-              total={totalRecords}
-              index={sortIndex}
-            />
-          }
           sortIcon={<ChevronDown />}
           selectableRowsComponent={Checkbox}
           selectableRowsComponentProps={{
