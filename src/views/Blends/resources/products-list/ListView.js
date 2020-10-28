@@ -9,7 +9,7 @@ class ListView extends React.Component {
       <React.Fragment>
         <Breadcrumbs
           breadCrumbTitle="Products"
-          breadCrumbParent="Management"
+          breadCrumbParent="General Management"
           breadCrumbParent2="Products"
           breadCrumbActive="Products List"
         />
