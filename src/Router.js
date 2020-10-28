@@ -43,6 +43,11 @@ const ProductsCategories = lazy(() =>
   import("./views/Blends/resources/categories/ListView")
 );
 
+//Products List
+const ProductsList = lazy(() =>
+  import("./views/Blends/resources/products-list/ListView")
+);
+
 //Products Tags
 const ProductsTags = lazy(() =>
   import("./views/Blends/resources/products-tags/ListView")
@@ -123,6 +128,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/inventory/list" component={Inventory} />
           <AppRoute path="/shipments/list" component={Shipments} />
           <AppRoute path="/coupons/list" component={Coupons} />
+          <AppRoute path="/products/list" component={ProductsList} />
           {/* Blends End */}
           <AppRoute path="/misc/error/404" component={error404} fullLayout />
           <AppRoute path="/pages/login" component={Login} fullLayout />
