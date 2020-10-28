@@ -78,6 +78,10 @@ const navigationConfig = [
     ],
   },
   {
+    type: "groupHeader",
+    groupTitle: "Stock Management",
+  },
+  {
     id: "inventory",
     title: "Inventory",
     type: "item",
@@ -90,6 +94,10 @@ const navigationConfig = [
     type: "item",
     icon: <Icon.Calendar size={20} />,
     navLink: "/shipments/list",
+  },
+  {
+    type: "groupHeader",
+    groupTitle: "Offers & Coupons",
   },
   {
     id: "coupons",
