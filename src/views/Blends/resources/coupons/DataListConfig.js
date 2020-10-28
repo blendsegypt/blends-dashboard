@@ -21,9 +21,8 @@ import "../../../../assets/scss/plugins/extensions/react-paginate.scss";
 import "../../../../assets/scss/pages/data-list.scss";
 
 const chipColors = {
-  "In Use": "success",
-  Consumed: "warning",
-  Expired: "danger",
+  Active: "success",
+  Expired: "warning",
 };
 
 const selectedStyle = {
@@ -38,6 +37,17 @@ const selectedStyle = {
     },
   },
 };
+
+function formatDate(d) {
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  let year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
 
 const CustomHeader = (props) => {
   return (
@@ -68,7 +78,6 @@ const ActionsComponent = (props) => {
       />
       <Trash
         className="cursor-pointer"
-        style={{ marginLeft: "20px" }}
         size={20}
         onClick={() => {
           //Delete Item
@@ -82,50 +91,43 @@ class DataListConfig extends Component {
   componentDidMount() {
     const data = [
       {
-        product_id: 1,
-        branch: "Fleming",
-        product_name: "Lay's Tomatoes Chips (30g)",
-        remaining_quantity: 48,
-        purchased_quantity: 50,
-        expiry_date: new Date(2020, 10, 27),
+        id: 1,
+        code: "FORDER",
+        type: "Fixed Discount",
+        start_date: new Date(2020, 10, 27),
+        end_date: new Date(2020, 11, 27),
+        max_usage_per_user: 1,
+        minimum_order_value: 0,
+        percentage_discount: "",
+        fixed_discount: 30,
+        free_item_id: 0,
+        free_item: "",
+        cashback_amount: "",
       },
       {
-        product_id: 2,
-        branch: "Fleming",
-        product_name: "Lay's Chicken Chips (30g)",
-        remaining_quantity: 0,
-        purchased_quantity: 50,
-        expiry_date: new Date(2025, 11, 17),
-      },
-      {
-        product_id: 1,
-        branch: "Smouha",
-        product_name: "Lay's Tomatoes Chips (30g)",
-        remaining_quantity: 0,
-        purchased_quantity: 50,
-        expiry_date: new Date(2010, 11, 17),
+        id: 2,
+        code: "FREELOT",
+        type: "Free Item",
+        start_date: new Date(2020, 3, 10),
+        end_date: new Date(2020, 5, 10),
+        max_usage_per_user: 1,
+        minimum_order_value: 50,
+        percentage_discount: "",
+        fixed_discount: 0,
+        free_item_id: 4,
+        free_item: "Lotus Biscuits (15g)",
+        cashback_amount: "",
       },
     ];
 
-    // Calculate Shipments derived properties
+    // Calculate Coupons "status" property
     const today = new Date();
-    data.forEach((shipment) => {
-      // Check if shipment is consumed
-      if (shipment.remaining_quantity > 0) {
-        shipment.status = "In Use";
-      } else {
-        shipment.status = "Consumed";
+    data.forEach((coupon) => {
+      let status = "Active";
+      if (coupon.end_date - today < 0) {
+        status = "Expired";
       }
-      // Calculate Expires after days
-      let expires_after = Math.floor(
-        (shipment.expiry_date - today) / (1000 * 60 * 60 * 24)
-      ); //Convert ms to days
-      shipment.expires_after = `${expires_after} Days`;
-      // Check if shipment is expired
-      if (shipment.expiry_date - today < 0) {
-        shipment.status = "Expired";
-        shipment.expires_after = "Expired";
-      }
+      coupon.status = status;
     });
 
     this.setState({
@@ -144,61 +146,86 @@ class DataListConfig extends Component {
     currentPage: 0,
     columns: [
       {
-        name: "Product ID",
-        selector: "product_id",
+        name: "ID",
+        selector: "id",
         sortable: true,
-        minWidth: "30px",
         cell: (row) => (
-          <p
-            title={row.product_id}
-            className="text-truncate text-bold-500 mb-0"
-          >
-            {row.product_id}
+          <p title={row.id} className="text-truncate text-bold-500 mb-0">
+            {row.id}
           </p>
         ),
       },
       {
-        name: "Branch",
-        selector: "branch",
+        name: "Code",
+        selector: "code",
         sortable: true,
-        cell: (row) => `${row.branch}`,
+        cell: (row) => `${row.code}`,
       },
       {
-        name: "Product Name",
-        selector: "product_name",
+        name: "Type",
+        selector: "type",
         sortable: true,
-        cell: (row) => `${row.product_name}`,
+        cell: (row) => <b>{row.type}</b>,
       },
       {
-        name: "Shipment Status",
-        sortable: true,
-        cell: (row) => {
-          return (
-            <Chip
-              className="m-0"
-              color={chipColors[row.status]}
-              text={row.status}
-            />
-          );
-        },
+        name: "Status",
+        selector: "status",
+        sortable: false,
+        cell: (row) => (
+          <Chip
+            className="m-0"
+            color={chipColors[row.status]}
+            text={row.status}
+          />
+        ),
       },
       {
-        name: "Expires After",
-        selector: "expires_after",
+        name: "Start Date",
+        selector: "start_date",
         sortable: true,
-        cell: (row) => `${row.expires_after}`,
+        cell: (row) => `${formatDate(row.start_date)}`,
       },
       {
-        name: "Remaining Quantity",
-        selector: "remaining_quantity",
+        name: "End Date",
+        selector: "end_date",
         sortable: true,
-        cell: (row) => <b>{row.remaining_quantity}</b>,
+        cell: (row) => `${formatDate(row.end_date)}`,
       },
       {
-        name: "Purchased Quantity",
-        selector: "purchased_quantity",
+        name: "Maximum usage per User",
+        selector: "max_usage_per_user",
         sortable: true,
-        cell: (row) => `${row.purchased_quantity}`,
+        cell: (row) => <b>{row.max_usage_per_user}</b>,
+      },
+      {
+        name: "Minimum Order value",
+        selector: "minimum_order_value",
+        sortable: true,
+        cell: (row) => `${row.minimum_order_value}`,
+      },
+      {
+        name: "Percentage Discount",
+        selector: "percentage_discount",
+        sortable: true,
+        cell: (row) => `${row.percentage_discount}`,
+      },
+      {
+        name: "Fixed Discount",
+        selector: "fixed_discount",
+        sortable: true,
+        cell: (row) => `${row.fixed_discount}`,
+      },
+      {
+        name: "Free Item",
+        selector: "free_item",
+        sortable: true,
+        cell: (row) => `${row.free_item}`,
+      },
+      {
+        name: "Cashback Amount",
+        selector: "cashback_amount",
+        sortable: true,
+        cell: (row) => `${row.cashback_amount}`,
       },
       {
         name: "Actions",
