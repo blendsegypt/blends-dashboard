@@ -204,6 +204,12 @@ class DataListConfig extends Component {
         cell: (row) => `${row.name}`,
       },
       {
+        name: "Category",
+        selector: "product_category",
+        sortable: true,
+        cell: (row) => `${row.product_category}`,
+      },
+      {
         name: "Price",
         selector: "price",
         sortable: true,

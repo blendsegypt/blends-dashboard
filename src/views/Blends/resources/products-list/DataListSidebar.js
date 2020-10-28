@@ -39,6 +39,21 @@ const customOptionsList = [
   },
 ];
 
+const categoriesList = [
+  {
+    value: 1,
+    label: "Hot Coffee",
+  },
+  {
+    value: 2,
+    label: "Iced Coffee",
+  },
+  {
+    value: 3,
+    label: "Snacks",
+  },
+];
+
 class DataListSidebar extends Component {
   state = {
     id: "",
@@ -171,6 +186,12 @@ class DataListSidebar extends Component {
       tags,
       custom_options,
     } = this.state;
+    let selectedCatgory;
+    if (data !== null) {
+      categoriesList.forEach((category) => {
+        if (product_category_id === category.value) selectedCatgory = category;
+      });
+    }
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -221,6 +242,29 @@ class DataListSidebar extends Component {
               placeholder=""
               onChange={(e) => this.setState({ name: e.target.value })}
               id="data-name"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="data-name">Product Description</Label>
+            <Input
+              type="text"
+              value={description}
+              placeholder=""
+              onChange={(e) => this.setState({ description: e.target.value })}
+              id="data-description"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="data-popularity">Category</Label>
+            <Select
+              name="categories"
+              value={selectedCatgory}
+              options={categoriesList}
+              className="React"
+              classNamePrefix="select"
+              onChange={(category) =>
+                this.setState({ product_category_id: category })
+              }
             />
           </FormGroup>
           <FormGroup>
@@ -277,6 +321,28 @@ class DataListSidebar extends Component {
               placeholder="Blends"
               onChange={(e) => this.setState({ brand: e.target.value })}
               id="data-brand"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="data-SKU">SKU</Label>
+            <Input
+              type="text"
+              value={SKU}
+              placeholder="Blends"
+              onChange={(e) => this.setState({ SKU: e.target.value })}
+              id="data-SKU"
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="data-quantity_per_box">Quantity Per Box</Label>
+            <Input
+              type="text"
+              value={quantity_per_box}
+              placeholder="Blends"
+              onChange={(e) =>
+                this.setState({ quantity_per_box: e.target.value })
+              }
+              id="data-quantity_per_box"
             />
           </FormGroup>
           <FormGroup>
