@@ -1,31 +1,149 @@
 import React, { Component } from "react";
-import { Label, Input, FormGroup, Button } from "reactstrap";
+import { Label, FormGroup, Button } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import Select from "react-select";
 
-const weekDays = [
-  { value: "sun", label: "Sun" },
-  { value: "mon", label: "Mon" },
-  { value: "tue", label: "Tue" },
-  { value: "wed", label: "Wed" },
-  { value: "thu", label: "Thu" },
-  { value: "fri", label: "Fri" },
-  { value: "sat", label: "Sat" },
+const usersList = [
+  {
+    label: "01149050646",
+    value: 1, //User_ID
+    addresses: [
+      {
+        label: "Home",
+        value: "Home",
+      },
+      {
+        label: "Work",
+        value: "Work",
+      },
+    ],
+  },
+  {
+    label: "01142323021",
+    value: 2,
+    addresses: [
+      {
+        label: "home",
+        value: "home",
+      },
+    ],
+  },
+];
+
+const products = [
+  {
+    value: 1,
+    label: "Latte",
+    customOptions: [
+      {
+        label: "Cup Size",
+        value: "",
+        options: [
+          {
+            label: "Small",
+            value: "sm",
+          },
+          {
+            label: "Large",
+            value: "lg",
+          },
+        ],
+      },
+      {
+        label: "Milk Type",
+        value: "",
+        options: [
+          {
+            label: "Skimmed",
+            value: "skm",
+          },
+          {
+            label: "Full Cream",
+            value: "fc",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    value: 2,
+    label: "Espresso",
+    customOptions: [
+      {
+        label: "Cup Size",
+        value: "sm",
+        options: [
+          {
+            label: "Small",
+            value: "sm",
+          },
+          {
+            label: "Large",
+            value: "lg",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const orderStatusList = [
+  {
+    label: "Received",
+    value: "Received",
+  },
+  {
+    label: "Brewing",
+    value: "Brewing",
+  },
+  {
+    label: "Delivering",
+    value: "Delivering",
+  },
+  {
+    label: "Delivered",
+    value: "Delivered",
+  },
+];
+
+const branches = [
+  {
+    value: "Fleming",
+    label: "Fleming",
+  },
+  {
+    value: "Smouha",
+    label: "Smouha",
+  },
+];
+
+const coupons = [
+  {
+    label: "FREELOT",
+    value: "FREELOT",
+  },
+  {
+    label: "FORDER",
+    value: "FORDER",
+  },
 ];
 
 class DataListSidebar extends Component {
   state = {
     id: "",
-    img: "",
-    name: "",
-    type: "",
-    status: "Active",
-    max_parallel_orders: "",
-    working_days: [],
-    opens_at: "",
-    closes_at: "",
+    order_number: "",
+    order_status: "",
+    user_id: "",
+    user_phone_number: "",
+    delivery_location: "",
+    branch: "",
+    subtotal: "",
+    total: "",
+    coupon: "",
+    order_items: [{}],
+    assigned_driver: "",
   };
 
   addNew = false;
@@ -35,57 +153,70 @@ class DataListSidebar extends Component {
       if (this.props.data.id !== prevState.id) {
         this.setState({ id: this.props.data.id });
       }
-      if (this.props.data.name !== prevState.name) {
-        this.setState({ name: this.props.data.name });
+      if (this.props.data.order_number !== prevState.order_number) {
+        this.setState({ order_number: this.props.data.order_number });
       }
-      if (this.props.data.type !== prevState.type) {
-        this.setState({ type: this.props.data.type });
+      if (this.props.data.order_status !== prevState.order_status) {
+        this.setState({ order_status: this.props.data.order_status });
       }
-      if (this.props.data.status !== prevState.status) {
-        this.setState({ status: this.props.data.status });
+      if (this.props.data.user_id !== prevState.user_id) {
+        this.setState({ user_id: this.props.data.user_id });
       }
-      if (this.props.data.opens_at !== prevState.opens_at) {
-        this.setState({ opens_at: this.props.data.opens_at });
+      if (this.props.data.user_phone_number !== prevState.user_phone_number) {
+        this.setState({ user_phone_number: this.props.data.user_phone_number });
       }
-      if (this.props.data.closes_at !== prevState.closes_at) {
-        this.setState({ closes_at: this.props.data.closes_at });
+      if (this.props.data.delivery_location !== prevState.delivery_location) {
+        this.setState({ delivery_location: this.props.data.delivery_location });
       }
-      if (this.props.data.working_days !== prevState.working_days) {
-        this.setState({ working_days: this.props.data.working_days });
+      if (this.props.data.branch !== prevState.branch) {
+        this.setState({ branch: this.props.data.branch });
       }
-      if (
-        this.props.data.max_parallel_orders !== prevState.max_parallel_orders
-      ) {
-        this.setState({
-          max_parallel_orders: this.props.data.max_parallel_orders,
-        });
+      if (this.props.data.order_items !== prevState.order_items) {
+        this.setState({ order_items: this.props.data.order_items });
       }
-      if (this.props.data.img !== prevState.img) {
-        this.setState({ img: this.props.data.img });
+      if (this.props.data.subtotal !== prevState.subtotal) {
+        this.setState({ subtotal: this.props.data.subtotal });
+      }
+      if (this.props.data.total !== prevState.total) {
+        this.setState({ total: this.props.data.total });
+      }
+      if (this.props.data.coupon !== prevState.coupon) {
+        this.setState({ coupon: this.props.data.coupon });
+      }
+      if (this.props.data.assigned_driver !== prevState.assigned_driver) {
+        this.setState({ assigned_driver: this.props.data.assigned_driver });
       }
     }
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
         id: "",
-        status: "Active",
-        name: "",
-        type: "",
-        max_parallel_orders: "",
-        working_days: [],
-        opens_at: "",
-        closes_at: "",
+        order_number: "",
+        order_status: "",
+        user_id: "",
+        user_phone_number: "",
+        delivery_location: "",
+        branch: "",
+        subtotal: "",
+        total: "",
+        order_items: [],
+        coupon: "",
+        assigned_driver: "",
       });
     }
     if (this.addNew) {
       this.setState({
         id: "",
-        status: "Active",
-        name: "",
-        type: "",
-        max_parallel_orders: "",
-        working_days: [],
-        opens_at: "",
-        closes_at: "",
+        order_number: "",
+        order_status: "",
+        user_id: "",
+        user_phone_number: "",
+        delivery_location: "",
+        branch: "",
+        subtotal: "",
+        order_items: [],
+        total: "",
+        coupon: "",
+        assigned_driver: "",
       });
     }
     this.addNew = false;
@@ -102,21 +233,51 @@ class DataListSidebar extends Component {
     //  ? this.props.dataParams
     //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
     let {
-      name,
-      status,
-      type,
-      max_parallel_orders,
-      working_days,
-      opens_at,
-      closes_at,
-      img,
+      order_status,
+      user_id,
+      user_phone_number,
+      delivery_location,
+      branch,
+      order_items,
+      coupon,
     } = this.state;
+    let selectedOrderStatus = "";
+    let selected_user = "";
+    let selected_delivery_location = "";
+    let selectedBranch = "";
+    let selectedCoupon = "";
+
+    orderStatusList.forEach((status, index) => {
+      if (status.value === order_status) {
+        selectedOrderStatus = orderStatusList[index];
+      }
+    });
+    usersList.forEach((user, index) => {
+      if (user.value === user_id) {
+        selected_user = usersList[index];
+        user.addresses.forEach((address, index) => {
+          if (address.value === delivery_location) {
+            selected_delivery_location = user.addresses[index];
+          }
+        });
+      }
+    });
+    branches.forEach((branchItem, index) => {
+      if (branchItem.value === branch) {
+        selectedBranch = branches[index];
+      }
+    });
+    coupons.forEach((couponObject, index) => {
+      if (couponObject.value === coupon) {
+        selectedCoupon = coupons[index];
+      }
+    });
+    console.log(selected_delivery_location);
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -131,148 +292,221 @@ class DataListSidebar extends Component {
           className="data-list-fields px-2 mt-3"
           options={{ wheelPropagation: false }}
         >
-          {this.props.thumbView && img.length ? (
-            <FormGroup className="text-center">
-              <img className="img-fluid" src={img} alt={name} />
-              <div className="d-flex flex-wrap justify-content-between mt-2">
-                <label
-                  className="btn btn-flat-primary"
-                  htmlFor="update-image"
-                  color="primary"
-                >
-                  Upload Image
-                  <input
-                    type="file"
-                    id="update-image"
-                    hidden
-                    onChange={(e) =>
-                      this.setState({
-                        img: URL.createObjectURL(e.target.files[0]),
-                      })
-                    }
-                  />
-                </label>
-                <Button
-                  color="flat-danger"
-                  onClick={() => this.setState({ img: "" })}
-                >
-                  Remove Image
-                </Button>
-              </div>
-            </FormGroup>
-          ) : null}
           <FormGroup>
-            <Label for="data-name">Branch Name</Label>
-            <Input
-              type="text"
-              value={name}
-              placeholder=""
-              onChange={(e) => this.setState({ name: e.target.value })}
-              id="data-name"
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="data-category">Type</Label>
-            <Input
-              type="select"
-              id="data-category"
-              value={type}
-              onChange={(e) => this.setState({ type: e.target.value })}
-            >
-              <option>Dispatching Point</option>
-              <option>Cafe</option>
-            </Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="data-status">Branch Status</Label>
-            <Input
-              type="select"
-              id="data-status"
-              value={status}
-              onChange={(e) => this.setState({ status: e.target.value })}
-            >
-              <option>Active</option>
-              <option>Busy</option>
-              <option>Closed</option>
-            </Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="data-popularity">Maximum Parallel Orders</Label>
-            <Input
-              type="number"
-              value={max_parallel_orders}
-              id="data-popularity"
-              placeholder="0 - 100"
-              onChange={(e) =>
-                this.setState({ max_parallel_orders: e.target.value })
+            <Label for="data-status">Order Status</Label>
+            <Select
+              className="React"
+              classNamePrefix="select"
+              name="clear"
+              value={selectedOrderStatus}
+              options={orderStatusList}
+              onChange={(status) =>
+                this.setState({ order_status: status.value })
               }
+              isClearable={true}
             />
           </FormGroup>
-          {data === null ? (
+          <FormGroup>
+            <Label for="data-status">User's Phone Number</Label>
+            <Select
+              className="React"
+              classNamePrefix="select"
+              name="clear"
+              value={selected_user}
+              options={usersList}
+              onChange={(user) => {
+                this.setState({
+                  user_id: user.value ? user.value : null, //Check if selected is null or not
+                  user_phone_number: Number(user.label),
+                  delivery_location: "", //Clear Delivery Location from previous selections
+                });
+              }}
+              isClearable={true}
+            />
+          </FormGroup>
+          {/* Render User's Address selection if a user is selected */}
+          {user_id && user_phone_number && (
             <FormGroup>
-              <Label for="data-popularity">Working Days</Label>
+              <Label for="data-status">User's Address</Label>
               <Select
-                isMulti
-                closeMenuOnSelect={false}
-                name="workingDays"
-                options={weekDays}
                 className="React"
                 classNamePrefix="select"
+                name="clear"
+                value={selected_delivery_location}
+                options={
+                  usersList.find((user) => user.value === user_id).addresses
+                }
+                onChange={(address) => {
+                  this.setState({ delivery_location: address.value });
+                }}
+                isClearable={true}
               />
-            </FormGroup>
-          ) : (
-            <FormGroup>
-              <Label for="data-popularity">Working Days</Label>
-              {working_days.length > 0 && (
-                <Select
-                  isMulti
-                  defaultValue={working_days}
-                  closeMenuOnSelect={false}
-                  name="workingDays"
-                  options={weekDays}
-                  className="React"
-                  classNamePrefix="select"
-                />
-              )}
             </FormGroup>
           )}
           <FormGroup>
-            <Label for="data-popularity">Opens At</Label>
-            <Input
-              type="text"
-              value={opens_at}
-              placeholder="09:00"
-              onChange={(e) => this.setState({ opens_at: e.target.value })}
-              id="data-opens-at"
+            <Label for="data-status">Branch</Label>
+            <Select
+              className="React"
+              classNamePrefix="select"
+              name="clear"
+              value={selectedBranch}
+              options={branches}
+              onChange={(branch) => this.setState({ branch: branch.value })}
+              isClearable={true}
             />
           </FormGroup>
+          {/* Products Selection Area */}
+          <h4>Ordered Products</h4>
+          {order_items.map((item, index) => {
+            let selected_product = "";
+            // Check if product is selected or not
+            if (Object.keys(item).length === 0) {
+              selected_product = "";
+            } else {
+              selected_product = products.find(
+                (product) => item.value === product.value
+              );
+            }
+            return (
+              <div
+                style={{
+                  borderColor: "#e9e9e9",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  padding: "10px",
+                  marginBottom: "15px",
+                  borderRadius: "10px",
+                }}
+              >
+                {/* Choose / Delete Product */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormGroup
+                    style={{
+                      flex: 0.8,
+                      marginRight: "10px",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <Label for="data-status">Product</Label>
+                    <Select
+                      className="React"
+                      classNamePrefix="select"
+                      name="clear"
+                      value={selected_product}
+                      options={products}
+                      onChange={(product) => {
+                        // Change Product through changing order_item
+                        const newOrderedItems = [...this.state.order_items];
+                        newOrderedItems[index] = JSON.parse(
+                          JSON.stringify(product)
+                        );
+                        this.setState({ order_items: newOrderedItems });
+                      }}
+                    />
+                  </FormGroup>
+                  <div style={{ flex: 0.2 }}>
+                    <Button
+                      disabled={order_items.length === 1 ? true : false} //Disabled remove button if there's only 1 item
+                      color="primary"
+                      style={{
+                        paddingTop: "14px",
+                        paddingBottom: "14px",
+                        fontSize: "13px",
+                        marginTop: "12px",
+                      }}
+                      onClick={() => {
+                        // Remove item from order_items array
+                        const newOrderedItems = [...this.state.order_items];
+                        newOrderedItems.splice(index, 1);
+                        this.setState({
+                          order_items: newOrderedItems,
+                        });
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+                {/* Product Custom Options */}
+                {selected_product !== "" && // If no product is selected then don't show custom options
+                  products
+                    .find((product) => product.value === item.value) // Find product in products list
+                    .customOptions.map((customOption) => {
+                      // Get option object from order_items item object
+                      const currentOption = item.customOptions.find(
+                        (option) => option.label === customOption.label
+                      );
+                      let currentValue = {};
+                      if (currentOption.value !== "") {
+                        currentValue.value = currentOption.value;
+                        currentValue.label = customOption.options.find(
+                          (option) => {
+                            return option.value === currentOption.value;
+                          }
+                        ).label;
+                      }
+                      return (
+                        <FormGroup style={{ marginBottom: "0.5rem" }}>
+                          <Label for="data-status">{customOption.label}</Label>
+                          <Select
+                            className="React"
+                            classNamePrefix="select"
+                            name="clear"
+                            value={currentValue}
+                            options={
+                              selected_product.customOptions.find(
+                                (option) => option.label === customOption.label
+                              ).options
+                            }
+                            onChange={(option) => {
+                              const newOrderedItems = [
+                                ...this.state.order_items,
+                              ];
+                              const currentItem = newOrderedItems[index];
+                              const currentOption = currentItem.customOptions.find(
+                                (option) => option.label === customOption.label
+                              );
+                              currentOption.value = option.value;
+                              this.setState({
+                                ordered_items: newOrderedItems,
+                              });
+                            }}
+                          />
+                        </FormGroup>
+                      );
+                    })}
+              </div>
+            );
+          })}
+          <Button
+            color="success"
+            onClick={() => {
+              let newOrderItems = [...order_items];
+              newOrderItems = newOrderItems.concat({});
+              this.setState({ order_items: newOrderItems });
+            }}
+          >
+            Add Product
+          </Button>
+          <h4 style={{ marginTop: "20px" }}>Offers & Coupons</h4>
           <FormGroup>
-            <Label for="data-popularity">Closes At</Label>
-            <Input
-              type="text"
-              value={closes_at}
-              placeholder="15:00"
-              onChange={(e) => this.setState({ closes_at: e.target.value })}
-              id="data-closes-at"
+            <Label for="data-status">Coupon</Label>
+            <Select
+              className="React"
+              classNamePrefix="select"
+              name="clear"
+              value={selectedCoupon}
+              options={coupons}
+              onChange={(coupon) => this.setState({ coupon: coupon.value })}
+              isClearable={true}
             />
           </FormGroup>
-          {this.props.thumbView && img.length <= 0 ? (
-            <label
-              className="btn btn-primary"
-              htmlFor="upload-image"
-              color="primary"
-            >
-              Upload Image
-              <input
-                type="file"
-                id="upload-image"
-                hidden
-                onChange={(e) =>
-                  this.setState({ img: URL.createObjectURL(e.target.files[0]) })
-                }
-              />
-            </label>
-          ) : null}
         </PerfectScrollbar>
         <div className="data-list-sidebar-footer px-2 d-flex justify-content-start align-items-center mt-1">
           <Button color="primary" onClick={() => this.handleSubmit(this.state)}>

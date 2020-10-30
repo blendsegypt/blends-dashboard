@@ -36,6 +36,17 @@ const chipColors = {
   Delivered: "success",
 };
 
+function formatDate(d) {
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  let year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
+
 const selectedStyle = {
   rows: {
     selectedHighlighStyle: {
@@ -93,41 +104,89 @@ class DataListConfig extends Component {
     const data = [
       {
         id: 1,
+        ordered_at: new Date(),
         order_number: 232,
         order_status: "Received",
-        user_name: "Khalid Khalil",
-        delivery_location: "Sporting",
-        branch: "Fleming 1",
+        user_id: 2,
+        user_phone_number: 1149050646,
+        delivery_location: "home",
+        delivery_area: "Sporting",
+        branch: "Fleming",
         subtotal: "15 EGP",
         total: "20 EGP",
         coupon: "",
         assigned_driver: "Ahmed",
         order_items: [
           {
-            name: "Espresso",
-            desc: "Small, Double Shot",
+            value: 2,
+            label: "Espresso",
+            customOptions: [
+              {
+                label: "Cup Size",
+                value: "sm",
+                options: [
+                  {
+                    label: "Small",
+                    value: "sm",
+                  },
+                  {
+                    label: "Large",
+                    value: "lg",
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
       {
         id: 2,
+        ordered_at: new Date(),
         order_number: 233,
         order_status: "Brewing",
-        user_name: "Aly Barakat",
-        delivery_location: "Smouha",
+        user_id: 1,
+        user_phone_number: 1142323021,
+        delivery_location: "Work",
+        delivery_area: "El-Shatby",
         branch: "Smouha",
         subtotal: "54 EGP",
         total: "59 EGP",
-        coupon: "",
+        coupon: "FREELOT",
         assigned_driver: "Sameh",
         order_items: [
           {
-            name: "Latte",
-            desc: "Small, Full Cream",
-          },
-          {
-            name: "Latte",
-            desc: "Large, Full Cream",
+            value: 1,
+            label: "Latte",
+            customOptions: [
+              {
+                label: "Cup Size",
+                value: "sm",
+                options: [
+                  {
+                    label: "Small",
+                    value: "sm",
+                  },
+                  {
+                    label: "Large",
+                    value: "lg",
+                  },
+                ],
+              },
+              {
+                label: "Milk Type",
+                value: "skm",
+                options: [
+                  {
+                    label: "Skimmed",
+                    value: "skm",
+                  },
+                  {
+                    label: "Full Cream",
+                    value: "fc",
+                  },
+                ],
+              },
+            ],
           },
         ],
       },
@@ -148,6 +207,12 @@ class DataListConfig extends Component {
     totalPages: 0,
     currentPage: 0,
     columns: [
+      {
+        name: "Ordered",
+        selector: "ordered_at",
+        sortable: true,
+        cell: (row) => `${formatDate(row.ordered_at)}`,
+      },
       {
         name: "Order Number",
         selector: "order_number",
@@ -175,16 +240,16 @@ class DataListConfig extends Component {
         ),
       },
       {
-        name: "Customer Name",
-        selector: "user_name",
+        name: "Customer Phone Number",
+        selector: "user_phone_number",
         sortable: true,
-        cell: (row) => `${row.user_name}`,
+        cell: (row) => `0${row.user_phone_number}`,
       },
       {
-        name: "Delivery Location",
+        name: "Delivery Area",
         selector: "delivery_location",
         sortable: true,
-        cell: (row) => `${row.delivery_location}`,
+        cell: (row) => `${row.delivery_area}`,
       },
       {
         name: "Branch",
@@ -220,16 +285,31 @@ class DataListConfig extends Component {
               {row.order_items.map((item) => {
                 return (
                   <span>
-                    <b>{item.name}</b>
+                    <b>{item.label}</b>
                     <br></br>
-                    {item.desc}
-                    <br></br>
+                    {item.customOptions.map((option) => {
+                      let value = option.options.find(
+                        (optionObj) => optionObj.value === option.value
+                      ).label;
+                      return (
+                        <span>
+                          {value}
+                          <br />
+                        </span>
+                      );
+                    })}
                   </span>
                 );
               })}
             </div>
           );
         },
+      },
+      {
+        name: "Coupon",
+        selector: "coupon",
+        sortable: true,
+        cell: (row) => `${row.coupon}`,
       },
       {
         name: "Actions",
