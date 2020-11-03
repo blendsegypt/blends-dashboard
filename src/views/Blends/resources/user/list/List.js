@@ -95,10 +95,10 @@ class UsersList extends React.Component {
   };
 
   async componentDidMount() {
-    await axios.get("api/users/list").then((response) => {
-      let rowData = response.data;
-      this.setState({ rowData });
-    });
+    // await axios.get("api/users/list").then((response) => {
+    //   let rowData = response.data;
+    //   this.setState({ rowData });
+    // });
   }
 
   onGridReady = (params) => {
