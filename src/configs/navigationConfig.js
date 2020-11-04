@@ -15,7 +15,7 @@ const navigationConfig = [
   },
   {
     id: "users",
-    title: "Users (Connected)",
+    title: "Users (API)",
     type: "item",
     icon: <Icon.User size={20} />,
     navLink: "/app/user/list",
@@ -42,14 +42,14 @@ const navigationConfig = [
     children: [
       {
         id: "internal_categories",
-        title: "Internal Categories (Connected)",
+        title: "Internal Categories (API)",
         type: "item",
         icon: <Icon.Tool size={20} />,
         navLink: "/internal_categories/list",
       },
       {
         id: "categories",
-        title: "Categories",
+        title: "Categories (API)",
         type: "item",
         icon: <Icon.Menu size={20} />,
         navLink: "/categories/list",
