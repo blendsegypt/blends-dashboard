@@ -63,7 +63,7 @@ const navigationConfig = [
       },
       {
         id: "products_tags",
-        title: "Tags",
+        title: "Tags (API)",
         type: "item",
         icon: <Icon.Hash size={20} />,
         navLink: "/products_tags/list",
