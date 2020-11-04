@@ -15,7 +15,7 @@ const navigationConfig = [
   },
   {
     id: "users",
-    title: "Users",
+    title: "Users (Connected)",
     type: "item",
     icon: <Icon.User size={20} />,
     navLink: "/app/user/list",

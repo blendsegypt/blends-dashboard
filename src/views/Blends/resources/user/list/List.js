@@ -10,17 +10,21 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
+  Button,
 } from "reactstrap";
-import axios from "axios";
+import axios from "../../../../../axios";
 import { ContextLayout } from "../../../../../utility/context/Layout";
 import { AgGridReact } from "ag-grid-react";
 import { Edit, Trash2, ChevronDown } from "react-feather";
 import { history } from "../../../../../history";
 import "../../../../../assets/scss/plugins/tables/_agGridStyleOverride.scss";
 import "../../../../../assets/scss/pages/users.scss";
+import SweetAlert from "react-bootstrap-sweetalert";
+
 class UsersList extends React.Component {
   state = {
     rowData: null,
+    warning: false,
     pageSize: 20,
     isVisible: true,
     reload: false,
@@ -40,25 +44,23 @@ class UsersList extends React.Component {
         field: "id",
         width: 150,
         filter: true,
-        checkboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
-        headerCheckboxSelection: true,
       },
       {
         headerName: "First Name",
-        field: "firstName",
+        field: "first_name",
         filter: true,
         width: 200,
       },
       {
         headerName: "Last Name",
-        field: "lastName",
+        field: "last_name",
         filter: true,
         width: 200,
       },
       {
         headerName: "Phone Number",
-        field: "phoneNumber",
+        field: "phone_number",
         filter: true,
         width: 250,
       },
@@ -78,13 +80,19 @@ class UsersList extends React.Component {
               <Edit
                 className="mr-50"
                 size={15}
-                onClick={() => history.push("/app/user/edit")}
+                onClick={() => {
+                  const user = this.gridApi.getSelectedRows();
+                  history.push("/app/user/edit", user[0]);
+                }}
               />
               <Trash2
                 size={15}
                 onClick={() => {
                   let selectedData = this.gridApi.getSelectedRows();
-                  this.gridApi.updateRowData({ remove: selectedData });
+                  this.setState({
+                    targetUser: selectedData[0].id,
+                    warning: true,
+                  });
                 }}
               />
             </div>
@@ -95,10 +103,13 @@ class UsersList extends React.Component {
   };
 
   async componentDidMount() {
-    // await axios.get("api/users/list").then((response) => {
-    //   let rowData = response.data;
-    //   this.setState({ rowData });
-    // });
+    try {
+      const users = await axios.get("/users");
+      const rowData = users.data.data;
+      this.setState({ rowData });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   onGridReady = (params) => {
@@ -150,13 +161,9 @@ class UsersList extends React.Component {
   toggleCollapse = () => {
     this.setState((state) => ({ collapse: !state.collapse }));
   };
-  onEntered = () => {
-    this.setState({ status: "Opened" });
-  };
   onEntering = () => {
     this.setState({ status: "Opening..." });
   };
-
   onEntered = () => {
     this.setState({ status: "Opened" });
   };
@@ -170,16 +177,47 @@ class UsersList extends React.Component {
     this.setState({ isVisible: false });
   };
 
+  deleteUser = async () => {
+    let selectedData = this.gridApi.getSelectedRows();
+    const { status } = await axios.delete(`/users/${this.state.targetUser}`);
+    this.gridApi.updateRowData({ remove: selectedData });
+  };
+
   render() {
     const { rowData, columnDefs, defaultColDef, pageSize } = this.state;
     return (
       <Row className="app-user-list">
+        <SweetAlert
+          title="Are you sure?"
+          warning
+          show={this.state.warning}
+          showCancel
+          reverseButtons
+          cancelBtnBsStyle="danger"
+          confirmBtnText="Yes, delete it!"
+          cancelBtnText="Cancel"
+          onConfirm={() => {
+            this.deleteUser();
+            this.setState({ warning: false });
+          }}
+          onCancel={() => {
+            this.setState({ warning: false });
+          }}
+        >
+          You won't be able to revert this!
+        </SweetAlert>
         <Col sm="12">
           <Card>
             <CardBody>
               <div className="ag-theme-material ag-grid-table">
                 <div className="ag-grid-actions d-flex justify-content-between flex-wrap mb-1">
-                  <div className="sort-dropdown">
+                  <div
+                    className="sort-dropdown"
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
                     <UncontrolledDropdown className="ag-dropdown p-1">
                       <DropdownToggle tag="div">
                         1 - {pageSize} of 150
@@ -212,6 +250,15 @@ class UsersList extends React.Component {
                         </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>
+                    <Button
+                      color="primary"
+                      style={{ marginLeft: 20 }}
+                      onClick={() =>
+                        history.push("/app/user/edit", { addNew: true })
+                      }
+                    >
+                      Add New
+                    </Button>
                   </div>
                   <div className="filter-actions d-flex">
                     <Input
@@ -224,7 +271,7 @@ class UsersList extends React.Component {
                     <div className="dropdown actions-dropdown">
                       <UncontrolledButtonDropdown>
                         <DropdownToggle className="px-2 py-75" color="white">
-                          Actions
+                          Action
                           <ChevronDown className="ml-50" size={15} />
                         </DropdownToggle>
                         <DropdownMenu right>

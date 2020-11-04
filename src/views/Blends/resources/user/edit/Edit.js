@@ -16,8 +16,21 @@ import AccountTab from "./Account";
 import "../../../../../assets/scss/pages/users.scss";
 class UserEdit extends React.Component {
   state = {
+    user: {},
+    addNew: false,
     activeTab: "1",
   };
+
+  componentDidMount() {
+    const user = this.props.history.location.state;
+    if (user.addNew) {
+      this.setState({ addNew: true });
+      return;
+    }
+    this.setState({
+      user,
+    });
+  }
 
   toggle = (tab) => {
     this.setState({
@@ -44,7 +57,10 @@ class UserEdit extends React.Component {
               </Nav>
               <TabContent activeTab={this.state.activeTab}>
                 <TabPane tabId="1">
-                  <AccountTab />
+                  <AccountTab
+                    user={this.state.user}
+                    addNew={this.state.addNew}
+                  />
                 </TabPane>
               </TabContent>
             </CardBody>
