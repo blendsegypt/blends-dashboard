@@ -311,14 +311,14 @@ class UserAccountTab extends React.Component {
                         ? { borderColor: "#ffc34a" }
                         : {}
                     }
-                    value={String(phone_number)}
+                    value={phone_number}
                     id="phonenumber"
                     placeholder="Phone Number *"
                     onChange={(e) =>
                       this.setState({
                         user: {
                           ...this.state.user,
-                          phone_number: Number(e.target.value),
+                          phone_number: e.target.value,
                         },
                       })
                     }

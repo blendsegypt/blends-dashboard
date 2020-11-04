@@ -105,6 +105,9 @@ class UsersList extends React.Component {
   async componentDidMount() {
     try {
       const users = await axios.get("/users");
+      users.data.data.forEach((user) => {
+        user.phone_number = `0${user.phone_number}`;
+      });
       const rowData = users.data.data;
       this.setState({ rowData });
     } catch (error) {
