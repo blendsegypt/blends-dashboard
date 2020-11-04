@@ -3,16 +3,34 @@ import { Label, Input, FormGroup, Button } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
     id: "",
     name: "",
     internal_category: "",
-    internal_category_id: "",
+    InternalCategoryId: "",
+    internalCategories: [{ id: 1, name: "TestLabel" }],
   };
 
   addNew = false;
+
+  async componentDidMount() {
+    try {
+      const internalCategories = await axios.get("internal-categories");
+      this.setState({
+        internalCategories: internalCategories.data.data,
+      });
+      if (this.props.data === null) {
+        this.setState({
+          InternalCategoryId: internalCategories.data.data[0].id,
+        });
+      }
+    } catch (error) {
+      alert("Error: Couldnt retrieve internal categories / " + error);
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== null && prevProps.data === null) {
@@ -22,11 +40,9 @@ class DataListSidebar extends Component {
       if (this.props.data.name !== prevState.name) {
         this.setState({ name: this.props.data.name });
       }
-      if (
-        this.props.data.internal_category_id !== prevState.internal_category_id
-      ) {
+      if (this.props.data.InternalCategoryId !== prevState.InternalCategoryId) {
         this.setState({
-          internal_category_id: this.props.data.internal_category_id,
+          InternalCategoryId: this.props.data.InternalCategoryId,
         });
       }
     }
@@ -34,36 +50,49 @@ class DataListSidebar extends Component {
       this.setState({
         id: "",
         name: "",
-        internal_category_id: "",
+        InternalCategoryId: "",
       });
     }
     if (this.addNew) {
       this.setState({
         id: "",
         name: "",
-        internal_category_id: "",
+        InternalCategoryId: "",
       });
     }
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
+  handleSubmit = async () => {
     if (this.props.data !== null) {
-      //this.props.updateData(obj);
+      //Update Product Category
+      const { name, InternalCategoryId, id } = this.state;
+      try {
+        await axios.put(`product-categories/${id}`, {
+          name,
+          InternalCategoryId: Number(InternalCategoryId),
+        });
+        this.props.handleSidebar(false, true);
+      } catch (error) {
+        alert("Couldn't add product category / " + error);
+      }
     } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+      const { name, InternalCategoryId } = this.state;
+      try {
+        await axios.post("product-categories/", {
+          name,
+          InternalCategoryId: Number(InternalCategoryId),
+        });
+        this.props.handleSidebar(false, true);
+      } catch (error) {
+        alert("Couldn't add product category / " + error);
+      }
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
-    this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
-    let { name, internal_category_id } = this.state;
+    let { name, InternalCategoryId } = this.state;
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -94,13 +123,18 @@ class DataListSidebar extends Component {
               type="select"
               name="select-internal-category"
               id="selector"
-              value={internal_category_id}
+              value={InternalCategoryId}
               onChange={(e) => {
-                this.setState({ internal_category_id: e.target.value });
+                this.setState({ InternalCategoryId: e.target.value });
               }}
             >
-              <option value="1">Drinks</option>
-              <option value="2">Food</option>
+              {this.state.internalCategories.map((internalCategory) => {
+                return (
+                  <option value={internalCategory.id}>
+                    {internalCategory.name}
+                  </option>
+                );
+              })}
             </Input>
           </FormGroup>
         </PerfectScrollbar>
