@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "axios-mock-adapter": "~1.17.0",
     "babel-plugin-react-intl": "^5.1.18",
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^4.4.1",
     "chart.js": "^2.9.3",
     "chroma-js": "~2.1.0",
