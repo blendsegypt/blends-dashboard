@@ -3,11 +3,12 @@ import { Label, Input, FormGroup, Button } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
     id: "",
-    value: "",
+    label: "",
     color: "",
   };
 
@@ -18,8 +19,8 @@ class DataListSidebar extends Component {
       if (this.props.data.id !== prevState.id) {
         this.setState({ id: this.props.data.id });
       }
-      if (this.props.data.value !== prevState.value) {
-        this.setState({ value: this.props.data.value });
+      if (this.props.data.label !== prevState.label) {
+        this.setState({ label: this.props.data.label });
       }
       if (this.props.data.color !== prevState.color) {
         this.setState({ color: this.props.data.color });
@@ -28,38 +29,48 @@ class DataListSidebar extends Component {
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
         id: "",
-        value: "",
+        label: "",
         color: "",
       });
     }
     if (this.addNew) {
       this.setState({
         id: "",
-        value: "",
+        label: "",
         color: "",
       });
     }
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
+  handleSubmit = async () => {
     if (this.props.data !== null) {
-      //this.props.updateData(obj);
+      //Update Internal Category
+      try {
+        await axios.put(`admin/products-tags/${this.state.id}`, {
+          label: this.state.label,
+          color: this.state.color,
+        });
+      } catch (error) {
+        alert("Error: " + error);
+      }
     } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+      // Add new internal category
+      try {
+        await axios.post(`admin/products-tags`, {
+          label: this.state.label,
+          color: this.state.color,
+        });
+      } catch (error) {
+        alert("Error: " + error);
+      }
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
-    let { value, color } = this.state;
-    console.log(Boolean(color));
+    let { label, color } = this.state;
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -87,17 +98,17 @@ class DataListSidebar extends Component {
                 marginBottom: "30px",
               }}
             >
-              <span>{value}</span>
+              <span>{label}</span>
             </div>
           </div>
           <FormGroup>
             <Label for="data-value">Tag Text</Label>
             <Input
               type="text"
-              value={value}
+              value={label}
               placeholder=""
-              onChange={(e) => this.setState({ value: e.target.value })}
-              id="data-value"
+              onChange={(e) => this.setState({ label: e.target.value })}
+              id="data-label"
             />
           </FormGroup>
           <FormGroup>

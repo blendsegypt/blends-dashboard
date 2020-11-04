@@ -4,6 +4,8 @@ import DataTable from "react-data-table-component";
 import classnames from "classnames";
 import ReactPaginate from "react-paginate";
 import { history } from "../../../../history";
+import axios from "../../../../axios";
+import SweetAlert from "react-bootstrap-sweetalert";
 import {
   Edit,
   Trash,
@@ -56,7 +58,7 @@ const ActionsComponent = (props) => {
         style={{ marginLeft: "20px" }}
         size={20}
         onClick={() => {
-          //Delete Item
+          props.deleteWarning(props.row);
         }}
       />
     </div>
@@ -81,39 +83,25 @@ const CustomHeader = (props) => {
 };
 
 class DataListConfig extends Component {
-  componentDidMount() {
-    const data = [
-      {
-        id: 1,
-        value: "Hot",
-        color: "#de4747",
-      },
-      {
-        id: 2,
-        value: "Cold",
-        color: "#4b82db",
-      },
-      {
-        id: 3,
-        value: "Decaf",
-        color: "#75611e",
-      },
-      {
-        id: 4,
-        value: "Contains Milk",
-        color: "#b3b3b3",
-      },
-    ];
-
-    this.setState({
-      data,
-      allData: data,
-      totalPages: 1,
-      currentPage: 1,
-      rowsPerPage: 1,
-      totalRecords: 2,
-    });
+  async componentDidMount() {
+    await this.getData();
   }
+
+  getData = async () => {
+    try {
+      const tags = await axios.get("admin/products-tags");
+      this.setState({
+        data: tags.data.data,
+        allData: tags.data.data,
+        totalPages: 1,
+        currentPage: 1,
+        rowsPerPage: 1,
+        totalRecords: 2,
+      });
+    } catch (error) {
+      alert("Error occured!: " + error);
+    }
+  };
 
   state = {
     data: [],
@@ -132,10 +120,10 @@ class DataListConfig extends Component {
         ),
       },
       {
-        name: "Value",
-        selector: "value",
+        name: "Label",
+        selector: "label",
         sortable: true,
-        cell: (row) => `${row.value}`,
+        cell: (row) => `${row.label}`,
       },
       {
         name: "Tag Color",
@@ -169,7 +157,7 @@ class DataListConfig extends Component {
                 fontSize: "12px",
               }}
             >
-              {row.value}
+              {row.label}
             </div>
           );
         },
@@ -178,7 +166,11 @@ class DataListConfig extends Component {
         name: "Actions",
         sortable: true,
         cell: (row) => (
-          <ActionsComponent row={row} currentData={this.handleCurrentData} />
+          <ActionsComponent
+            row={row}
+            currentData={this.handleCurrentData}
+            deleteWarning={this.deleteWarning}
+          />
         ),
       },
     ],
@@ -191,6 +183,8 @@ class DataListConfig extends Component {
     totalRecords: 0,
     sortIndex: [],
     addNew: "",
+    targetRow: null,
+    deleteWarning: false,
   };
 
   thumbView = this.props.thumbView;
@@ -211,10 +205,20 @@ class DataListConfig extends Component {
   handleSidebar = (boolean, addNew = false) => {
     this.setState({ sidebar: boolean });
     if (addNew === true) this.setState({ currentData: null, addNew: true });
+    if (!boolean) this.getData();
   };
 
-  handleDelete = (row) => {
-    //Handle deletion of a row
+  deleteWarning = (row) => {
+    this.setState({ targetRow: row, deleteWarning: true });
+  };
+
+  handleDelete = async () => {
+    try {
+      await axios.delete(`admin/products-tags/${this.state.targetRow.id}`);
+      this.getData();
+    } catch (error) {
+      alert("Error: " + error);
+    }
   };
 
   handleCurrentData = (obj) => {
@@ -247,80 +251,102 @@ class DataListConfig extends Component {
       sortIndex,
     } = this.state;
     return (
-      <div
-        className={`data-list ${
-          this.props.thumbView ? "thumb-view" : "list-view"
-        }`}
-      >
-        <DataTable
-          columns={columns}
-          data={value.length ? allData : data}
-          pagination
-          paginationServer
-          paginationComponent={() => (
-            <ReactPaginate
-              previousLabel={<ChevronLeft size={15} />}
-              nextLabel={<ChevronRight size={15} />}
-              breakLabel="..."
-              breakClassName="break-me"
-              pageCount={totalPages}
-              containerClassName="vx-pagination pagination-center separated-pagination pagination-sm mb-0 mt-2"
-              activeClassName="active"
-              forcePage={
-                this.props.parsedFilter.page
-                  ? parseInt(this.props.parsedFilter.page - 1)
-                  : 0
-              }
-              onPageChange={(page) => this.handlePagination(page)}
-            />
-          )}
-          noHeader
-          subHeader
-          selectableRows
-          responsive
-          pointerOnHover
-          selectableRowsHighlight
-          onSelectedRowsChange={(data) =>
-            this.setState({ selected: data.selectedRows })
-          }
-          customStyles={selectedStyle}
-          subHeaderComponent={
-            <CustomHeader
-              handleSidebar={this.handleSidebar}
-              handleFilter={this.handleFilter}
-              handleRowsPerPage={this.handleRowsPerPage}
-              rowsPerPage={rowsPerPage}
-              total={totalRecords}
-              index={sortIndex}
-            />
-          }
-          sortIcon={<ChevronDown />}
-          selectableRowsComponent={Checkbox}
-          selectableRowsComponentProps={{
-            color: "primary",
-            icon: <Check className="vx-icon" size={12} />,
-            label: "",
-            size: "sm",
+      <>
+        <SweetAlert
+          title="Are you sure?"
+          warning
+          show={this.state.deleteWarning}
+          showCancel
+          reverseButtons
+          cancelBtnBsStyle="danger"
+          confirmBtnText="Yes, delete it!"
+          cancelBtnText="Cancel"
+          onConfirm={() => {
+            this.handleDelete();
+            this.setState({ deleteWarning: false });
           }}
-        />
-        <Sidebar
-          show={sidebar}
-          data={currentData}
-          updateData={this.props.updateData}
-          addData={this.props.addData}
-          handleSidebar={this.handleSidebar}
-          thumbView={this.props.thumbView}
-          getData={this.props.getData}
-          dataParams={this.props.parsedFilter}
-          addNew={this.state.addNew}
-        />
+          onCancel={() => {
+            this.setState({ deleteWarning: false });
+          }}
+        >
+          You won't be able to revert this!
+        </SweetAlert>
         <div
-          className={classnames("data-list-overlay", {
-            show: sidebar,
-          })}
-          onClick={() => this.handleSidebar(false, true)}
-        />
-      </div>
+          className={`data-list ${
+            this.props.thumbView ? "thumb-view" : "list-view"
+          }`}
+        >
+          <DataTable
+            defaultSortField="id"
+            columns={columns}
+            data={value.length ? allData : data}
+            pagination
+            paginationServer
+            paginationComponent={() => (
+              <ReactPaginate
+                previousLabel={<ChevronLeft size={15} />}
+                nextLabel={<ChevronRight size={15} />}
+                breakLabel="..."
+                breakClassName="break-me"
+                pageCount={totalPages}
+                containerClassName="vx-pagination pagination-center separated-pagination pagination-sm mb-0 mt-2"
+                activeClassName="active"
+                forcePage={
+                  this.props.parsedFilter.page
+                    ? parseInt(this.props.parsedFilter.page - 1)
+                    : 0
+                }
+                onPageChange={(page) => this.handlePagination(page)}
+              />
+            )}
+            noHeader
+            subHeader
+            selectableRows
+            responsive
+            pointerOnHover
+            selectableRowsHighlight
+            onSelectedRowsChange={(data) =>
+              this.setState({ selected: data.selectedRows })
+            }
+            customStyles={selectedStyle}
+            subHeaderComponent={
+              <CustomHeader
+                handleSidebar={this.handleSidebar}
+                handleFilter={this.handleFilter}
+                handleRowsPerPage={this.handleRowsPerPage}
+                rowsPerPage={rowsPerPage}
+                total={totalRecords}
+                index={sortIndex}
+              />
+            }
+            sortIcon={<ChevronDown />}
+            selectableRowsComponent={Checkbox}
+            selectableRowsComponentProps={{
+              color: "primary",
+              icon: <Check className="vx-icon" size={12} />,
+              label: "",
+              size: "sm",
+            }}
+          />
+          <Sidebar
+            show={sidebar}
+            data={currentData}
+            updateData={this.props.updateData}
+            addData={this.props.addData}
+            handleSidebar={this.handleSidebar}
+            thumbView={this.props.thumbView}
+            getData={this.props.getData}
+            dataParams={this.props.parsedFilter}
+            addNew={this.state.addNew}
+          />
+          <div
+            className={classnames("data-list-overlay", {
+              show: sidebar,
+            })}
+            onClick={() => this.handleSidebar(false, true)}
+          />
+        </div>
+      </>
     );
   }
 }
