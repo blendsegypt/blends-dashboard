@@ -55,54 +55,52 @@ class UserAccountTab extends React.Component {
   }
 
   updateUser = async () => {
+    const oldUser = this.props.user;
+    const newUser = Object.assign({}, this.state.user);
+    if (oldUser.first_name === newUser.first_name) {
+      delete newUser.first_name;
+    }
+    if (oldUser.last_name === newUser.last_name) {
+      delete newUser.last_name;
+    }
+    if (oldUser.gender === newUser.gender) {
+      delete newUser.gender;
+    }
+    if (oldUser.dob === newUser.dob) {
+      delete newUser.dob;
+    }
+    if (oldUser.email === newUser.email) {
+      delete newUser.email;
+    }
+    if (oldUser.email_verified === newUser.email_verified) {
+      delete newUser.email_verified;
+    }
+    if (oldUser.phone_number === newUser.phone_number) {
+      delete newUser.phone_number;
+    }
+    delete newUser.platform;
+    delete newUser.password_hash;
+    delete newUser.password_salt;
+    delete newUser.createdAt;
+    delete newUser.updatedAt;
+    delete newUser.id;
+
+    if (Object.keys(newUser).length === 0) {
+      //Nothing changed
+      this.setState({ noChangeAlert: true });
+    }
+
     try {
-      const oldUser = this.props.user;
-      const newUser = Object.assign({}, this.state.user);
-      if (oldUser.first_name === newUser.first_name) {
-        delete newUser.first_name;
-      }
-      if (oldUser.last_name === newUser.last_name) {
-        delete newUser.last_name;
-      }
-      if (oldUser.gender === newUser.gender) {
-        delete newUser.gender;
-      }
-      if (oldUser.dob === newUser.dob) {
-        delete newUser.dob;
-      }
-      if (oldUser.email === newUser.email) {
-        delete newUser.email;
-      }
-      if (oldUser.email_verified === newUser.email_verified) {
-        delete newUser.email_verified;
-      }
-      if (oldUser.phone_number === newUser.phone_number) {
-        delete newUser.phone_number;
-      }
-      delete newUser.platform;
-      delete newUser.password_hash;
-      delete newUser.password_salt;
-      delete newUser.createdAt;
-      delete newUser.updatedAt;
-      delete newUser.id;
-
-      if (Object.keys(newUser).length === 0) {
-        //Nothing changed
-        this.setState({ noChangeAlert: true });
-      }
-
-      const { status } = await axios.put(
-        `/users/${this.state.user.id}`,
-        newUser
-      );
-      if (status === 201) {
-        this.setState({
-          successAlert: true,
-          successMessage: "User updated Successfully!",
-        });
-      }
+      await axios.put(`/users/${this.state.user.id}`, newUser);
+      this.setState({
+        successAlert: true,
+        successMessage: "User updated Successfully!",
+      });
     } catch (error) {
-      console.log(error);
+      this.setState({
+        errorAlert: true,
+        errorMessage: `${error}`,
+      });
     }
   };
 
