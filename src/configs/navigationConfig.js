@@ -70,7 +70,7 @@ const navigationConfig = [
       },
       {
         id: "products_custom_options",
-        title: "Custom Options",
+        title: "Custom Options (API)",
         type: "item",
         icon: <Icon.Edit size={20} />,
         navLink: "/products_options/list",
