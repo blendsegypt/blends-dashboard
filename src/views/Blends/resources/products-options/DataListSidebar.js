@@ -4,6 +4,7 @@ import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import { Plus, Minus } from "react-feather";
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
@@ -11,10 +12,19 @@ class DataListSidebar extends Component {
     label: "",
     mandatory: false,
     active: false,
-    options: [],
+    ProductId: null,
+    CustomOptions: [],
+    products_list: [],
   };
 
   addNew = false;
+
+  async componentDidMount() {
+    const products = await axios.get("admin/products");
+    this.setState({
+      products_list: products.data.data,
+    });
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== null && prevProps.data === null) {
@@ -30,8 +40,8 @@ class DataListSidebar extends Component {
       if (this.props.data.active !== prevState.active) {
         this.setState({ active: this.props.data.active });
       }
-      if (this.props.data.options !== prevState.options) {
-        this.setState({ options: this.props.data.options });
+      if (this.props.data.CustomOptions !== prevState.CustomOptions) {
+        this.setState({ CustomOptions: this.props.data.CustomOptions });
       }
     }
     if (this.props.data === null && prevProps.data !== null) {
@@ -40,7 +50,8 @@ class DataListSidebar extends Component {
         label: "",
         mandatory: false,
         active: false,
-        options: [],
+        ProductId: null,
+        CustomOptions: [],
       });
     }
     if (this.addNew) {
@@ -49,64 +60,109 @@ class DataListSidebar extends Component {
         label: "",
         mandatory: false,
         active: false,
-        options: [],
+        ProductId: null,
+        CustomOptions: [],
       });
     }
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
+  handleSubmit = async () => {
+    // Generate value property on custom options
+    const CustomOptions = [...this.state.CustomOptions];
+    CustomOptions.forEach((option) => {
+      option.value = option.label.toLowerCase();
+      if (this.props.data !== null)
+        option.ProductCustomOptionId = this.state.id;
+    });
     if (this.props.data !== null) {
-      //this.props.updateData(obj);
+      // Update Custom Options
+      try {
+        await axios.put(`admin/products-custom-options/${this.state.id}`, {
+          id: this.state.id,
+          label: this.state.label,
+          mandatory: this.state.mandatory,
+          active: this.state.active,
+          CustomOptions: CustomOptions,
+        });
+      } catch (error) {
+        alert("Error: " + error);
+      }
     } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+      // Add new custom option
+      if (this.state.label === "") {
+        alert("You didn't enter a label");
+        return;
+      }
+      if (this.state.ProductId === null) {
+        alert("You didn't choose a product");
+        return;
+      }
+      try {
+        await axios.post(`admin/products-custom-options/`, {
+          label: this.state.label,
+          mandatory: this.state.mandatory,
+          active: this.state.active,
+          ProductId: this.state.ProductId,
+          CustomOptions: CustomOptions,
+        });
+      } catch (error) {
+        alert("Error: " + error);
+      }
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   // Custom Options sub-options
 
   addOption = () => {
-    const newOptions = this.state.options.concat({ label: "", price: "" });
+    const newOptions = this.state.CustomOptions.concat({
+      label: "",
+      price: "",
+      active: false,
+    });
     this.setState({
-      options: newOptions,
+      CustomOptions: newOptions,
     });
   };
 
-  editOption = (label, price, index) => {
-    const newOptions = this.state.options.map((option, optionIndex) => {
+  editOption = (label, price, active, index) => {
+    const newOptions = this.state.CustomOptions.map((option, optionIndex) => {
       if (optionIndex === index) {
+        if (option.id) {
+          return {
+            id: option.id,
+            label,
+            price,
+            active,
+          };
+        }
         return {
           label,
           price,
+          active,
         };
       }
       return option;
     });
     this.setState({
-      options: newOptions,
+      CustomOptions: newOptions,
     });
-    console.log(newOptions);
   };
 
   removeOption = () => {
-    const newOptions = this.state.options.slice(
+    const newOptions = this.state.CustomOptions.slice(
       0,
-      this.state.options.length - 1
+      this.state.CustomOptions.length - 1
     );
     this.setState({
-      options: newOptions,
+      CustomOptions: newOptions,
     });
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
-    let { label, mandatory, active, options } = this.state;
+    let { label, mandatory, active, ProductId, CustomOptions } = this.state;
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -121,6 +177,22 @@ class DataListSidebar extends Component {
           className="data-list-fields px-2 mt-3"
           options={{ wheelPropagation: false }}
         >
+          <FormGroup>
+            <Label for="data-mandatory">Product</Label>
+            <Input
+              type="select"
+              id="data-mandatory"
+              value={ProductId}
+              onChange={(e) => {
+                this.setState({ ProductId: Number(e.target.value) });
+              }}
+            >
+              <option value="INVALID">Select..</option>
+              {this.state.products_list.map((product) => {
+                return <option value={product.id}>{product.name}</option>;
+              })}
+            </Input>
+          </FormGroup>
           <FormGroup>
             <Label for="data-label">Label</Label>
             <Input
@@ -157,7 +229,7 @@ class DataListSidebar extends Component {
           </FormGroup>
           <h4>Options</h4>
           <div>
-            {options.map((option, index) => {
+            {CustomOptions.map((option, index) => {
               return (
                 <div
                   style={{ display: "flex", flexDirection: "row" }}
@@ -170,12 +242,17 @@ class DataListSidebar extends Component {
                       value={option.label}
                       placeholder=""
                       onChange={(e) =>
-                        this.editOption(e.target.value, option.price, index)
+                        this.editOption(
+                          e.target.value,
+                          option.price,
+                          option.active,
+                          index
+                        )
                       }
                       id="data-label"
                     />
                   </FormGroup>
-                  <FormGroup style={{ flex: 0.4 }}>
+                  <FormGroup style={{ flex: 0.3 }}>
                     <Label for="data-label">Price (EGP)</Label>
                     <Input
                       type="text"
@@ -185,11 +262,37 @@ class DataListSidebar extends Component {
                         this.editOption(
                           option.label,
                           Number(e.target.value),
+                          option.active,
                           index
                         )
                       }
                       id="data-label"
                     />
+                  </FormGroup>
+                  <FormGroup style={{ flex: 0.1 }}>
+                    <Label for="data-active">Active</Label>
+                    <input
+                      type="checkbox"
+                      name="active"
+                      checked={option.active}
+                      onChange={(e) => {
+                        if (e.target.checked)
+                          this.editOption(
+                            option.label,
+                            option.price,
+                            true,
+                            index
+                          );
+                        else
+                          this.editOption(
+                            option.label,
+                            option.price,
+                            false,
+                            index
+                          );
+                      }}
+                      style={{ marginLeft: "13px", marginTop: "10px" }}
+                    ></input>
                   </FormGroup>
                 </div>
               );
