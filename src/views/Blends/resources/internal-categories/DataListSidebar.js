@@ -3,6 +3,7 @@ import { Label, Input, FormGroup, Button } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
@@ -36,18 +37,27 @@ class DataListSidebar extends Component {
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
+  handleSubmit = async (obj) => {
     if (this.props.data !== null) {
-      //this.props.updateData(obj);
+      //Update Internal Category
+      try {
+        await axios.put(`internal-categories/${this.state.id}`, {
+          name: this.state.name,
+        });
+      } catch (error) {
+        alert("Error: " + error);
+      }
     } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+      // Add new internal category
+      try {
+        await axios.post(`internal-categories/`, {
+          name: this.state.name,
+        });
+      } catch (error) {
+        alert("Error: " + error);
+      }
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {

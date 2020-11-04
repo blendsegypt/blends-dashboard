@@ -42,7 +42,7 @@ const navigationConfig = [
     children: [
       {
         id: "internal_categories",
-        title: "Internal Categories",
+        title: "Internal Categories (Connected)",
         type: "item",
         icon: <Icon.Tool size={20} />,
         navLink: "/internal_categories/list",
