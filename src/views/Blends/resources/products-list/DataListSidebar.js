@@ -4,60 +4,12 @@ import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import Select from "react-select";
-
-const tagsList = [
-  {
-    value: 1,
-    label: "Hot",
-  },
-  {
-    value: 2,
-    label: "Cold",
-  },
-  {
-    value: 3,
-    label: "Decaf",
-  },
-  {
-    value: 4,
-    label: "Contains Milk",
-  },
-];
-
-const customOptionsList = [
-  {
-    value: 1,
-    label: "Cup Size",
-  },
-  {
-    value: 2,
-    label: "Milk Type",
-  },
-  {
-    value: 3,
-    label: "Flavor",
-  },
-];
-
-const categoriesList = [
-  {
-    value: 1,
-    label: "Hot Coffee",
-  },
-  {
-    value: 2,
-    label: "Iced Coffee",
-  },
-  {
-    value: 3,
-    label: "Snacks",
-  },
-];
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
     id: "",
-    product_category_id: "",
+    product_category: "",
     product_cover: "",
     name: "",
     price: "",
@@ -67,22 +19,36 @@ class DataListSidebar extends Component {
     brand: "",
     listed: true,
     quantity_per_box: "",
-    tags: [],
-    custom_options: [],
+    product_tags: [],
+    product_custom_options: [],
+    tags_list: [],
+    custom_options_list: [],
+    product_categories_list: [],
   };
 
   addNew = false;
+
+  async componentDidMount() {
+    try {
+      const tags_list = await axios.get("admin/products-tags");
+      const categories_list = await axios.get("admin/product-categories");
+      this.setState({
+        tags_list: tags_list.data.data,
+        product_categories_list: categories_list.data.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== null && prevProps.data === null) {
       if (this.props.data.id !== prevState.id) {
         this.setState({ id: this.props.data.id });
       }
-      if (
-        this.props.data.product_category_id !== prevState.product_category_id
-      ) {
+      if (this.props.data.product_category !== prevState.product_category) {
         this.setState({
-          product_category_id: this.props.data.product_category_id,
+          product_category: this.props.data.product_category,
         });
       }
       if (this.props.data.product_cover !== prevState.product_cover) {
@@ -112,17 +78,22 @@ class DataListSidebar extends Component {
       if (this.props.data.quantity_per_box !== prevState.quantity_per_box) {
         this.setState({ quantity_per_box: this.props.data.quantity_per_box });
       }
-      if (this.props.data.tags !== prevState.tags) {
-        this.setState({ tags: this.props.data.tags });
+      if (this.props.data.product_tags !== prevState.product_tags) {
+        this.setState({ product_tags: this.props.data.product_tags });
       }
-      if (this.props.data.custom_options !== prevState.custom_options) {
-        this.setState({ custom_options: this.props.data.custom_options });
+      if (
+        this.props.data.product_custom_options !==
+        prevState.product_custom_options
+      ) {
+        this.setState({
+          product_custom_options: this.props.data.product_custom_options,
+        });
       }
     }
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
         id: "",
-        product_category_id: "",
+        product_category: "",
         product_cover: "",
         name: "",
         price: "",
@@ -132,14 +103,14 @@ class DataListSidebar extends Component {
         brand: "",
         listed: true,
         quantity_per_box: "",
-        tags: [],
+        product_tags: [],
         custom_options: [],
       });
     }
     if (this.addNew) {
       this.setState({
         id: "",
-        product_category_id: "",
+        product_category: "",
         product_cover: "",
         name: "",
         price: "",
@@ -149,31 +120,55 @@ class DataListSidebar extends Component {
         brand: "",
         listed: true,
         quantity_per_box: "",
-        tags: [],
+        product_tags: [],
         custom_options: [],
       });
     }
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
-    if (this.props.data !== null) {
-      //this.props.updateData(obj);
-    } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+  handleSubmit = async () => {
+    const product = {
+      id: this.state.id,
+      name: this.state.name,
+      price: Number(this.state.price),
+      description: this.state.description,
+      sale_price: Number(this.state.sale_price),
+      SKU: this.state.SKU,
+      brand: this.state.brand,
+      listed: this.state.listed,
+      quantity_per_box: Number(this.state.quantity_per_box),
+      product_category_id: this.state.product_category.id,
+      product_tags: [],
+    };
+    if (this.state.product_tags) {
+      product.product_tags = this.state.product_tags.map((tag) => {
+        return tag.id;
+      });
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
+    if (this.props.data !== null) {
+      // Update Product
+      try {
+        await axios.put(`admin/products/${this.state.id}`, product);
+      } catch (error) {
+        alert("Error: " + error);
+      }
+    } else {
+      // Create product
+      delete product.id;
+      try {
+        await axios.post(`admin/products/`, product);
+      } catch (error) {
+        alert("Error: " + error);
+      }
+    }
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
     let {
-      product_category_id,
+      product_category,
       product_cover,
       name,
       price,
@@ -183,15 +178,8 @@ class DataListSidebar extends Component {
       brand,
       listed,
       quantity_per_box,
-      tags,
-      custom_options,
+      product_tags,
     } = this.state;
-    let selectedCatgory;
-    if (data !== null) {
-      categoriesList.forEach((category) => {
-        if (product_category_id === category.value) selectedCatgory = category;
-      });
-    }
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -258,12 +246,14 @@ class DataListSidebar extends Component {
             <Label for="data-popularity">Category</Label>
             <Select
               name="categories"
-              value={selectedCatgory}
-              options={categoriesList}
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+              value={product_category}
+              options={this.state.product_categories_list}
               className="React"
               classNamePrefix="select"
               onChange={(category) =>
-                this.setState({ product_category_id: category })
+                this.setState({ product_category: category })
               }
             />
           </FormGroup>
@@ -291,26 +281,15 @@ class DataListSidebar extends Component {
             <Label for="data-popularity">Tags</Label>
             <Select
               isMulti
+              getOptionLabel={(option) => option.label}
+              getOptionValue={(option) => option.id}
               closeMenuOnSelect={false}
-              name="tags"
-              value={tags}
-              options={tagsList}
+              name="product_tags"
+              value={product_tags}
+              options={this.state.tags_list}
               className="React"
               classNamePrefix="select"
-              onChange={(tags) => this.setState({ tags })}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="data-popularity">Custom Options</Label>
-            <Select
-              isMulti
-              closeMenuOnSelect={false}
-              name="custom-options"
-              value={custom_options}
-              options={customOptionsList}
-              className="React"
-              classNamePrefix="select"
-              onChange={(custom_options) => this.setState({ custom_options })}
+              onChange={(product_tags) => this.setState({ product_tags })}
             />
           </FormGroup>
           <FormGroup>

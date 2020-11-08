@@ -41,7 +41,7 @@ class DataListSidebar extends Component {
     if (this.props.data !== null) {
       //Update Internal Category
       try {
-        await axios.put(`internal-categories/${this.state.id}`, {
+        await axios.put(`admin/internal-categories/${this.state.id}`, {
           name: this.state.name,
         });
       } catch (error) {
@@ -50,7 +50,7 @@ class DataListSidebar extends Component {
     } else {
       // Add new internal category
       try {
-        await axios.post(`internal-categories/`, {
+        await axios.post(`admin/internal-categories/`, {
           name: this.state.name,
         });
       } catch (error) {

@@ -146,7 +146,7 @@ class DataListConfig extends Component {
         cell: (row) => {
           return (
             <div>
-              {row.CustomOptions.map((option) => {
+              {row.custom_options.map((option) => {
                 return (
                   <div style={{ margin: "10px 0 10px 0" }}>
                     <span>{option.label} </span>
