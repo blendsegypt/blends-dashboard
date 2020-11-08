@@ -4,6 +4,7 @@ import classnames from "classnames";
 import { history } from "../../../../history";
 import { Edit, ChevronDown, Check } from "react-feather";
 import { connect } from "react-redux";
+import axios from "../../../../axios";
 import {
   getData,
   getInitialData,
@@ -54,51 +55,25 @@ const ActionsComponent = (props) => {
 };
 
 class DataListConfig extends Component {
-  componentDidMount() {
-    const data = [
-      {
-        product_id: 1,
-        branch: "Fleming",
-        product_name: "Lay's Tomatoes Chips (30g)",
-        actual_stock: 50,
-        safe_stock: 30,
-        min_stock: 10,
-      },
-      {
-        product_id: 2,
-        branch: "Fleming",
-        product_name: "Lay's Chicken Chips (30g)",
-        actual_stock: 20,
-        safe_stock: 30,
-        min_stock: 10,
-      },
-      {
-        product_id: 1,
-        branch: "Smouha",
-        product_name: "Lay's Tomatoes Chips (30g)",
-        actual_stock: 0,
-        safe_stock: 0,
-        min_stock: 0,
-      },
-      {
-        product_id: 2,
-        branch: "Smouha",
-        product_name: "Lay's Chicken Chips (30g)",
-        actual_stock: 0,
-        safe_stock: 0,
-        min_stock: 0,
-      },
-    ];
-
-    this.setState({
-      data,
-      allData: data,
-      totalPages: 1,
-      currentPage: 1,
-      rowsPerPage: 1,
-      totalRecords: 2,
-    });
+  async componentDidMount() {
+    await this.getData();
   }
+
+  getData = async () => {
+    try {
+      const inventory = await axios.get("admin/inventory");
+      this.setState({
+        data: inventory.data.data,
+        allData: inventory.data.data,
+        totalPages: 1,
+        currentPage: 1,
+        rowsPerPage: 1,
+        totalRecords: 2,
+      });
+    } catch (error) {
+      alert("Error occured!: " + error);
+    }
+  };
 
   state = {
     data: [],
@@ -121,9 +96,9 @@ class DataListConfig extends Component {
       },
       {
         name: "Branch",
-        selector: "branch",
+        selector: "branch_name",
         sortable: true,
-        cell: (row) => `${row.branch}`,
+        cell: (row) => `${row.branch_name}`,
       },
       {
         name: "Product Name",
@@ -205,6 +180,7 @@ class DataListConfig extends Component {
   handleSidebar = (boolean, addNew = false) => {
     this.setState({ sidebar: boolean });
     if (addNew === true) this.setState({ currentData: null, addNew: true });
+    if (!boolean) this.getData();
   };
 
   handleDelete = (row) => {
@@ -236,6 +212,7 @@ class DataListConfig extends Component {
         }`}
       >
         <DataTable
+          defaultSortField="branch_name"
           columns={columns}
           data={value.length ? allData : data}
           noHeader

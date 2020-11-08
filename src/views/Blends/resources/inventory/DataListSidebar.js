@@ -3,11 +3,11 @@ import { Label, Input, FormGroup, Button } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
-    product_id: "",
-    branch: "",
+    id: null,
     safe_stock: 0,
     min_stock: 0,
   };
@@ -19,12 +19,6 @@ class DataListSidebar extends Component {
       if (this.props.data.id !== prevState.id) {
         this.setState({ id: this.props.data.id });
       }
-      if (this.props.data.product_id !== prevState.product_id) {
-        this.setState({ product_id: this.props.data.product_id });
-      }
-      if (this.props.data.branch !== prevState.branch) {
-        this.setState({ branch: this.props.data.branch });
-      }
       if (this.props.data.safe_stock !== prevState.safe_stock) {
         this.setState({ safe_stock: this.props.data.safe_stock });
       }
@@ -34,16 +28,14 @@ class DataListSidebar extends Component {
     }
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
-        product_id: "",
-        branch: "",
+        id: null,
         safe_stock: 0,
         min_stock: 0,
       });
     }
     if (this.addNew) {
       this.setState({
-        product_id: "",
-        branch: "",
+        id: null,
         safe_stock: 0,
         min_stock: 0,
       });
@@ -51,18 +43,16 @@ class DataListSidebar extends Component {
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
-    if (this.props.data !== null) {
-      //this.props.updateData(obj);
-    } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+  handleSubmit = async () => {
+    try {
+      await axios.put(`admin/inventory/${this.state.id}`, {
+        safe_stock: Number(this.state.safe_stock),
+        min_stock: Number(this.state.min_stock),
+      });
+    } catch (error) {
+      console.log(error);
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
