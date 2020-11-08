@@ -108,7 +108,6 @@ class DataListConfig extends Component {
   getData = async () => {
     try {
       const products = await axios.get("admin/products");
-      console.log(products.data.data);
       this.setState({
         data: products.data.data,
         allData: products.data.data,

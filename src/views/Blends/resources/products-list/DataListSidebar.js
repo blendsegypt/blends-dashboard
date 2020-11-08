@@ -17,6 +17,7 @@ class DataListSidebar extends Component {
     description: "",
     SKU: "",
     brand: "",
+    retail: false,
     listed: true,
     quantity_per_box: "",
     product_tags: [],
@@ -72,6 +73,9 @@ class DataListSidebar extends Component {
       if (this.props.data.brand !== prevState.brand) {
         this.setState({ brand: this.props.data.brand });
       }
+      if (this.props.data.retail !== prevState.retail) {
+        this.setState({ retail: this.props.data.retail });
+      }
       if (this.props.data.listed !== prevState.listed) {
         this.setState({ listed: this.props.data.listed });
       }
@@ -101,6 +105,7 @@ class DataListSidebar extends Component {
         description: "",
         SKU: "",
         brand: "",
+        retail: false,
         listed: true,
         quantity_per_box: "",
         product_tags: [],
@@ -118,6 +123,7 @@ class DataListSidebar extends Component {
         description: "",
         SKU: "",
         brand: "",
+        retail: false,
         listed: true,
         quantity_per_box: "",
         product_tags: [],
@@ -135,6 +141,7 @@ class DataListSidebar extends Component {
       description: this.state.description,
       sale_price: Number(this.state.sale_price),
       SKU: this.state.SKU,
+      retail: this.state.retail,
       brand: this.state.brand,
       listed: this.state.listed,
       quantity_per_box: Number(this.state.quantity_per_box),
@@ -230,6 +237,20 @@ class DataListSidebar extends Component {
               placeholder=""
               onChange={(e) => this.setState({ name: e.target.value })}
               id="data-name"
+            />
+          </FormGroup>
+          <FormGroup style={{ marginBottom: "2rem" }}>
+            <Label for="data-retail" style={{ display: "block" }}>
+              Retail
+            </Label>
+            <Input
+              type="checkbox"
+              style={{ marginLeft: "5px" }}
+              checked={this.state.retail}
+              onChange={(e) => {
+                console.log(e.target.checked);
+                this.setState({ retail: e.target.checked });
+              }}
             />
           </FormGroup>
           <FormGroup>
