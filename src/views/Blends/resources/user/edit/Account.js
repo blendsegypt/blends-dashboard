@@ -91,7 +91,7 @@ class UserAccountTab extends React.Component {
     }
 
     try {
-      await axios.put(`/users/${this.state.user.id}`, newUser);
+      await axios.put(`admin/users/${this.state.user.id}`, newUser);
       this.setState({
         successAlert: true,
         successMessage: "User updated Successfully!",
@@ -136,7 +136,7 @@ class UserAccountTab extends React.Component {
     user.password_salt = hashObject.salt;
 
     try {
-      await axios.post(`/users`, user);
+      await axios.post(`admin/users`, user);
       this.setState({
         successAlert: true,
         successMessage: "User created succesfully!",

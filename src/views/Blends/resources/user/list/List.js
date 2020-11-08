@@ -21,6 +21,18 @@ import "../../../../../assets/scss/plugins/tables/_agGridStyleOverride.scss";
 import "../../../../../assets/scss/pages/users.scss";
 import SweetAlert from "react-bootstrap-sweetalert";
 
+function formatDate(date) {
+  const d = new Date(date);
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  let year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
+
 class UsersList extends React.Component {
   state = {
     rowData: null,
@@ -42,7 +54,7 @@ class UsersList extends React.Component {
       {
         headerName: "ID",
         field: "id",
-        width: 150,
+        width: 80,
         filter: true,
         headerCheckboxSelectionFilteredOnly: true,
       },
@@ -71,9 +83,18 @@ class UsersList extends React.Component {
         width: 200,
       },
       {
+        headerName: "Registered At",
+        field: "createdAt",
+        filter: true,
+        width: 200,
+        cellRendererFramework: (params) => {
+          return `${formatDate(params.data.createdAt)}`;
+        },
+      },
+      {
         headerName: "Actions",
         field: "transactions",
-        width: 250,
+        width: 100,
         cellRendererFramework: (params) => {
           return (
             <div className="actions cursor-pointer">
@@ -104,7 +125,7 @@ class UsersList extends React.Component {
 
   async componentDidMount() {
     try {
-      const users = await axios.get("/users");
+      const users = await axios.get("admin/users");
       users.data.data.forEach((user) => {
         user.phone_number = `0${user.phone_number}`;
       });
@@ -182,7 +203,9 @@ class UsersList extends React.Component {
 
   deleteUser = async () => {
     let selectedData = this.gridApi.getSelectedRows();
-    const { status } = await axios.delete(`/users/${this.state.targetUser}`);
+    const { status } = await axios.delete(
+      `admin/users/${this.state.targetUser}`
+    );
     this.gridApi.updateRowData({ remove: selectedData });
   };
 

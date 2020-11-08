@@ -101,7 +101,7 @@ class DataListConfig extends Component {
 
   getData = async () => {
     try {
-      const internalCategories = await axios.get("internal-categories");
+      const internalCategories = await axios.get("admin/internal-categories");
       this.setState({
         data: internalCategories.data.data,
         allData: internalCategories.data.data,
@@ -197,7 +197,9 @@ class DataListConfig extends Component {
 
   handleDelete = async () => {
     try {
-      await axios.delete(`internal-categories/${this.state.targetRow.id}`);
+      await axios.delete(
+        `admin/internal-categories/${this.state.targetRow.id}`
+      );
       this.getData();
     } catch (error) {
       alert("Error: " + error);

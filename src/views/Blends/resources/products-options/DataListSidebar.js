@@ -12,8 +12,8 @@ class DataListSidebar extends Component {
     label: "",
     mandatory: false,
     active: false,
-    ProductId: null,
-    CustomOptions: [],
+    product_id: null,
+    custom_options: [],
     products_list: [],
   };
 
@@ -40,8 +40,8 @@ class DataListSidebar extends Component {
       if (this.props.data.active !== prevState.active) {
         this.setState({ active: this.props.data.active });
       }
-      if (this.props.data.CustomOptions !== prevState.CustomOptions) {
-        this.setState({ CustomOptions: this.props.data.CustomOptions });
+      if (this.props.data.custom_options !== prevState.custom_options) {
+        this.setState({ custom_options: this.props.data.custom_options });
       }
     }
     if (this.props.data === null && prevProps.data !== null) {
@@ -50,8 +50,8 @@ class DataListSidebar extends Component {
         label: "",
         mandatory: false,
         active: false,
-        ProductId: null,
-        CustomOptions: [],
+        product_id: null,
+        custom_options: [],
       });
     }
     if (this.addNew) {
@@ -60,8 +60,8 @@ class DataListSidebar extends Component {
         label: "",
         mandatory: false,
         active: false,
-        ProductId: null,
-        CustomOptions: [],
+        product_id: null,
+        custom_options: [],
       });
     }
     this.addNew = false;
@@ -69,11 +69,11 @@ class DataListSidebar extends Component {
 
   handleSubmit = async () => {
     // Generate value property on custom options
-    const CustomOptions = [...this.state.CustomOptions];
-    CustomOptions.forEach((option) => {
+    const custom_options = [...this.state.custom_options];
+    custom_options.forEach((option) => {
       option.value = option.label.toLowerCase();
       if (this.props.data !== null)
-        option.ProductCustomOptionId = this.state.id;
+        option.product_custom_option_id = this.state.id;
     });
     if (this.props.data !== null) {
       // Update Custom Options
@@ -83,7 +83,7 @@ class DataListSidebar extends Component {
           label: this.state.label,
           mandatory: this.state.mandatory,
           active: this.state.active,
-          CustomOptions: CustomOptions,
+          custom_options: custom_options,
         });
       } catch (error) {
         alert("Error: " + error);
@@ -94,7 +94,7 @@ class DataListSidebar extends Component {
         alert("You didn't enter a label");
         return;
       }
-      if (this.state.ProductId === null) {
+      if (this.state.product_id === null) {
         alert("You didn't choose a product");
         return;
       }
@@ -103,8 +103,8 @@ class DataListSidebar extends Component {
           label: this.state.label,
           mandatory: this.state.mandatory,
           active: this.state.active,
-          ProductId: this.state.ProductId,
-          CustomOptions: CustomOptions,
+          product_id: this.state.product_id,
+          custom_options: custom_options,
         });
       } catch (error) {
         alert("Error: " + error);
@@ -116,18 +116,18 @@ class DataListSidebar extends Component {
   // Custom Options sub-options
 
   addOption = () => {
-    const newOptions = this.state.CustomOptions.concat({
+    const newOptions = this.state.custom_options.concat({
       label: "",
       price: "",
       active: false,
     });
     this.setState({
-      CustomOptions: newOptions,
+      custom_options: newOptions,
     });
   };
 
   editOption = (label, price, active, index) => {
-    const newOptions = this.state.CustomOptions.map((option, optionIndex) => {
+    const newOptions = this.state.custom_options.map((option, optionIndex) => {
       if (optionIndex === index) {
         if (option.id) {
           return {
@@ -146,23 +146,23 @@ class DataListSidebar extends Component {
       return option;
     });
     this.setState({
-      CustomOptions: newOptions,
+      custom_options: newOptions,
     });
   };
 
   removeOption = () => {
-    const newOptions = this.state.CustomOptions.slice(
+    const newOptions = this.state.custom_options.slice(
       0,
-      this.state.CustomOptions.length - 1
+      this.state.custom_options.length - 1
     );
     this.setState({
-      CustomOptions: newOptions,
+      custom_options: newOptions,
     });
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
-    let { label, mandatory, active, ProductId, CustomOptions } = this.state;
+    let { label, mandatory, active, product_id, custom_options } = this.state;
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -182,9 +182,9 @@ class DataListSidebar extends Component {
             <Input
               type="select"
               id="data-mandatory"
-              value={ProductId}
+              value={product_id}
               onChange={(e) => {
-                this.setState({ ProductId: Number(e.target.value) });
+                this.setState({ product_id: Number(e.target.value) });
               }}
             >
               <option value="INVALID">Select..</option>
@@ -229,7 +229,7 @@ class DataListSidebar extends Component {
           </FormGroup>
           <h4>Options</h4>
           <div>
-            {CustomOptions.map((option, index) => {
+            {custom_options.map((option, index) => {
               return (
                 <div
                   style={{ display: "flex", flexDirection: "row" }}

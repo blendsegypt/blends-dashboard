@@ -100,7 +100,8 @@ class DataListConfig extends Component {
 
   getData = async () => {
     try {
-      const categories = await axios.get("product-categories");
+      const categories = await axios.get("admin/product-categories");
+      console.log(categories.data.data);
       this.setState({
         data: categories.data.data,
         allData: categories.data.data,
@@ -200,7 +201,7 @@ class DataListConfig extends Component {
 
   handleDelete = async () => {
     try {
-      await axios.delete(`product-categories/${this.state.targetRow.id}`);
+      await axios.delete(`admin/product-categories/${this.state.targetRow.id}`);
       this.getData();
     } catch (error) {
       alert("Error: " + error);

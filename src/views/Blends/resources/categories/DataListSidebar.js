@@ -10,7 +10,7 @@ class DataListSidebar extends Component {
     id: "",
     name: "",
     internal_category: "",
-    InternalCategoryId: "",
+    internal_category_id: "",
     internalCategories: [{ id: 1, name: "TestLabel" }],
   };
 
@@ -18,13 +18,14 @@ class DataListSidebar extends Component {
 
   async componentDidMount() {
     try {
-      const internalCategories = await axios.get("internal-categories");
+      const internalCategories = await axios.get("admin/internal-categories");
+      console.log(internalCategories.data.data);
       this.setState({
         internalCategories: internalCategories.data.data,
       });
       if (this.props.data === null) {
         this.setState({
-          InternalCategoryId: internalCategories.data.data[0].id,
+          internal_category_id: internalCategories.data.data[0].id,
         });
       }
     } catch (error) {
@@ -40,9 +41,11 @@ class DataListSidebar extends Component {
       if (this.props.data.name !== prevState.name) {
         this.setState({ name: this.props.data.name });
       }
-      if (this.props.data.InternalCategoryId !== prevState.InternalCategoryId) {
+      if (
+        this.props.data.internal_category_id !== prevState.internal_category_id
+      ) {
         this.setState({
-          InternalCategoryId: this.props.data.InternalCategoryId,
+          internal_category_id: this.props.data.internal_category_id,
         });
       }
     }
@@ -50,14 +53,14 @@ class DataListSidebar extends Component {
       this.setState({
         id: "",
         name: "",
-        InternalCategoryId: "",
+        internal_category_id: "",
       });
     }
     if (this.addNew) {
       this.setState({
         id: "",
         name: "",
-        InternalCategoryId: "",
+        internal_category_id: "",
       });
     }
     this.addNew = false;
@@ -66,22 +69,22 @@ class DataListSidebar extends Component {
   handleSubmit = async () => {
     if (this.props.data !== null) {
       //Update Product Category
-      const { name, InternalCategoryId, id } = this.state;
+      const { name, internal_category_id, id } = this.state;
       try {
-        await axios.put(`product-categories/${id}`, {
+        await axios.put(`admin/product-categories/${id}`, {
           name,
-          InternalCategoryId: Number(InternalCategoryId),
+          internal_category_id: Number(internal_category_id),
         });
         this.props.handleSidebar(false, true);
       } catch (error) {
         alert("Couldn't add product category / " + error);
       }
     } else {
-      const { name, InternalCategoryId } = this.state;
+      const { name, internal_category_id } = this.state;
       try {
-        await axios.post("product-categories/", {
+        await axios.post("admin/product-categories/", {
           name,
-          InternalCategoryId: Number(InternalCategoryId),
+          internal_category_id: Number(internal_category_id),
         });
         this.props.handleSidebar(false, true);
       } catch (error) {
@@ -92,7 +95,7 @@ class DataListSidebar extends Component {
 
   render() {
     let { show, handleSidebar, data } = this.props;
-    let { name, InternalCategoryId } = this.state;
+    let { name, internal_category_id } = this.state;
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -123,9 +126,9 @@ class DataListSidebar extends Component {
               type="select"
               name="select-internal-category"
               id="selector"
-              value={InternalCategoryId}
+              value={internal_category_id}
               onChange={(e) => {
-                this.setState({ InternalCategoryId: e.target.value });
+                this.setState({ internal_category_id: e.target.value });
               }}
             >
               {this.state.internalCategories.map((internalCategory) => {
