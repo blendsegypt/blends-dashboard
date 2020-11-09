@@ -117,6 +117,12 @@ class DataListConfig extends Component {
     currentPage: 0,
     columns: [
       {
+        name: "ID",
+        selector: "id",
+        sortable: true,
+        minWidth: "150px",
+      },
+      {
         name: "Branch Name",
         selector: "name",
         sortable: true,
