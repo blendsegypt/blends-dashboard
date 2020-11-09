@@ -68,8 +68,10 @@ const Shipments = lazy(() =>
   import("./views/Blends/resources/shipments/ListView")
 );
 
-//Coupons Page
-const Coupons = lazy(() => import("./views/Blends/resources/coupons/ListView"));
+//Promocodes Page
+const Promocodes = lazy(() =>
+  import("./views/Blends/resources/promocodes/ListView")
+);
 
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
@@ -127,7 +129,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/products_options/list" component={ProductsOptions} />
           <AppRoute path="/inventory/list" component={Inventory} />
           <AppRoute path="/shipments/list" component={Shipments} />
-          <AppRoute path="/coupons/list" component={Coupons} />
+          <AppRoute path="/promocodes/list" component={Promocodes} />
           <AppRoute path="/products/list" component={ProductsList} />
           {/* Blends End */}
           <AppRoute path="/misc/error/404" component={error404} fullLayout />
