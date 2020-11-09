@@ -4,15 +4,16 @@ import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import Select from "react-select";
+import axios from "../../../../axios";
 
 const weekDays = [
-  { value: "sun", label: "Sun" },
-  { value: "mon", label: "Mon" },
-  { value: "tue", label: "Tue" },
-  { value: "wed", label: "Wed" },
-  { value: "thu", label: "Thu" },
-  { value: "fri", label: "Fri" },
-  { value: "sat", label: "Sat" },
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wedensday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 
 class DataListSidebar extends Component {
@@ -20,12 +21,10 @@ class DataListSidebar extends Component {
     id: "",
     img: "",
     name: "",
-    type: "",
-    status: "Active",
+    type: "type1",
+    status: "open",
     max_parallel_orders: "",
-    working_days: [],
-    opens_at: "",
-    closes_at: "",
+    working_hours: [{}],
   };
 
   addNew = false;
@@ -44,14 +43,8 @@ class DataListSidebar extends Component {
       if (this.props.data.status !== prevState.status) {
         this.setState({ status: this.props.data.status });
       }
-      if (this.props.data.opens_at !== prevState.opens_at) {
-        this.setState({ opens_at: this.props.data.opens_at });
-      }
-      if (this.props.data.closes_at !== prevState.closes_at) {
-        this.setState({ closes_at: this.props.data.closes_at });
-      }
-      if (this.props.data.working_days !== prevState.working_days) {
-        this.setState({ working_days: this.props.data.working_days });
+      if (this.props.data.working_hours !== prevState.working_hours) {
+        this.setState({ working_hours: this.props.data.working_hours });
       }
       if (
         this.props.data.max_parallel_orders !== prevState.max_parallel_orders
@@ -60,43 +53,53 @@ class DataListSidebar extends Component {
           max_parallel_orders: this.props.data.max_parallel_orders,
         });
       }
-      if (this.props.data.img !== prevState.img) {
-        this.setState({ img: this.props.data.img });
-      }
     }
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
         id: "",
-        status: "Active",
+        status: "open",
         name: "",
-        type: "",
+        type: "type1",
         max_parallel_orders: "",
-        working_days: [],
-        opens_at: "",
-        closes_at: "",
+        working_hours: [{}],
       });
     }
     if (this.addNew) {
       this.setState({
         id: "",
-        status: "Active",
+        status: "open",
         name: "",
-        type: "",
+        type: "type1",
         max_parallel_orders: "",
-        working_days: [],
-        opens_at: "",
-        closes_at: "",
+        working_hours: [{}],
       });
     }
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
+  handleSubmit = async () => {
+    const newBranch = {
+      id: this.state.id,
+      status: this.state.status,
+      name: this.state.name,
+      type: this.state.type,
+      max_parallel_orders: Number(this.state.max_parallel_orders),
+      working_hours: this.state.working_hours,
+    };
     if (this.props.data !== null) {
-      //this.props.updateData(obj);
+      try {
+        delete newBranch.working_hours[0].id;
+        await axios.put(`admin/branches/${this.state.id}`, newBranch);
+      } catch (error) {
+        alert(error);
+      }
     } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+      try {
+        delete newBranch.id;
+        await axios.post(`admin/branches/`, newBranch);
+      } catch (error) {
+        alert(error);
+      }
     }
     //let params = Object.keys(this.props.dataParams).length
     //  ? this.props.dataParams
@@ -112,7 +115,7 @@ class DataListSidebar extends Component {
       status,
       type,
       max_parallel_orders,
-      working_days,
+      working_hours,
       opens_at,
       closes_at,
       img,
@@ -179,8 +182,9 @@ class DataListSidebar extends Component {
               value={type}
               onChange={(e) => this.setState({ type: e.target.value })}
             >
-              <option>Dispatching Point</option>
-              <option>Cafe</option>
+              <option value="type1">Dispatching Point</option>
+              <option value="type2">type2</option>
+              <option value="type3">type3</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -191,9 +195,9 @@ class DataListSidebar extends Component {
               value={status}
               onChange={(e) => this.setState({ status: e.target.value })}
             >
-              <option>Active</option>
-              <option>Busy</option>
-              <option>Closed</option>
+              <option value="open">Open</option>
+              <option value="busy">Busy</option>
+              <option value="closed">Closed</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -208,41 +212,41 @@ class DataListSidebar extends Component {
               }
             />
           </FormGroup>
-          {data === null ? (
-            <FormGroup>
-              <Label for="data-popularity">Working Days</Label>
-              <Select
-                isMulti
-                closeMenuOnSelect={false}
-                name="workingDays"
-                options={weekDays}
-                className="React"
-                classNamePrefix="select"
-              />
-            </FormGroup>
-          ) : (
-            <FormGroup>
-              <Label for="data-popularity">Working Days</Label>
-              {working_days.length > 0 && (
-                <Select
-                  isMulti
-                  defaultValue={working_days}
-                  closeMenuOnSelect={false}
-                  name="workingDays"
-                  options={weekDays}
-                  className="React"
-                  classNamePrefix="select"
-                />
-              )}
-            </FormGroup>
-          )}
+          <FormGroup>
+            <Label for="data-popularity">Working Days</Label>
+            <Select
+              isMulti
+              getOptionLabel={(option) => option}
+              getOptionValue={(option) => option}
+              closeMenuOnSelect={false}
+              name="workingDays"
+              value={working_hours[0].days}
+              options={weekDays}
+              className="React"
+              classNamePrefix="select"
+              onChange={(days) =>
+                this.setState({
+                  working_hours: [{ ...this.state.working_hours[0], days }],
+                })
+              }
+            />
+          </FormGroup>
           <FormGroup>
             <Label for="data-popularity">Opens At</Label>
             <Input
               type="text"
               value={opens_at}
               placeholder="09:00"
-              onChange={(e) => this.setState({ opens_at: e.target.value })}
+              onChange={(e) =>
+                this.setState({
+                  working_hours: [
+                    {
+                      ...this.state.working_hours[0],
+                      opens_at: e.target.value,
+                    },
+                  ],
+                })
+              }
               id="data-opens-at"
             />
           </FormGroup>
@@ -252,7 +256,16 @@ class DataListSidebar extends Component {
               type="text"
               value={closes_at}
               placeholder="15:00"
-              onChange={(e) => this.setState({ closes_at: e.target.value })}
+              onChange={(e) =>
+                this.setState({
+                  working_hours: [
+                    {
+                      ...this.state.working_hours[0],
+                      closes_at: e.target.value,
+                    },
+                  ],
+                })
+              }
               id="data-closes-at"
             />
           </FormGroup>
