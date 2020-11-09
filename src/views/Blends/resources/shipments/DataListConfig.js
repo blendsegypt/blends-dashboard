@@ -5,6 +5,8 @@ import classnames from "classnames";
 import { history } from "../../../../history";
 import { Edit, Trash, ChevronDown, Check, Plus } from "react-feather";
 import { connect } from "react-redux";
+import axios from "../../../../axios";
+import SweetAlert from "react-bootstrap-sweetalert";
 import {
   getData,
   getInitialData,
@@ -59,19 +61,12 @@ const CustomHeader = (props) => {
 const ActionsComponent = (props) => {
   return (
     <div className="data-list-action">
-      <Edit
-        className="cursor-pointer mr-1"
-        size={20}
-        onClick={() => {
-          return props.currentData(props.row);
-        }}
-      />
       <Trash
         className="cursor-pointer"
         style={{ marginLeft: "20px" }}
         size={20}
         onClick={() => {
-          //Delete Item
+          props.deleteWarning(props.row);
         }}
       />
     </div>
@@ -79,64 +74,25 @@ const ActionsComponent = (props) => {
 };
 
 class DataListConfig extends Component {
-  componentDidMount() {
-    const data = [
-      {
-        product_id: 1,
-        branch: "Fleming",
-        product_name: "Lay's Tomatoes Chips (30g)",
-        remaining_quantity: 48,
-        purchased_quantity: 50,
-        expiry_date: new Date(2020, 10, 27),
-      },
-      {
-        product_id: 2,
-        branch: "Fleming",
-        product_name: "Lay's Chicken Chips (30g)",
-        remaining_quantity: 0,
-        purchased_quantity: 50,
-        expiry_date: new Date(2025, 11, 17),
-      },
-      {
-        product_id: 1,
-        branch: "Smouha",
-        product_name: "Lay's Tomatoes Chips (30g)",
-        remaining_quantity: 0,
-        purchased_quantity: 50,
-        expiry_date: new Date(2010, 11, 17),
-      },
-    ];
-
-    // Calculate Shipments derived properties
-    const today = new Date();
-    data.forEach((shipment) => {
-      // Check if shipment is consumed
-      if (shipment.remaining_quantity > 0) {
-        shipment.status = "In Use";
-      } else {
-        shipment.status = "Consumed";
-      }
-      // Calculate Expires after days
-      let expires_after = Math.floor(
-        (shipment.expiry_date - today) / (1000 * 60 * 60 * 24)
-      ); //Convert ms to days
-      shipment.expires_after = `${expires_after} Days`;
-      // Check if shipment is expired
-      if (shipment.expiry_date - today < 0) {
-        shipment.status = "Expired";
-        shipment.expires_after = "Expired";
-      }
-    });
-
-    this.setState({
-      data,
-      allData: data,
-      totalPages: 1,
-      currentPage: 1,
-      rowsPerPage: 1,
-      totalRecords: 2,
-    });
+  async componentDidMount() {
+    await this.getData();
   }
+
+  getData = async () => {
+    try {
+      const shipments = await axios.get("admin/shipments");
+      this.setState({
+        data: shipments.data.data,
+        allData: shipments.data.data,
+        totalPages: 1,
+        currentPage: 1,
+        rowsPerPage: 1,
+        totalRecords: 2,
+      });
+    } catch (error) {
+      alert("Error occured!: " + error);
+    }
+  };
 
   state = {
     data: [],
@@ -144,16 +100,13 @@ class DataListConfig extends Component {
     currentPage: 0,
     columns: [
       {
-        name: "Product ID",
-        selector: "product_id",
+        name: "ID",
+        selector: "id",
         sortable: true,
         minWidth: "30px",
         cell: (row) => (
-          <p
-            title={row.product_id}
-            className="text-truncate text-bold-500 mb-0"
-          >
-            {row.product_id}
+          <p title={row.id} className="text-truncate text-bold-500 mb-0">
+            {row.id}
           </p>
         ),
       },
@@ -161,24 +114,30 @@ class DataListConfig extends Component {
         name: "Branch",
         selector: "branch",
         sortable: true,
-        cell: (row) => `${row.branch}`,
+        cell: (row) => `${row.Branch.name}`,
       },
       {
         name: "Product Name",
-        selector: "product_name",
+        selector: "Product",
         sortable: true,
-        cell: (row) => `${row.product_name}`,
+        cell: (row) => `${row.Product.name}`,
       },
       {
         name: "Shipment Status",
         sortable: true,
         cell: (row) => {
+          let status;
+          if (row.remaining_quantity === 0) {
+            status = "Consumed";
+          } else {
+            status = "In Use";
+          }
+
+          if (row.expired) {
+            status = "Expired";
+          }
           return (
-            <Chip
-              className="m-0"
-              color={chipColors[row.status]}
-              text={row.status}
-            />
+            <Chip className="m-0" color={chipColors[status]} text={status} />
           );
         },
       },
@@ -186,7 +145,17 @@ class DataListConfig extends Component {
         name: "Expires After",
         selector: "expires_after",
         sortable: true,
-        cell: (row) => `${row.expires_after}`,
+        cell: (row) => {
+          const today = new Date();
+          const expiry_date = new Date(row.expiry_date);
+          const expires_after = Math.ceil(
+            (expiry_date - today) / (1000 * 60 * 60 * 24)
+          );
+          if (expires_after <= 0) {
+            return `Expired`;
+          }
+          return `${expires_after} Days`;
+        },
       },
       {
         name: "Remaining Quantity",
@@ -204,7 +173,11 @@ class DataListConfig extends Component {
         name: "Actions",
         sortable: true,
         cell: (row) => (
-          <ActionsComponent row={row} currentData={this.handleCurrentData} />
+          <ActionsComponent
+            row={row}
+            currentData={this.handleCurrentData}
+            deleteWarning={this.deleteWarning}
+          />
         ),
       },
     ],
@@ -217,6 +190,8 @@ class DataListConfig extends Component {
     totalRecords: 0,
     sortIndex: [],
     addNew: "",
+    targetRow: null,
+    deleteWarning: false,
   };
 
   thumbView = this.props.thumbView;
@@ -237,10 +212,20 @@ class DataListConfig extends Component {
   handleSidebar = (boolean, addNew = false) => {
     this.setState({ sidebar: boolean });
     if (addNew === true) this.setState({ currentData: null, addNew: true });
+    if (!boolean) this.getData();
   };
 
-  handleDelete = (row) => {
-    //Handle deletion of a row
+  deleteWarning = (row) => {
+    this.setState({ targetRow: row, deleteWarning: true });
+  };
+
+  handleDelete = async () => {
+    try {
+      await axios.delete(`admin/shipments/${this.state.targetRow.id}`);
+      this.getData();
+    } catch (error) {
+      alert("Error: " + error);
+    }
   };
 
   handleCurrentData = (obj) => {
@@ -272,61 +257,82 @@ class DataListConfig extends Component {
       sortIndex,
     } = this.state;
     return (
-      <div
-        className={`data-list ${
-          this.props.thumbView ? "thumb-view" : "list-view"
-        }`}
-      >
-        <DataTable
-          columns={columns}
-          data={value.length ? allData : data}
-          noHeader
-          subHeader
-          selectableRows
-          responsive
-          pointerOnHover
-          selectableRowsHighlight
-          onSelectedRowsChange={(data) =>
-            this.setState({ selected: data.selectedRows })
-          }
-          customStyles={selectedStyle}
-          sortIcon={<ChevronDown />}
-          selectableRowsComponent={Checkbox}
-          selectableRowsComponentProps={{
-            color: "primary",
-            icon: <Check className="vx-icon" size={12} />,
-            label: "",
-            size: "sm",
+      <>
+        <SweetAlert
+          title="Are you sure?"
+          warning
+          show={this.state.deleteWarning}
+          showCancel
+          reverseButtons
+          cancelBtnBsStyle="danger"
+          confirmBtnText="Yes, delete it!"
+          cancelBtnText="Cancel"
+          onConfirm={() => {
+            this.handleDelete();
+            this.setState({ deleteWarning: false });
           }}
-          subHeaderComponent={
-            <CustomHeader
-              handleSidebar={this.handleSidebar}
-              handleFilter={this.handleFilter}
-              handleRowsPerPage={this.handleRowsPerPage}
-              rowsPerPage={rowsPerPage}
-              total={totalRecords}
-              index={sortIndex}
-            />
-          }
-        />
-        <Sidebar
-          show={sidebar}
-          data={currentData}
-          updateData={this.props.updateData}
-          addData={this.props.addData}
-          handleSidebar={this.handleSidebar}
-          thumbView={this.props.thumbView}
-          getData={this.props.getData}
-          dataParams={this.props.parsedFilter}
-          addNew={this.state.addNew}
-        />
+          onCancel={() => {
+            this.setState({ deleteWarning: false });
+          }}
+        >
+          You won't be able to revert this!
+        </SweetAlert>
         <div
-          className={classnames("data-list-overlay", {
-            show: sidebar,
-          })}
-          onClick={() => this.handleSidebar(false, true)}
-        />
-      </div>
+          className={`data-list ${
+            this.props.thumbView ? "thumb-view" : "list-view"
+          }`}
+        >
+          <DataTable
+            columns={columns}
+            data={value.length ? allData : data}
+            noHeader
+            subHeader
+            selectableRows
+            responsive
+            pointerOnHover
+            selectableRowsHighlight
+            onSelectedRowsChange={(data) =>
+              this.setState({ selected: data.selectedRows })
+            }
+            customStyles={selectedStyle}
+            sortIcon={<ChevronDown />}
+            selectableRowsComponent={Checkbox}
+            selectableRowsComponentProps={{
+              color: "primary",
+              icon: <Check className="vx-icon" size={12} />,
+              label: "",
+              size: "sm",
+            }}
+            subHeaderComponent={
+              <CustomHeader
+                handleSidebar={this.handleSidebar}
+                handleFilter={this.handleFilter}
+                handleRowsPerPage={this.handleRowsPerPage}
+                rowsPerPage={rowsPerPage}
+                total={totalRecords}
+                index={sortIndex}
+              />
+            }
+          />
+          <Sidebar
+            show={sidebar}
+            data={currentData}
+            updateData={this.props.updateData}
+            addData={this.props.addData}
+            handleSidebar={this.handleSidebar}
+            thumbView={this.props.thumbView}
+            getData={this.props.getData}
+            dataParams={this.props.parsedFilter}
+            addNew={this.state.addNew}
+          />
+          <div
+            className={classnames("data-list-overlay", {
+              show: sidebar,
+            })}
+            onClick={() => this.handleSidebar(false, true)}
+          />
+        </div>
+      </>
     );
   }
 }

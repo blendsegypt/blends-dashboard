@@ -7,94 +7,61 @@ import Select from "react-select";
 import Flatpickr from "react-flatpickr";
 import "../../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss";
 import "flatpickr/dist/themes/light.css";
-
-const products = [
-  {
-    value: 1,
-    label: "Lay's Tomatoes Chips (30g)",
-  },
-  {
-    value: 2,
-    label: "Lay's Chicken Chips (30g)",
-  },
-  {
-    value: 3,
-    label: "Lambada Biscuit (15g)",
-  },
-  {
-    value: 4,
-    label: "Lotus Biscuit (10g)",
-  },
-  {
-    value: 5,
-    label: "Shamedan Biscuit (30g)",
-  },
-];
-
-const branches = [
-  {
-    value: "Fleming",
-    label: "Fleming",
-  },
-  {
-    value: "Smouha",
-    label: "Smouha",
-  },
-];
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
     product_id: "",
-    branch: "",
-    purchased_quantity: "",
-    new_expiry_date: new Date(),
+    branch_id: "",
+    purchased_quantity: 0,
+    expiry_date: new Date(),
+    products_list: [],
+    branches_list: [],
   };
 
-  addNew = false;
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.data !== null && prevProps.data === null) {
-      if (this.props.data.product_id !== prevState.product_id) {
-        this.setState({ product_id: this.props.data.product_id });
-      }
-      if (this.props.data.branch !== prevState.branch) {
-        this.setState({ branch: this.props.data.branch });
-      }
+  async componentDidMount() {
+    try {
+      const products_list = await axios.get("admin/products");
+      const branches_list = await axios.get("admin/branches");
+      const retailProducts = products_list.data.data.filter(
+        (product) => product.retail
+      );
+      this.setState({
+        products_list: retailProducts,
+        branches_list: branches_list.data.data,
+      });
+    } catch (error) {
+      console.log(error);
     }
-    this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
-    if (this.props.data !== null) {
-      //this.props.updateData(obj);
-    } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+  handleSubmit = async () => {
+    const shipment = {
+      product_id: this.state.product_id,
+      branch_id: this.state.branch_id,
+      purchased_quantity: this.state.purchased_quantity,
+      expiry_date: this.state.expiry_date,
+      remaining_quantity: this.state.purchased_quantity,
+      expired: false,
+    };
+    try {
+      await axios.post("admin/shipments", shipment);
+    } catch (error) {
+      alert("An error occured: " + error);
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
-    let { product_id, branch, purchased_quantity } = this.state;
-    let selected_product = "";
-    let selected_branch = "";
-    if (data !== null) {
-      products.forEach((product, index) => {
-        if (product.value === product_id) {
-          selected_product = products[index];
-        }
-      });
-      branches.forEach((branchItem, index) => {
-        if (branchItem.value === branch) {
-          selected_branch = branches[index];
-        }
-      });
-    }
+    let {
+      product_id,
+      branch,
+      purchased_quantity,
+      expiry_date,
+      products_list,
+      branches_list,
+    } = this.state;
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -109,64 +76,62 @@ class DataListSidebar extends Component {
           className="data-list-fields px-2 mt-3"
           options={{ wheelPropagation: false }}
         >
+          <Alert color="primary">Shipment cannot be modified latter!</Alert>
           <FormGroup>
             <Label for="data-product">Product</Label>
             <Select
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
               className="React"
               classNamePrefix="select"
-              value={selected_product}
+              //value={selected_product}
               name="clear"
-              options={products}
-              onChange={(e) => this.setState({ product_id: e.target.event })}
+              options={products_list}
+              onChange={(product) => this.setState({ product_id: product.id })}
               isClearable={true}
             />
           </FormGroup>
           <FormGroup>
             <Label for="data-branch">Branch</Label>
             <Select
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
               className="React"
               classNamePrefix="select"
-              value={selected_branch}
+              //value={}
               name="clear"
-              options={branches}
-              onChange={(e) => this.setState({ branch: e.target.event })}
+              options={branches_list}
+              onChange={(branch) => this.setState({ branch_id: branch.id })}
               isClearable={true}
             />
           </FormGroup>
-          {data === null && (
-            <>
-              <Alert color="primary">
-                Purchased Quantity cannot be changed latter!
-              </Alert>
-              <FormGroup style={{ flex: 0.6, marginRight: "10px" }}>
-                <Label for="data-purchased_quantity">Purchased Quantity</Label>
-                <Input
-                  type="text"
-                  value={purchased_quantity}
-                  placeholder=""
-                  onChange={(e) =>
-                    this.setState({ purchased_quantity: e.target.value })
-                  }
-                  id="data-label"
-                />
-              </FormGroup>
-              <FormGroup style={{ flex: 0.6, marginRight: "10px" }}>
-                <Label for="data-purchased_quantity">Expiry Date</Label>
-                <Flatpickr
-                  className="form-control"
-                  value={this.state.new_expiry_date}
-                  options={{
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    dateFormat: "Y-m-d",
-                  }}
-                  onChange={(date) => {
-                    this.setState({ new_expiry_date: date });
-                  }}
-                />
-              </FormGroup>
-            </>
-          )}
+          <FormGroup style={{ flex: 0.6, marginRight: "10px" }}>
+            <Label for="data-purchased_quantity">Purchased Quantity</Label>
+            <Input
+              type="text"
+              value={purchased_quantity}
+              placeholder=""
+              onChange={(e) =>
+                this.setState({ purchased_quantity: Number(e.target.value) })
+              }
+              id="data-label"
+            />
+          </FormGroup>
+          <FormGroup style={{ flex: 0.6, marginRight: "10px" }}>
+            <Label for="data-purchased_quantity">Expiry Date</Label>
+            <Flatpickr
+              className="form-control"
+              value={expiry_date}
+              options={{
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+              }}
+              onChange={(date) => {
+                this.setState({ expiry_date: date });
+              }}
+            />
+          </FormGroup>
         </PerfectScrollbar>
         <div className="data-list-sidebar-footer px-2 d-flex justify-content-start align-items-center mt-1">
           <Button color="primary" onClick={() => this.handleSubmit(this.state)}>

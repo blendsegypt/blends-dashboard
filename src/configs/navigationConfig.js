@@ -97,14 +97,14 @@ const navigationConfig = [
   },
   {
     type: "groupHeader",
-    groupTitle: "Offers & Coupons",
+    groupTitle: "Offers & Promocodes",
   },
   {
-    id: "coupons",
-    title: "Coupons",
+    id: "promocodes",
+    title: "Promocodes",
     type: "item",
     icon: <Icon.Gift size={20} />,
-    navLink: "/coupons/list",
+    navLink: "/promocodes/list",
   },
 ];
 
