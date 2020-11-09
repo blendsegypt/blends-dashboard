@@ -15,7 +15,7 @@ const navigationConfig = [
   },
   {
     id: "users",
-    title: "Users (API)",
+    title: "Users",
     type: "item",
     icon: <Icon.User size={20} />,
     navLink: "/app/user/list",
@@ -42,14 +42,14 @@ const navigationConfig = [
     children: [
       {
         id: "internal_categories",
-        title: "Internal Categories (API)",
+        title: "Internal Categories",
         type: "item",
         icon: <Icon.Tool size={20} />,
         navLink: "/internal_categories/list",
       },
       {
         id: "categories",
-        title: "Categories (API)",
+        title: "Categories",
         type: "item",
         icon: <Icon.Menu size={20} />,
         navLink: "/categories/list",
@@ -63,14 +63,14 @@ const navigationConfig = [
       },
       {
         id: "products_tags",
-        title: "Tags (API)",
+        title: "Tags",
         type: "item",
         icon: <Icon.Hash size={20} />,
         navLink: "/products_tags/list",
       },
       {
         id: "products_custom_options",
-        title: "Custom Options (API)",
+        title: "Custom Options",
         type: "item",
         icon: <Icon.Edit size={20} />,
         navLink: "/products_options/list",
