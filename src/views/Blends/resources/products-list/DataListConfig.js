@@ -130,7 +130,7 @@ class DataListConfig extends Component {
         name: "ID",
         selector: "id",
         sortable: true,
-        minWidth: "20px",
+        minWidth: "50px",
         cell: (row) => (
           <p title={row.id} className="text-truncate text-bold-500 mb-0">
             {row.id}
