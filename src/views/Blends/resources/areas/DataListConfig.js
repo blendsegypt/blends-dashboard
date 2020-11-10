@@ -139,7 +139,7 @@ class DataListConfig extends Component {
         cell: (row) => `${row.name}`,
       },
       {
-        name: "areafence",
+        name: "Area Fence",
         selector: "area_fence",
         cell: (row) => {
           return (
