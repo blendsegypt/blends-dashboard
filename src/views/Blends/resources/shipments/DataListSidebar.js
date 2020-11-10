@@ -55,8 +55,6 @@ class DataListSidebar extends Component {
   render() {
     let { show, handleSidebar, data } = this.props;
     let {
-      product_id,
-      branch,
       purchased_quantity,
       expiry_date,
       products_list,

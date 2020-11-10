@@ -15,7 +15,7 @@ import { history } from "../../../../../history";
 import "../../../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss";
 import SweetAlert from "react-bootstrap-sweetalert";
 import "flatpickr/dist/themes/light.css";
-import bcrypt, { hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
 
 class UserAccountTab extends React.Component {
   constructor(props) {

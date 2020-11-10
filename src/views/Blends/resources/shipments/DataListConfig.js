@@ -3,7 +3,7 @@ import DataTable from "react-data-table-component";
 import { Button } from "reactstrap";
 import classnames from "classnames";
 import { history } from "../../../../history";
-import { Edit, Trash, ChevronDown, Check, Plus } from "react-feather";
+import { Trash, ChevronDown, Check, Plus } from "react-feather";
 import { connect } from "react-redux";
 import axios from "../../../../axios";
 import SweetAlert from "react-bootstrap-sweetalert";

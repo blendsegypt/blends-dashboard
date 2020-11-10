@@ -203,9 +203,11 @@ class UsersList extends React.Component {
 
   deleteUser = async () => {
     let selectedData = this.gridApi.getSelectedRows();
-    const { status } = await axios.delete(
-      `admin/users/${this.state.targetUser}`
-    );
+    try {
+      await axios.delete(`admin/users/${this.state.targetUser}`);
+    } catch (error) {
+      alert(`Error! - ${error}`);
+    }
     this.gridApi.updateRowData({ remove: selectedData });
   };
 
