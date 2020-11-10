@@ -25,9 +25,21 @@ class DataListSidebar extends Component {
     status: "open",
     max_parallel_orders: "",
     working_hours: [{}],
+    Areas: [],
   };
 
   addNew = false;
+
+  async componentDidMount() {
+    try {
+      const areasList = await axios.get("admin/areas");
+      this.setState({
+        areasList: areasList.data.data,
+      });
+    } catch (error) {
+      alert("Error: Couldnt retrieve internal categories / " + error);
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== null && prevProps.data === null) {
@@ -46,6 +58,9 @@ class DataListSidebar extends Component {
       if (this.props.data.working_hours !== prevState.working_hours) {
         this.setState({ working_hours: this.props.data.working_hours });
       }
+      if (this.props.data.Areas !== prevState.Areas) {
+        this.setState({ Areas: this.props.data.Areas });
+      }
       if (
         this.props.data.max_parallel_orders !== prevState.max_parallel_orders
       ) {
@@ -62,6 +77,7 @@ class DataListSidebar extends Component {
         type: "type1",
         max_parallel_orders: "",
         working_hours: [{}],
+        Areas: [],
       });
     }
     if (this.addNew) {
@@ -72,12 +88,19 @@ class DataListSidebar extends Component {
         type: "type1",
         max_parallel_orders: "",
         working_hours: [{}],
+        Areas: [],
       });
     }
     this.addNew = false;
   }
 
   handleSubmit = async () => {
+    let SupportedAreas = [];
+    if (this.state.Areas !== null) {
+      SupportedAreas = this.state.Areas.map((area) => {
+        return area.id;
+      });
+    }
     const newBranch = {
       id: this.state.id,
       status: this.state.status,
@@ -85,6 +108,7 @@ class DataListSidebar extends Component {
       type: this.state.type,
       max_parallel_orders: Number(this.state.max_parallel_orders),
       working_hours: this.state.working_hours,
+      SupportedAreas,
     };
     if (this.props.data !== null) {
       try {
@@ -119,6 +143,7 @@ class DataListSidebar extends Component {
       opens_at,
       closes_at,
       img,
+      Areas,
     } = this.state;
     return (
       <div
@@ -134,36 +159,6 @@ class DataListSidebar extends Component {
           className="data-list-fields px-2 mt-3"
           options={{ wheelPropagation: false }}
         >
-          {this.props.thumbView && img.length ? (
-            <FormGroup className="text-center">
-              <img className="img-fluid" src={img} alt={name} />
-              <div className="d-flex flex-wrap justify-content-between mt-2">
-                <label
-                  className="btn btn-flat-primary"
-                  htmlFor="update-image"
-                  color="primary"
-                >
-                  Upload Image
-                  <input
-                    type="file"
-                    id="update-image"
-                    hidden
-                    onChange={(e) =>
-                      this.setState({
-                        img: URL.createObjectURL(e.target.files[0]),
-                      })
-                    }
-                  />
-                </label>
-                <Button
-                  color="flat-danger"
-                  onClick={() => this.setState({ img: "" })}
-                >
-                  Remove Image
-                </Button>
-              </div>
-            </FormGroup>
-          ) : null}
           <FormGroup>
             <Label for="data-name">Branch Name</Label>
             <Input
@@ -186,6 +181,25 @@ class DataListSidebar extends Component {
               <option value="type2">type2</option>
               <option value="type3">type3</option>
             </Input>
+          </FormGroup>
+          <FormGroup>
+            <Label for="data-popularity">Supported Areas</Label>
+            <Select
+              isMulti
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+              closeMenuOnSelect={false}
+              name="workingDays"
+              value={Areas}
+              options={this.state.areasList}
+              className="React"
+              classNamePrefix="select"
+              onChange={(Areas) =>
+                this.setState({
+                  Areas,
+                })
+              }
+            />
           </FormGroup>
           <FormGroup>
             <Label for="data-status">Branch Status</Label>

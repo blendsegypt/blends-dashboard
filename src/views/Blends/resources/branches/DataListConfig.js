@@ -97,7 +97,6 @@ class DataListConfig extends Component {
   getData = async () => {
     try {
       const branches = await axios.get("admin/branches");
-      console.log(branches.data.data);
       this.setState({
         data: branches.data.data,
         allData: branches.data.data,
@@ -120,13 +119,13 @@ class DataListConfig extends Component {
         name: "ID",
         selector: "id",
         sortable: true,
-        minWidth: "150px",
+        width: "100px",
       },
       {
         name: "Branch Name",
         selector: "name",
         sortable: true,
-        minWidth: "150px",
+        minWidth: "100px",
         cell: (row) => (
           <p title={row.name} className="text-truncate text-bold-500 mb-0">
             {row.name}
@@ -134,9 +133,30 @@ class DataListConfig extends Component {
         ),
       },
       {
+        name: "Supported Areas",
+        selector: "Areas",
+        sortable: true,
+        minWidth: "140px",
+        cell: (row) => {
+          if (!row.Areas) return;
+          return (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {row.Areas.map((area) => {
+                return (
+                  <div style={{ marginTop: "5px", marginBottom: "5px" }}>
+                    {area.name}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        },
+      },
+      {
         name: "Type",
         selector: "type",
         sortable: true,
+        minWidth: "150px",
         cell: (row) => {
           if (row.type === "type1") return `Dispatching Point`;
           return `${row.type}`;
@@ -164,12 +184,16 @@ class DataListConfig extends Component {
         name: "Working Days",
         selector: "working_days",
         sortable: true,
+        minWidth: "150px",
         cell: (row) => {
           if (!row.working_hours[0].days) return;
-          return row.working_hours[0].days.map((day, index) => {
-            if (index === row.working_hours[0].days.length - 1) return `${day}`;
-            return `${day}, `;
-          });
+          return (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {row.working_hours[0].days.map((day, index) => {
+                return <div style={{ margin: "5px 0" }}>{day}</div>;
+              })}
+            </div>
+          );
         },
       },
       {
