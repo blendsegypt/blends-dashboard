@@ -21,6 +21,13 @@ const navigationConfig = [
     navLink: "/app/user/list",
   },
   {
+    id: "areas",
+    title: "Areas",
+    type: "item",
+    icon: <Icon.MapPin size={20} />,
+    navLink: "/areas/list",
+  },
+  {
     id: "orders",
     title: "Orders",
     type: "item",
