@@ -23,6 +23,9 @@ const ecommerceDashboard = lazy(() =>
 const userList = lazy(() => import("./views/Blends/resources/user/list/List"));
 const userEdit = lazy(() => import("./views/Blends/resources/user/edit/Edit"));
 
+// Areas
+const AreasList = lazy(() => import("./views/Blends/resources/areas/ListView"));
+
 //Branches
 const BranchesList = lazy(() =>
   import("./views/Blends/resources/branches/ListView")
@@ -118,6 +121,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/" component={ecommerceDashboard} exact />
           <AppRoute path="/app/user/list" component={userList} />
           <AppRoute path="/app/user/edit" component={userEdit} />
+          <AppRoute path="/areas/list" component={AreasList} />
           <AppRoute path="/branch/list" component={BranchesList} />
           <AppRoute path="/orders/list" component={OrdersList} />
           <AppRoute
