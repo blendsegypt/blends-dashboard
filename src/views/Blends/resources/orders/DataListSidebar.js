@@ -1,93 +1,11 @@
 import React, { Component } from "react";
-import { Label, FormGroup, Button } from "reactstrap";
+import { Label, FormGroup, Button, Input } from "reactstrap";
 import { X } from "react-feather";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import Select from "react-select";
-
-const usersList = [
-  {
-    label: "01149050646",
-    value: 1, //User_ID
-    addresses: [
-      {
-        label: "Home",
-        value: "Home",
-      },
-      {
-        label: "Work",
-        value: "Work",
-      },
-    ],
-  },
-  {
-    label: "01142323021",
-    value: 2,
-    addresses: [
-      {
-        label: "home",
-        value: "home",
-      },
-    ],
-  },
-];
-
-const products = [
-  {
-    value: 1,
-    label: "Latte",
-    customOptions: [
-      {
-        label: "Cup Size",
-        value: "",
-        options: [
-          {
-            label: "Small",
-            value: "sm",
-          },
-          {
-            label: "Large",
-            value: "lg",
-          },
-        ],
-      },
-      {
-        label: "Milk Type",
-        value: "",
-        options: [
-          {
-            label: "Skimmed",
-            value: "skm",
-          },
-          {
-            label: "Full Cream",
-            value: "fc",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 2,
-    label: "Espresso",
-    customOptions: [
-      {
-        label: "Cup Size",
-        value: "sm",
-        options: [
-          {
-            label: "Small",
-            value: "sm",
-          },
-          {
-            label: "Large",
-            value: "lg",
-          },
-        ],
-      },
-    ],
-  },
-];
+import axios from "../../../../axios";
+import { isObject } from "formik";
 
 const orderStatusList = [
   {
@@ -108,53 +26,52 @@ const orderStatusList = [
   },
 ];
 
-const branches = [
-  {
-    value: "Fleming",
-    label: "Fleming",
-  },
-  {
-    value: "Smouha",
-    label: "Smouha",
-  },
-];
-
-const coupons = [
-  {
-    label: "FREELOT",
-    value: "FREELOT",
-  },
-  {
-    label: "FORDER",
-    value: "FORDER",
-  },
-];
-
 class DataListSidebar extends Component {
   state = {
-    id: "",
-    order_number: "",
+    id: null,
     order_status: "",
+    delivery_charges: 5,
     user_id: "",
-    user_phone_number: "",
-    delivery_location: "",
-    branch: "",
-    subtotal: "",
-    total: "",
-    coupon: "",
-    order_items: [{}],
-    assigned_driver: "",
+    delivery_address_id: "",
+    OrderItems: [{ quantity: 1 }],
+    promocode_id: "",
   };
 
-  addNew = false;
+  async componentDidMount() {
+    try {
+      // get data that order depends on
+      const users = await axios.get("admin/users");
+      const products = await axios.get("admin/products");
+      const promocodes = await axios.get("admin/promo-codes");
+      const product_custom_options = await axios.get(
+        "admin/products-custom-options"
+      );
+      // add custom options array to each product
+      products.data.data.forEach((product) => (product.custom_options = []));
+      product_custom_options.data.data.forEach((option) => {
+        const product = products.data.data.find(
+          (product) => product.id === option.product_id
+        );
+        product.custom_options.push({
+          label: option.label,
+          options: option.custom_options,
+        });
+      });
+      this.setState({
+        users_list: users.data.data,
+        products_list: products.data.data,
+        promocodes_list: promocodes.data.data,
+        custom_options_list: product_custom_options.data.data,
+      });
+    } catch (error) {
+      alert("Error: Couldnt data / " + error);
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== null && prevProps.data === null) {
       if (this.props.data.id !== prevState.id) {
         this.setState({ id: this.props.data.id });
-      }
-      if (this.props.data.order_number !== prevState.order_number) {
-        this.setState({ order_number: this.props.data.order_number });
       }
       if (this.props.data.order_status !== prevState.order_status) {
         this.setState({ order_status: this.props.data.order_status });
@@ -162,76 +79,160 @@ class DataListSidebar extends Component {
       if (this.props.data.user_id !== prevState.user_id) {
         this.setState({ user_id: this.props.data.user_id });
       }
-      if (this.props.data.user_phone_number !== prevState.user_phone_number) {
-        this.setState({ user_phone_number: this.props.data.user_phone_number });
+      if (
+        this.props.data.delivery_address_id !== prevState.delivery_address_id
+      ) {
+        this.setState({
+          delivery_address_id: this.props.data.delivery_address_id,
+        });
       }
-      if (this.props.data.delivery_location !== prevState.delivery_location) {
-        this.setState({ delivery_location: this.props.data.delivery_location });
+      if (this.props.data.delivery_charges !== prevState.delivery_charges) {
+        this.setState({ delivery_charges: this.props.data.delivery_charges });
       }
-      if (this.props.data.branch !== prevState.branch) {
-        this.setState({ branch: this.props.data.branch });
+      if (this.props.data.OrderItems !== prevState.OrderItems) {
+        this.setState({ OrderItems: this.props.data.OrderItems });
       }
-      if (this.props.data.order_items !== prevState.order_items) {
-        this.setState({ order_items: this.props.data.order_items });
-      }
-      if (this.props.data.subtotal !== prevState.subtotal) {
-        this.setState({ subtotal: this.props.data.subtotal });
-      }
-      if (this.props.data.total !== prevState.total) {
-        this.setState({ total: this.props.data.total });
-      }
-      if (this.props.data.coupon !== prevState.coupon) {
-        this.setState({ coupon: this.props.data.coupon });
-      }
-      if (this.props.data.assigned_driver !== prevState.assigned_driver) {
-        this.setState({ assigned_driver: this.props.data.assigned_driver });
+      if (this.props.data.promocode_id !== prevState.promocode_id) {
+        this.setState({ promocode_id: this.props.data.promocode_id });
       }
     }
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
-        id: "",
-        order_number: "",
+        id: null,
         order_status: "",
+        delivery_charges: 5,
         user_id: "",
-        user_phone_number: "",
-        delivery_location: "",
-        branch: "",
-        subtotal: "",
+        delivery_address_id: "",
+        sub_total: "",
         total: "",
-        order_items: [],
-        coupon: "",
-        assigned_driver: "",
+        OrderItems: [{ quantity: 1 }],
+        promocode_id: "",
       });
     }
-    if (this.addNew) {
+    if (this.props.data !== null && prevProps.data === null) {
+      //order status
+      const current_order_status = orderStatusList.find(
+        (status) => status.value === this.props.data.order_status
+      );
+      //user id
+      const current_user_id = this.state.users_list.find(
+        (user) => user.id === this.props.data.user_id
+      );
+      this.getUserAddresses(this.props.data.user_id);
+      //ordered items
+      const current_order_items = this.props.data.OrderItems.map((item) => {
+        const product = this.state.products_list.find(
+          (product) => product.id === item.Product.id
+        );
+        // stringify options JSON object from database
+        const selectedOptions = JSON.parse(item.options);
+        // add custom options array to each product
+        item.custom_options = [];
+        this.state.custom_options_list.forEach((option) => {
+          //cup size, flavor....
+          let appendedOption = Object.assign({}, option);
+          appendedOption.options = appendedOption.custom_options;
+          delete appendedOption.custom_options;
+          // check if option is selected
+          selectedOptions.forEach((selectedOption) => {
+            if (selectedOption.label === option.label) {
+              appendedOption.value = option.custom_options.find(
+                (option) => option.label === selectedOption.value
+              );
+            }
+          });
+          // push whatever relates to the product
+          if (option.product_id === item.Product.id)
+            item.custom_options.push(appendedOption);
+        });
+        console.log(item);
+        return {
+          ...product,
+          quantity: item.quantity,
+          custom_options: item.custom_options,
+        };
+      });
+      //promocodes
+      const current_promocode = this.state.promocodes_list.find(
+        (promocode) => promocode.id === this.props.data.promocode_id
+      );
       this.setState({
-        id: "",
-        order_number: "",
-        order_status: "",
-        user_id: "",
-        user_phone_number: "",
-        delivery_location: "",
-        branch: "",
-        subtotal: "",
-        order_items: [],
-        total: "",
-        coupon: "",
-        assigned_driver: "",
+        order_status: current_order_status,
+        user_id: current_user_id,
+        OrderItems: current_order_items,
+        promocode_id: current_promocode,
       });
     }
-    this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
+  getUserAddresses = async (id) => {
+    this.setState({ addresses_list: [] }, async () => {
+      const user_addresses = await axios.get(`admin/users/${id}/addresses`);
+      this.setState({ addresses_list: user_addresses.data.data });
+      if (this.props.data !== null) {
+        const current_address_id = this.state.addresses_list.find(
+          (address) => address.user_id === this.props.data.user_id
+        );
+        this.setState({ delivery_address_id: current_address_id });
+      }
+    });
+  };
+
+  handleSubmit = async () => {
+    // Format Order Items array
+    const orderItems = this.state.OrderItems.map((item) => {
+      let options = [];
+      if (item.custom_options) {
+        options = item.custom_options.map((option) => {
+          return {
+            label: option.label,
+            value: option.value ? option.value.label : null,
+          };
+        });
+      }
+      return {
+        product_id: item.id,
+        quantity: item.quantity,
+        options: JSON.stringify(options),
+      };
+    });
+    // Calculate sub_total and total
+    let sub_total = 0;
+    this.state.OrderItems.forEach((item) => {
+      sub_total += item.price;
+      if (item.custom_options) {
+        item.custom_options.forEach((option) => {
+          sub_total += option.value ? option.value.price : 0;
+        });
+      }
+    });
+    let total = sub_total + this.state.delivery_charges;
+    const order = {
+      sub_total,
+      total,
+      delivery_charges: this.state.delivery_charges,
+      user_id: this.state.user_id.id,
+      delivery_address_id: this.state.delivery_address_id.id,
+      area_id: this.state.delivery_address_id.area_id,
+      OrderItems: orderItems,
+    };
     if (this.props.data !== null) {
-      //this.props.updateData(obj);
+      try {
+        order.OrderItems.forEach((item) => {
+          item.order_id = this.state.id;
+        });
+        console.log(order);
+        await axios.put(`admin/orders/${this.state.id}`, order);
+      } catch (error) {
+        alert("Error! " + error);
+      }
     } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+      try {
+        await axios.post(`admin/orders`, order);
+      } catch (error) {
+        alert("Error! " + error);
+      }
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
     this.props.handleSidebar(false, true);
   };
 
@@ -240,44 +241,14 @@ class DataListSidebar extends Component {
     let {
       order_status,
       user_id,
-      user_phone_number,
-      delivery_location,
-      branch,
-      order_items,
-      coupon,
+      delivery_address_id,
+      OrderItems,
+      promocode_id,
+      users_list,
+      products_list,
+      promocodes_list,
+      addresses_list,
     } = this.state;
-    let selectedOrderStatus = "";
-    let selected_user = "";
-    let selected_delivery_location = "";
-    let selectedBranch = "";
-    let selectedCoupon = "";
-
-    orderStatusList.forEach((status, index) => {
-      if (status.value === order_status) {
-        selectedOrderStatus = orderStatusList[index];
-      }
-    });
-    usersList.forEach((user, index) => {
-      if (user.value === user_id) {
-        selected_user = usersList[index];
-        user.addresses.forEach((address, index) => {
-          if (address.value === delivery_location) {
-            selected_delivery_location = user.addresses[index];
-          }
-        });
-      }
-    });
-    branches.forEach((branchItem, index) => {
-      if (branchItem.value === branch) {
-        selectedBranch = branches[index];
-      }
-    });
-    coupons.forEach((couponObject, index) => {
-      if (couponObject.value === coupon) {
-        selectedCoupon = coupons[index];
-      }
-    });
-    console.log(selected_delivery_location);
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -292,81 +263,58 @@ class DataListSidebar extends Component {
           className="data-list-fields px-2 mt-3"
           options={{ wheelPropagation: false }}
         >
-          <FormGroup>
-            <Label for="data-status">Order Status</Label>
-            <Select
-              className="React"
-              classNamePrefix="select"
-              name="clear"
-              value={selectedOrderStatus}
-              options={orderStatusList}
-              onChange={(status) =>
-                this.setState({ order_status: status.value })
-              }
-              isClearable={true}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="data-status">User's Phone Number</Label>
-            <Select
-              className="React"
-              classNamePrefix="select"
-              name="clear"
-              value={selected_user}
-              options={usersList}
-              onChange={(user) => {
-                this.setState({
-                  user_id: user.value ? user.value : null, //Check if selected is null or not
-                  user_phone_number: Number(user.label),
-                  delivery_location: "", //Clear Delivery Location from previous selections
-                });
-              }}
-              isClearable={true}
-            />
-          </FormGroup>
-          {/* Render User's Address selection if a user is selected */}
-          {user_id && user_phone_number && (
+          {this.props.data !== null && (
             <FormGroup>
-              <Label for="data-status">User's Address</Label>
+              <Label for="data-status">Order Status</Label>
               <Select
                 className="React"
                 classNamePrefix="select"
                 name="clear"
-                value={selected_delivery_location}
-                options={
-                  usersList.find((user) => user.value === user_id).addresses
-                }
-                onChange={(address) => {
-                  this.setState({ delivery_location: address.value });
-                }}
-                isClearable={true}
+                value={order_status}
+                options={orderStatusList}
+                onChange={(status) => this.setState({ order_status: status })}
               />
             </FormGroup>
           )}
           <FormGroup>
-            <Label for="data-status">Branch</Label>
+            <Label for="data-status">User's Phone Number</Label>
             <Select
+              getOptionLabel={(option) => option.phone_number}
+              getOptionValue={(option) => option.id}
               className="React"
               classNamePrefix="select"
               name="clear"
-              value={selectedBranch}
-              options={branches}
-              onChange={(branch) => this.setState({ branch: branch.value })}
-              isClearable={true}
+              value={user_id}
+              options={users_list}
+              onChange={(user) => {
+                this.setState({
+                  user_id: user,
+                });
+                this.getUserAddresses(user.id);
+              }}
             />
           </FormGroup>
+          {/* Render User's Address selection if a user is selected */}
+          {user_id && (
+            <FormGroup>
+              <Label for="data-status">User's Address</Label>
+              <Select
+                getOptionLabel={(option) => option.nickname}
+                getOptionValue={(option) => option.id}
+                className="React"
+                classNamePrefix="select"
+                name="clear"
+                value={delivery_address_id}
+                options={addresses_list}
+                onChange={(address) => {
+                  this.setState({ delivery_address_id: address });
+                }}
+              />
+            </FormGroup>
+          )}
           {/* Products Selection Area */}
           <h4>Ordered Products</h4>
-          {order_items.map((item, index) => {
-            let selected_product = "";
-            // Check if product is selected or not
-            if (Object.keys(item).length === 0) {
-              selected_product = "";
-            } else {
-              selected_product = products.find(
-                (product) => item.value === product.value
-              );
-            }
+          {OrderItems.map((item, productIndex) => {
             return (
               <div
                 style={{
@@ -388,31 +336,57 @@ class DataListSidebar extends Component {
                 >
                   <FormGroup
                     style={{
-                      flex: 0.8,
+                      flex: 0.7,
                       marginRight: "10px",
                       marginBottom: "0.5rem",
                     }}
                   >
                     <Label for="data-status">Product</Label>
                     <Select
+                      getOptionLabel={(option) => option.name}
+                      getOptionValue={(option) => option.id}
                       className="React"
                       classNamePrefix="select"
                       name="clear"
-                      value={selected_product}
-                      options={products}
+                      value={item}
+                      options={products_list}
                       onChange={(product) => {
                         // Change Product through changing order_item
-                        const newOrderedItems = [...this.state.order_items];
-                        newOrderedItems[index] = JSON.parse(
+                        product.quantity = 1;
+                        const newOrderedItems = [...this.state.OrderItems];
+                        newOrderedItems[productIndex] = JSON.parse(
                           JSON.stringify(product)
                         );
-                        this.setState({ order_items: newOrderedItems });
+                        this.setState({ OrderItems: newOrderedItems });
                       }}
                     />
                   </FormGroup>
-                  <div style={{ flex: 0.2 }}>
+                  <FormGroup
+                    style={{
+                      flex: 0.2,
+                      marginTop: "10px",
+                      marginRight: "10px",
+                    }}
+                  >
+                    <Label for="data-purchased_quantity">Quantity</Label>
+                    <Input
+                      type="text"
+                      placeholder=""
+                      value={item.quantity}
+                      onChange={(e) => {
+                        // Change Product through changing order_item
+                        const newOrderedItems = [...this.state.OrderItems];
+                        newOrderedItems[productIndex].quantity = Number(
+                          e.target.value
+                        );
+                        this.setState({ OrderItems: newOrderedItems });
+                      }}
+                      id="data-label"
+                    />
+                  </FormGroup>
+                  <div style={{ flex: 0.1 }}>
                     <Button
-                      disabled={order_items.length === 1 ? true : false} //Disabled remove button if there's only 1 item
+                      disabled={OrderItems.length === 1 ? true : false} //Disabled remove button if there's only 1 item
                       color="primary"
                       style={{
                         paddingTop: "14px",
@@ -421,11 +395,11 @@ class DataListSidebar extends Component {
                         marginTop: "12px",
                       }}
                       onClick={() => {
-                        // Remove item from order_items array
-                        const newOrderedItems = [...this.state.order_items];
-                        newOrderedItems.splice(index, 1);
+                        // Remove item from OrderItems array
+                        const newOrderedItems = [...this.state.OrderItems];
+                        newOrderedItems.splice(productIndex, 1);
                         this.setState({
-                          order_items: newOrderedItems,
+                          OrderItems: newOrderedItems,
                         });
                       }}
                     >
@@ -434,76 +408,60 @@ class DataListSidebar extends Component {
                   </div>
                 </div>
                 {/* Product Custom Options */}
-                {selected_product !== "" && // If no product is selected then don't show custom options
-                  products
-                    .find((product) => product.value === item.value) // Find product in products list
-                    .customOptions.map((customOption) => {
-                      // Get option object from order_items item object
-                      const currentOption = item.customOptions.find(
-                        (option) => option.label === customOption.label
-                      );
-                      let currentValue = {};
-                      if (currentOption.value !== "") {
-                        currentValue.value = currentOption.value;
-                        currentValue.label = customOption.options.find(
-                          (option) => {
-                            return option.value === currentOption.value;
-                          }
-                        ).label;
-                      }
-                      return (
-                        <FormGroup style={{ marginBottom: "0.5rem" }}>
-                          <Label for="data-status">{customOption.label}</Label>
-                          <Select
-                            className="React"
-                            classNamePrefix="select"
-                            name="clear"
-                            value={currentValue}
-                            options={
-                              selected_product.customOptions.find(
-                                (option) => option.label === customOption.label
-                              ).options
-                            }
-                            onChange={(option) => {
-                              const newOrderedItems = [
-                                ...this.state.order_items,
-                              ];
-                              const currentItem = newOrderedItems[index];
-                              const currentOption = currentItem.customOptions.find(
-                                (option) => option.label === customOption.label
-                              );
-                              currentOption.value = option.value;
-                              this.setState({
-                                ordered_items: newOrderedItems,
-                              });
-                            }}
-                          />
-                        </FormGroup>
-                      );
-                    })}
+                {item.id && // If no product is selected then don't show custom options
+                  item.custom_options.map((customOption, optionIndex) => {
+                    return (
+                      <FormGroup style={{ marginBottom: "0.5rem" }}>
+                        <Label for="data-status">{customOption.label}</Label>
+                        <Select
+                          getOptionLabel={(option) => option.label}
+                          getOptionValue={(option) => option.id}
+                          className="React"
+                          classNamePrefix="select"
+                          name="clear"
+                          value={customOption.value}
+                          options={customOption.options}
+                          onChange={(option) => {
+                            const newOrderedItems = [...this.state.OrderItems];
+                            const currentItem = newOrderedItems[productIndex];
+                            const currentOption =
+                              currentItem.custom_options[optionIndex];
+                            currentOption.value = option;
+                            this.setState({
+                              ordered_items: newOrderedItems,
+                            });
+                          }}
+                        />
+                      </FormGroup>
+                    );
+                  })}
               </div>
             );
           })}
           <Button
             color="success"
             onClick={() => {
-              let newOrderItems = [...order_items];
-              newOrderItems = newOrderItems.concat({});
-              this.setState({ order_items: newOrderItems });
+              let newOrderItems = [...OrderItems];
+              newOrderItems = newOrderItems.concat({ quantity: 1 });
+              this.setState({ OrderItems: newOrderItems });
             }}
           >
             Add Product
           </Button>
-          <h4 style={{ marginTop: "20px" }}>Offers & Coupons</h4>
+          <h4 style={{ marginTop: "20px" }}>Offers & Promocodes</h4>
           <FormGroup>
-            <Label for="data-status">Coupon</Label>
+            <Label for="data-status">Promocode</Label>
             <Select
+              getOptionLabel={(option) => option.code}
+              getOptionValue={(option) => option.id}
               className="React"
               classNamePrefix="select"
               name="clear"
-              value={selectedCoupon}
-              options={coupons}
-              onChange={(coupon) => this.setState({ coupon: coupon.value })}
+              value={promocode_id}
+              options={promocodes_list}
+              onChange={(promocode) =>
+                this.setState({ promocode_id: promocode.id })
+              }
               isClearable={true}
             />
           </FormGroup>
