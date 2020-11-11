@@ -4,12 +4,13 @@ import DataTable from "react-data-table-component";
 import classnames from "classnames";
 import ReactPaginate from "react-paginate";
 import { history } from "../../../../history";
+import SweetAlert from "react-bootstrap-sweetalert";
+import axios from "../../../../axios";
 import {
   Edit,
   Trash,
   ChevronDown,
   Plus,
-  Check,
   ChevronLeft,
   ChevronRight,
 } from "react-feather";
@@ -24,27 +25,36 @@ import {
 } from "../../../../redux/actions/data-list/";
 import Sidebar from "./DataListSidebar";
 import Chip from "../../../../components/@vuexy/chips/ChipComponent";
-import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy";
 
 import "../../../../assets/scss/plugins/extensions/react-paginate.scss";
 import "../../../../assets/scss/pages/data-list.scss";
 
 const chipColors = {
   Received: "danger",
-  Brewing: "warning",
-  OnWay: "warning",
+  Preparing: "warning",
+  Delivering: "warning",
   Delivered: "success",
 };
 
-function formatDate(d) {
+function formatDate(date) {
+  let d = new Date(date);
   let month = "" + (d.getMonth() + 1);
   let day = "" + d.getDate();
   let year = d.getFullYear();
+  let hours = "" + d.getHours();
+  let minutes = "" + d.getMinutes();
 
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
+  if (hours.length < 2) hours = "0" + hours;
+  if (minutes.length < 2) minutes = "0" + minutes;
+  const formattedDay = [year, month, day].join("-");
+  const formattedTime = [hours, minutes].join(":");
+  return [formattedDay, formattedTime].join(" ");
+}
 
-  return [year, month, day].join("-");
+function msToMinutes(ms) {
+  return Math.ceil(ms / (1000 * 60));
 }
 
 const selectedStyle = {
@@ -62,20 +72,22 @@ const selectedStyle = {
 
 const ActionsComponent = (props) => {
   return (
-    <div className="data-list-action">
-      <Edit
-        className="cursor-pointer mr-1"
-        size={20}
-        onClick={() => {
-          return props.currentData(props.row);
-        }}
-      />
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {props.row.order_status !== "Delivered" && (
+        <Edit
+          className="cursor-pointer mr-1"
+          size={20}
+          onClick={() => {
+            return props.currentData(props.row);
+          }}
+        />
+      )}
       <Trash
         className="cursor-pointer"
-        style={{ marginLeft: "20px" }}
+        style={{ marginTop: "10px" }}
         size={20}
         onClick={() => {
-          //Delete Item
+          props.deleteWarning(props.row);
         }}
       />
     </div>
@@ -100,107 +112,25 @@ const CustomHeader = (props) => {
 };
 
 class DataListConfig extends Component {
-  componentDidMount() {
-    const data = [
-      {
-        id: 1,
-        ordered_at: new Date(),
-        order_number: 232,
-        order_status: "Received",
-        user_id: 2,
-        user_phone_number: 1149050646,
-        delivery_location: "home",
-        delivery_area: "Sporting",
-        branch: "Fleming",
-        subtotal: "15 EGP",
-        total: "20 EGP",
-        coupon: "",
-        assigned_driver: "Ahmed",
-        order_items: [
-          {
-            value: 2,
-            label: "Espresso",
-            customOptions: [
-              {
-                label: "Cup Size",
-                value: "sm",
-                options: [
-                  {
-                    label: "Small",
-                    value: "sm",
-                  },
-                  {
-                    label: "Large",
-                    value: "lg",
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: 2,
-        ordered_at: new Date(),
-        order_number: 233,
-        order_status: "Brewing",
-        user_id: 1,
-        user_phone_number: 1142323021,
-        delivery_location: "Work",
-        delivery_area: "El-Shatby",
-        branch: "Smouha",
-        subtotal: "54 EGP",
-        total: "59 EGP",
-        coupon: "FREELOT",
-        assigned_driver: "Sameh",
-        order_items: [
-          {
-            value: 1,
-            label: "Latte",
-            customOptions: [
-              {
-                label: "Cup Size",
-                value: "sm",
-                options: [
-                  {
-                    label: "Small",
-                    value: "sm",
-                  },
-                  {
-                    label: "Large",
-                    value: "lg",
-                  },
-                ],
-              },
-              {
-                label: "Milk Type",
-                value: "skm",
-                options: [
-                  {
-                    label: "Skimmed",
-                    value: "skm",
-                  },
-                  {
-                    label: "Full Cream",
-                    value: "fc",
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-
-    this.setState({
-      data,
-      allData: data,
-      totalPages: 1,
-      currentPage: 1,
-      rowsPerPage: 1,
-      totalRecords: 2,
-    });
+  async componentDidMount() {
+    await this.getData();
   }
+
+  getData = async () => {
+    try {
+      const orders = await axios.get("admin/orders");
+      this.setState({
+        data: orders.data.data,
+        allData: orders.data.data,
+        totalPages: 1,
+        currentPage: 1,
+        rowsPerPage: 1,
+        totalRecords: 2,
+      });
+    } catch (error) {
+      alert("Error occured!: " + error);
+    }
+  };
 
   state = {
     data: [],
@@ -208,29 +138,30 @@ class DataListConfig extends Component {
     currentPage: 0,
     columns: [
       {
+        name: "Order Number",
+        selector: "id",
+        sortable: true,
+        width: "100px",
+        cell: (row) => (
+          <p title={row.id} className="text-truncate text-bold-500 mb-0">
+            {row.id}
+          </p>
+        ),
+      },
+      {
         name: "Ordered",
         selector: "ordered_at",
         sortable: true,
-        cell: (row) => `${formatDate(row.ordered_at)}`,
-      },
-      {
-        name: "Order Number",
-        selector: "order_number",
-        sortable: true,
-        minWidth: "100px",
+        width: "120px",
         cell: (row) => (
-          <p
-            title={row.order_number}
-            className="text-truncate text-bold-500 mb-0"
-          >
-            {row.order_number}
-          </p>
+          <span style={{ fontSize: "12px" }}>{formatDate(row.createdAt)}</span>
         ),
       },
       {
         name: "Status",
         selector: "order_status",
         sortable: true,
+        width: "110px",
         cell: (row) => (
           <Chip
             className="m-0"
@@ -241,27 +172,21 @@ class DataListConfig extends Component {
       },
       {
         name: "Customer Phone Number",
-        selector: "user_phone_number",
+        selector: "User.phone_number",
         sortable: true,
-        cell: (row) => `0${row.user_phone_number}`,
+        cell: (row) => `0${row.User.phone_number}`,
       },
       {
         name: "Delivery Area",
-        selector: "delivery_location",
+        selector: "Address.Area.name",
         sortable: true,
-        cell: (row) => `${row.delivery_area}`,
+        cell: (row) => `${row.Address.Area.name}`,
       },
       {
         name: "Branch",
-        selector: "branch",
+        selector: "Branch.name",
         sortable: true,
-        cell: (row) => `${row.branch}`,
-      },
-      {
-        name: "Subtotal",
-        selector: "subtotal",
-        sortable: true,
-        cell: (row) => `${row.subtotal}`,
+        cell: (row) => `${row.Branch.name}`,
       },
       {
         name: "Total",
@@ -270,35 +195,34 @@ class DataListConfig extends Component {
         cell: (row) => {
           return (
             <p title={row.total} className="text-truncate text-bold-500 mb-0">
-              {row.total}
+              {row.total} EGP
             </p>
           );
         },
       },
       {
         name: "Ordered Items",
-        selector: "order_items",
+        selector: "OrderItems",
         sortable: true,
         cell: (row) => {
           return (
             <div style={{ padding: "10px 0 10px 0" }}>
-              {row.order_items.map((item) => {
+              {row.OrderItems.map((item) => {
                 return (
-                  <span>
-                    <b>{item.label}</b>
+                  <div style={{ marginTop: "10px" }}>
+                    <b>
+                      {item.quantity} x {item.Product.name}
+                    </b>
                     <br></br>
-                    {item.customOptions.map((option) => {
-                      let value = option.options.find(
-                        (optionObj) => optionObj.value === option.value
-                      ).label;
+                    {JSON.parse(item.options).map((option) => {
                       return (
                         <span>
-                          {value}
+                          {option.value}
                           <br />
                         </span>
                       );
                     })}
-                  </span>
+                  </div>
                 );
               })}
             </div>
@@ -306,16 +230,84 @@ class DataListConfig extends Component {
         },
       },
       {
-        name: "Coupon",
-        selector: "coupon",
+        name: "Timeline",
+        selector: "total",
         sortable: true,
-        cell: (row) => `${row.coupon}`,
+        width: "100px",
+        cell: (row) => {
+          let startedPreparingIn, deliveringIn, deliveredIn, total;
+          if (
+            row.preparing_at === null ||
+            row.delivering_at === null ||
+            row.delivered_at === null
+          ) {
+            row.total_order_time = Math.ceil(
+              (new Date() - new Date(row.createdAt)) / (1000 * 60)
+            );
+            return "Order In Progress";
+          }
+          startedPreparingIn =
+            new Date(row.preparing_at) - new Date(row.createdAt);
+          deliveringIn =
+            new Date(row.delivering_at) - new Date(row.preparing_at);
+          deliveredIn =
+            new Date(row.delivered_at) - new Date(row.delivering_at);
+          total =
+            msToMinutes(startedPreparingIn) +
+            msToMinutes(deliveringIn) +
+            msToMinutes(deliveredIn);
+          row.total_order_time = total;
+          return (
+            <div style={{ fontSize: "12px", marginTop: "10px" }}>
+              <p>
+                Started:<br></br>{" "}
+                <b>{msToMinutes(startedPreparingIn)} minutes</b>
+              </p>
+              <p>
+                Prepared: <br></br>
+                <b>{msToMinutes(deliveringIn)} minutes</b>
+              </p>
+              <p>
+                Delivered: <br></br>
+                <b>{msToMinutes(deliveredIn)} minutes</b>
+              </p>
+            </div>
+          );
+        },
+      },
+      {
+        name: "Total Time",
+        selector: "total",
+        sortable: true,
+        cell: (row) => {
+          return (
+            <p
+              title={row.total_order_time}
+              className="text-truncate text-bold-500 mb-0"
+            >
+              {row.total_order_time} Minutes
+            </p>
+          );
+        },
+      },
+      {
+        name: "Promocode",
+        selector: "Promocode",
+        sortable: true,
+        cell: (row) => {
+          if (!row.PromoCode) return ``;
+          return row.PromoCode.code;
+        },
       },
       {
         name: "Actions",
         sortable: true,
         cell: (row) => (
-          <ActionsComponent row={row} currentData={this.handleCurrentData} />
+          <ActionsComponent
+            row={row}
+            currentData={this.handleCurrentData}
+            deleteWarning={this.deleteWarning}
+          />
         ),
       },
     ],
@@ -328,6 +320,8 @@ class DataListConfig extends Component {
     totalRecords: 0,
     sortIndex: [],
     addNew: "",
+    targetRow: null,
+    deleteWarning: false,
   };
 
   thumbView = this.props.thumbView;
@@ -348,10 +342,20 @@ class DataListConfig extends Component {
   handleSidebar = (boolean, addNew = false) => {
     this.setState({ sidebar: boolean });
     if (addNew === true) this.setState({ currentData: null, addNew: true });
+    if (!boolean) this.getData();
   };
 
-  handleDelete = (row) => {
-    //Handle deletion of a row
+  deleteWarning = (row) => {
+    this.setState({ targetRow: row, deleteWarning: true });
+  };
+
+  handleDelete = async () => {
+    try {
+      await axios.delete(`admin/orders/${this.state.targetRow.id}`);
+      this.getData();
+    } catch (error) {
+      alert("Error: " + error);
+    }
   };
 
   handleCurrentData = (obj) => {
@@ -384,80 +388,91 @@ class DataListConfig extends Component {
       sortIndex,
     } = this.state;
     return (
-      <div
-        className={`data-list ${
-          this.props.thumbView ? "thumb-view" : "list-view"
-        }`}
-      >
-        <DataTable
-          columns={columns}
-          data={value.length ? allData : data}
-          pagination
-          paginationServer
-          paginationComponent={() => (
-            <ReactPaginate
-              previousLabel={<ChevronLeft size={15} />}
-              nextLabel={<ChevronRight size={15} />}
-              breakLabel="..."
-              breakClassName="break-me"
-              pageCount={totalPages}
-              containerClassName="vx-pagination pagination-center separated-pagination pagination-sm mb-0 mt-2"
-              activeClassName="active"
-              forcePage={
-                this.props.parsedFilter.page
-                  ? parseInt(this.props.parsedFilter.page - 1)
-                  : 0
-              }
-              onPageChange={(page) => this.handlePagination(page)}
-            />
-          )}
-          noHeader
-          subHeader
-          selectableRows
-          responsive
-          pointerOnHover
-          selectableRowsHighlight
-          onSelectedRowsChange={(data) =>
-            this.setState({ selected: data.selectedRows })
-          }
-          customStyles={selectedStyle}
-          subHeaderComponent={
-            <CustomHeader
-              handleSidebar={this.handleSidebar}
-              handleFilter={this.handleFilter}
-              handleRowsPerPage={this.handleRowsPerPage}
-              rowsPerPage={rowsPerPage}
-              total={totalRecords}
-              index={sortIndex}
-            />
-          }
-          sortIcon={<ChevronDown />}
-          selectableRowsComponent={Checkbox}
-          selectableRowsComponentProps={{
-            color: "primary",
-            icon: <Check className="vx-icon" size={12} />,
-            label: "",
-            size: "sm",
+      <>
+        <SweetAlert
+          title="Are you sure?"
+          warning
+          show={this.state.deleteWarning}
+          showCancel
+          reverseButtons
+          cancelBtnBsStyle="danger"
+          confirmBtnText="Yes, delete it!"
+          cancelBtnText="Cancel"
+          onConfirm={() => {
+            this.handleDelete();
+            this.setState({ deleteWarning: false });
           }}
-        />
-        <Sidebar
-          show={sidebar}
-          data={currentData}
-          updateData={this.props.updateData}
-          addData={this.props.addData}
-          handleSidebar={this.handleSidebar}
-          thumbView={this.props.thumbView}
-          getData={this.props.getData}
-          dataParams={this.props.parsedFilter}
-          addNew={this.state.addNew}
-        />
+          onCancel={() => {
+            this.setState({ deleteWarning: false });
+          }}
+        >
+          You won't be able to revert this!
+        </SweetAlert>
         <div
-          className={classnames("data-list-overlay", {
-            show: sidebar,
-          })}
-          onClick={() => this.handleSidebar(false, true)}
-        />
-      </div>
+          className={`data-list ${
+            this.props.thumbView ? "thumb-view" : "list-view"
+          }`}
+        >
+          <DataTable
+            defaultSortField="id"
+            defaultSortAsc={false}
+            columns={columns}
+            data={value.length ? allData : data}
+            pagination
+            paginationServer
+            paginationComponent={() => (
+              <ReactPaginate
+                previousLabel={<ChevronLeft size={15} />}
+                nextLabel={<ChevronRight size={15} />}
+                breakLabel="..."
+                breakClassName="break-me"
+                pageCount={totalPages}
+                containerClassName="vx-pagination pagination-center separated-pagination pagination-sm mb-0 mt-2"
+                activeClassName="active"
+                forcePage={
+                  this.props.parsedFilter.page
+                    ? parseInt(this.props.parsedFilter.page - 1)
+                    : 0
+                }
+                onPageChange={(page) => this.handlePagination(page)}
+              />
+            )}
+            noHeader
+            subHeader
+            responsive
+            pointerOnHover
+            customStyles={selectedStyle}
+            subHeaderComponent={
+              <CustomHeader
+                handleSidebar={this.handleSidebar}
+                handleFilter={this.handleFilter}
+                handleRowsPerPage={this.handleRowsPerPage}
+                rowsPerPage={rowsPerPage}
+                total={totalRecords}
+                index={sortIndex}
+              />
+            }
+            sortIcon={<ChevronDown />}
+          />
+          <Sidebar
+            show={sidebar}
+            data={currentData}
+            updateData={this.props.updateData}
+            addData={this.props.addData}
+            handleSidebar={this.handleSidebar}
+            thumbView={this.props.thumbView}
+            getData={this.props.getData}
+            dataParams={this.props.parsedFilter}
+            addNew={this.state.addNew}
+          />
+          <div
+            className={classnames("data-list-overlay", {
+              show: sidebar,
+            })}
+            onClick={() => this.handleSidebar(false, true)}
+          />
+        </div>
+      </>
     );
   }
 }
