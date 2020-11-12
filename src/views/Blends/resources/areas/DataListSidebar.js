@@ -9,7 +9,6 @@ class DataListSidebar extends Component {
   state = {
     id: "",
     name: "",
-    area_fence: [],
   };
 
   addNew = false;
@@ -22,14 +21,10 @@ class DataListSidebar extends Component {
       if (this.props.data.name !== prevState.name) {
         this.setState({ name: this.props.data.name });
       }
-      if (this.props.data.area_fence !== prevState.area_fence) {
-        this.setState({ area_fence: this.props.data.area_fence });
-      }
     }
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
         name: "",
-        area_fence: [],
       });
     }
   }
@@ -40,7 +35,6 @@ class DataListSidebar extends Component {
       try {
         await axios.put(`admin/areas/${this.state.id}`, {
           name: this.state.name,
-          area_fence: this.state.area_fence,
         });
       } catch (error) {
         alert("Error: " + error);
@@ -50,25 +44,13 @@ class DataListSidebar extends Component {
       try {
         await axios.post(`admin/areas/`, {
           name: this.state.name,
-          area_fence: this.state.area_fence,
+          area_fence: [],
         });
       } catch (error) {
         alert("Error: " + error);
       }
     }
     this.props.handleSidebar(false, true);
-  };
-
-  addCoordinate = () => {
-    let newFence = [...this.state.area_fence];
-    newFence = newFence.concat("");
-    this.setState({ area_fence: newFence });
-  };
-
-  removeCoordinate = () => {
-    let newFence = [...this.state.area_fence];
-    newFence = newFence.slice(0, -1);
-    this.setState({ area_fence: newFence });
   };
 
   render() {
@@ -98,39 +80,6 @@ class DataListSidebar extends Component {
               id="data-name"
             />
           </FormGroup>
-          <FormGroup>
-            <Label for="data-name">Area Fence (lng,lat)</Label>
-            {area_fence.map((coordinate, index) => {
-              return (
-                <Input
-                  type="text"
-                  style={{ marginTop: "5px" }}
-                  value={coordinate}
-                  placeholder=""
-                  onChange={(e) => {
-                    const newFence = [...this.state.area_fence];
-                    newFence[index] = e.target.value;
-                    this.setState({ area_fence: newFence });
-                  }}
-                  id="data-name"
-                />
-              );
-            })}
-          </FormGroup>
-          <Button
-            color="primary"
-            style={{ padding: "5px 9px 5px 9px" }}
-            onClick={() => this.addCoordinate()}
-          >
-            <Plus size={16} />
-          </Button>
-          <Button
-            color="light"
-            style={{ marginLeft: "10px", padding: "5px 9px 5px 9px" }}
-            onClick={() => this.removeCoordinate()}
-          >
-            <Minus size={16} />
-          </Button>
         </PerfectScrollbar>
         <div className="data-list-sidebar-footer px-2 d-flex justify-content-start align-items-center mt-1">
           <Button color="primary" onClick={() => this.handleSubmit(this.state)}>
