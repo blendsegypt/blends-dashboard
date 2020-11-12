@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button } from "reactstrap";
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DataTable from "react-data-table-component";
 import classnames from "classnames";
 import ReactPaginate from "react-paginate";
@@ -29,6 +29,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 
 import "../../../../assets/scss/plugins/extensions/react-paginate.scss";
 import "../../../../assets/scss/pages/data-list.scss";
+import Map from "./Map";
 
 function formatDate(date) {
   const d = new Date(date);
@@ -143,26 +144,25 @@ class DataListConfig extends Component {
         selector: "area_fence",
         cell: (row) => {
           return (
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {row.area_fence.map((coordinates) => {
-                const lat = coordinates.split(",")[0];
-                const lng = coordinates.split(",")[1];
-                return (
-                  <div
-                    style={{
-                      margin: "5px",
-                      backgroundColor: "#ececec",
-                      padding: "10px",
-                      color: "#2d2d2d",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    <div>Lat: {lat}</div>
-                    <div>Lng: {lng}</div>
-                  </div>
-                );
-              })}
-            </div>
+            <span
+              style={{ color: "#2960c4" }}
+              onClick={() => {
+                //convert array of "lat,lng" to proper json array
+                const path = row.area_fence.map((coord) => {
+                  const coordinates = coord.split(",");
+                  return {
+                    lat: Number(coordinates[0]),
+                    lng: Number(coordinates[1]),
+                  };
+                });
+                this.setState({ current_path: path });
+                if (row.area_fence.length === 0)
+                  this.setState({ newFence: true });
+                this.toggleFencing(row.id);
+              }}
+            >
+              {row.area_fence.length > 0 ? "Edit" : "Add"} Fence
+            </span>
           );
         },
       },
@@ -201,9 +201,33 @@ class DataListConfig extends Component {
     addNew: "",
     targetRow: null,
     deleteWarning: false,
+    fencing: false,
+    current_path: [],
   };
 
   thumbView = this.props.thumbView;
+
+  setPath = (path) => {
+    this.setState({ current_path: path });
+  };
+
+  updateFence = () => {
+    try {
+      const area_fence = this.state.current_path.map((coordinate) => {
+        return `${coordinate.lat},${coordinate.lng}`;
+      });
+      axios.put(`admin/areas/${this.state.area_id}`, {
+        area_fence,
+      });
+      window.location.reload(false);
+    } catch (error) {
+      alert("Error! " + error);
+    }
+  };
+
+  toggleFencing = (area_id) => {
+    this.setState({ fencing: !this.state.fencing, area_id });
+  };
 
   handleFilter = (e) => {
     this.setState({ value: e.target.value });
@@ -288,12 +312,35 @@ class DataListConfig extends Component {
         >
           You won't be able to revert this!
         </SweetAlert>
+        <Modal
+          isOpen={this.state.fencing}
+          toggle={this.toggleFencing}
+          size={"lg"}
+          style={{ width: "100%" }}
+        >
+          <ModalHeader toggle={this.toggleModal}>Edit Area</ModalHeader>
+          <ModalBody>
+            <Map currentPath={this.state.current_path} setPath={this.setPath} />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="primary"
+              onClick={() => {
+                this.toggleFencing();
+                this.updateFence();
+              }}
+            >
+              Save
+            </Button>{" "}
+          </ModalFooter>
+        </Modal>
         <div
           className={`data-list ${
             this.props.thumbView ? "thumb-view" : "list-view"
           }`}
         >
           <DataTable
+            defaultSortField="id"
             columns={columns}
             data={value.length ? allData : data}
             pagination
