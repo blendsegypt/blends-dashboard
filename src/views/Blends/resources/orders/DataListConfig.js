@@ -236,11 +236,7 @@ class DataListConfig extends Component {
         width: "100px",
         cell: (row) => {
           let startedPreparingIn, deliveringIn, deliveredIn, total;
-          if (
-            row.preparing_at === null ||
-            row.delivering_at === null ||
-            row.delivered_at === null
-          ) {
+          if (row.delivered_at === null) {
             row.total_order_time = Math.ceil(
               (new Date() - new Date(row.createdAt)) / (1000 * 60)
             );

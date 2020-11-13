@@ -5,7 +5,6 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import Select from "react-select";
 import axios from "../../../../axios";
-import { isObject } from "formik";
 
 const orderStatusList = [
   {
@@ -13,8 +12,8 @@ const orderStatusList = [
     value: "Received",
   },
   {
-    label: "Brewing",
-    value: "Brewing",
+    label: "Preparing",
+    value: "Preparing",
   },
   {
     label: "Delivering",
@@ -221,7 +220,7 @@ class DataListSidebar extends Component {
         order.OrderItems.forEach((item) => {
           item.order_id = this.state.id;
         });
-        console.log(order);
+        order.order_status = this.state.order_status.value;
         await axios.put(`admin/orders/${this.state.id}`, order);
       } catch (error) {
         alert("Error! " + error);
