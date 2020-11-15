@@ -7,29 +7,7 @@ import Select from "react-select";
 import Flatpickr from "react-flatpickr";
 import "../../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss";
 import "flatpickr/dist/themes/light.css";
-
-const products = [
-  {
-    value: 1,
-    label: "Lay's Tomatoes Chips (30g)",
-  },
-  {
-    value: 2,
-    label: "Lay's Chicken Chips (30g)",
-  },
-  {
-    value: 3,
-    label: "Lambada Biscuit (15g)",
-  },
-  {
-    value: 4,
-    label: "Lotus Biscuit (10g)",
-  },
-  {
-    value: 5,
-    label: "Shamedan Biscuit (30g)",
-  },
-];
+import axios from "../../../../axios";
 
 class DataListSidebar extends Component {
   state = {
@@ -39,15 +17,23 @@ class DataListSidebar extends Component {
     start_date: new Date(),
     end_date: new Date(),
     max_usage_per_user: 0,
-    minimum_order_value: 0,
+    min_order_value: 0,
     percentage_discount: 0,
-    fixed_discount: 0,
-    free_item_id: "",
-    free_item: "",
-    cashback_amount: 0,
+    fixed_amount: 0,
+    free_product: "",
+    cashback: 0,
   };
 
-  addNew = false;
+  async componentDidMount() {
+    try {
+      const products = await axios.get("admin/products");
+      this.setState({
+        products_list: products.data.data,
+      });
+    } catch (error) {
+      alert(`An error occured ${error}`);
+    }
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.data !== null && prevProps.data === null) {
@@ -71,11 +57,9 @@ class DataListSidebar extends Component {
           max_usage_per_user: this.props.data.max_usage_per_user,
         });
       }
-      if (
-        this.props.data.minimum_order_value !== prevState.minimum_order_value
-      ) {
+      if (this.props.data.min_order_value !== prevState.min_order_value) {
         this.setState({
-          minimum_order_value: this.props.data.minimum_order_value,
+          min_order_value: this.props.data.min_order_value,
         });
       }
       if (
@@ -85,17 +69,17 @@ class DataListSidebar extends Component {
           percentage_discount: this.props.data.percentage_discount,
         });
       }
-      if (this.props.data.fixed_discount !== prevState.fixed_discount) {
-        this.setState({ fixed_discount: this.props.data.fixed_discount });
+      if (this.props.data.fixed_amount !== prevState.fixed_amount) {
+        this.setState({ fixed_amount: this.props.data.fixed_amount });
       }
-      if (this.props.data.free_item_id !== prevState.free_item_id) {
-        this.setState({ free_item_id: this.props.data.free_item_id });
+      if (this.props.data.free_product !== prevState.free_product) {
+        this.setState({ free_product: this.props.data.free_product });
       }
       if (this.props.data.free_item !== prevState.free_item) {
         this.setState({ free_item: this.props.data.free_item });
       }
-      if (this.props.data.cashback_amount !== prevState.cashback_amount) {
-        this.setState({ cashback_amount: this.props.data.cashback_amount });
+      if (this.props.data.cashback !== prevState.cashback) {
+        this.setState({ cashback: this.props.data.cashback });
       }
     }
     if (this.props.data === null && prevProps.data !== null) {
@@ -106,51 +90,80 @@ class DataListSidebar extends Component {
         start_date: new Date(),
         end_date: new Date(),
         max_usage_per_user: 0,
-        minimum_order_value: 0,
+        min_order_value: 0,
         percentage_discount: 0,
-        fixed_discount: 0,
-        free_item_id: "",
-        free_item: "",
-        cashback_amount: 0,
+        fixed_amount: 0,
+        free_product: "",
+        cashback: 0,
       });
     }
     this.addNew = false;
   }
 
-  handleSubmit = (obj) => {
-    if (this.props.data !== null) {
-      //this.props.updateData(obj);
-    } else {
-      //this.addNew = true;
-      //this.props.addData(obj);
+  handleSubmit = async () => {
+    const promocode = {
+      code: this.state.code,
+      type: this.state.type,
+      start_date: this.state.start_date,
+      end_date: this.state.end_date,
+      max_usage_per_user: this.state.max_usage_per_user,
+      min_order_value: this.state.min_order_value,
+      free_product: null,
+      fixed_amount: null,
+      cashback: null,
+      percentage_discount: null,
+    };
+    if (promocode.type === "fixed") {
+      promocode.fixed_amount = this.state.fixed_amount;
+    } else if (promocode.type === "percentage") {
+      promocode.percentage_discount = this.state.percentage_discount;
+    } else if (promocode.type === "free_item") {
+      promocode.free_product = this.state.free_product.id;
+    } else if (promocode.type === "cashback") {
+      promocode.cashback = this.state.cashback;
     }
-    //let params = Object.keys(this.props.dataParams).length
-    //  ? this.props.dataParams
-    //  : { page: 1, perPage: 4 };
+    if (this.props.data !== null) {
+      // Update Promocode
+      try {
+        await axios.put(`admin/promo-codes/${this.state.id}`, promocode);
+      } catch (error) {
+        alert("Error: " + error);
+      }
+    } else {
+      // Add new Promocode
+      try {
+        await axios.post(`admin/promo-codes`, promocode);
+      } catch (error) {
+        alert("Error: " + error);
+      }
+    }
     this.props.handleSidebar(false, true);
-    //this.props.getData(params);
   };
 
   render() {
     let { show, handleSidebar, data } = this.props;
     let {
-      free_item_id,
       code,
       type,
       start_date,
       end_date,
       max_usage_per_user,
-      minimum_order_value,
+      min_order_value,
       percentage_discount,
-      fixed_discount,
-      cashback_amount,
+      fixed_amount,
+      cashback,
+      free_product,
+      products_list,
     } = this.state;
-    let selected_product = "";
-    products.forEach((product, index) => {
-      if (product.value === free_item_id) {
-        selected_product = products[index];
-      }
-    });
+    let selected_product = free_product;
+    if (products_list) {
+      products_list.forEach((product, index) => {
+        if (product.id === free_product) {
+          selected_product = products_list[index];
+        }
+      });
+    }
+
     return (
       <div
         className={classnames("data-list-sidebar", {
@@ -188,13 +201,13 @@ class DataListSidebar extends Component {
             />
           </FormGroup>
           <FormGroup>
-            <Label for="data-popularity">Minimum Order Value</Label>
+            <Label for="data-popularity">Minimum Order Value (EGP)</Label>
             <Input
               type="text"
-              value={minimum_order_value}
+              value={min_order_value}
               placeholder=""
               onChange={(e) =>
-                this.setState({ minimum_order_value: e.target.value })
+                this.setState({ min_order_value: e.target.value })
               }
               id="data-opens-at"
             />
@@ -242,42 +255,43 @@ class DataListSidebar extends Component {
               onChange={(e) => this.setState({ type: e.target.value })}
             >
               <option value="not_selected">Select...</option>
-              <option value="Fixed Discount">Fixed Discount</option>
-              <option value="Percentage Discount">Percentage Discount</option>
-              <option value="Free Item">Free Item</option>
-              <option value="Cashback">Cashback in Balance</option>
+              <option value="fixed">Fixed Discount</option>
+              <option value="percentage">Percentage Discount</option>
+              <option value="free_item">Free Item</option>
+              <option value="free_delivery">Free Delivery</option>
+              <option value="cashback">Cashback</option>
             </Input>
           </FormGroup>
-          {type === "Free Item" && (
+          {type === "free_item" && (
             <FormGroup>
               <Label for="data-product">Free Product</Label>
               <Select
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
                 className="React"
                 classNamePrefix="select"
                 value={selected_product}
                 name="clear"
-                options={products}
-                onChange={(select) =>
-                  this.setState({ free_item_id: select.value })
-                }
+                options={products_list}
+                onChange={(product) => this.setState({ free_product: product })}
               />
             </FormGroup>
           )}
-          {type === "Fixed Discount" && (
+          {type === "fixed" && (
             <FormGroup>
               <Label for="data-product">Fixed Discount (EGP)</Label>
               <Input
                 type="text"
-                value={fixed_discount}
+                value={fixed_amount}
                 placeholder="20"
                 onChange={(e) =>
-                  this.setState({ fixed_discount: e.target.value })
+                  this.setState({ fixed_amount: e.target.value })
                 }
                 id="data-opens-at"
               />
             </FormGroup>
           )}
-          {type === "Percentage Discount" && (
+          {type === "percentage" && (
             <FormGroup>
               <Label for="data-product">Percentage Discount (%)</Label>
               <Input
@@ -291,23 +305,21 @@ class DataListSidebar extends Component {
               />
             </FormGroup>
           )}
-          {type === "Cashback" && (
+          {type === "cashback" && (
             <FormGroup>
               <Label for="data-product">Cashback Percentage (%)</Label>
               <Input
                 type="text"
-                value={cashback_amount}
+                value={cashback}
                 placeholder="15"
-                onChange={(e) =>
-                  this.setState({ cashback_amount: e.target.value })
-                }
+                onChange={(e) => this.setState({ cashback: e.target.value })}
                 id="data-opens-at"
               />
             </FormGroup>
           )}
         </PerfectScrollbar>
         <div className="data-list-sidebar-footer px-2 d-flex justify-content-start align-items-center mt-1">
-          <Button color="primary" onClick={() => this.handleSubmit(this.state)}>
+          <Button color="primary" onClick={() => this.handleSubmit()}>
             {data !== null ? "Update" : "Submit"}
           </Button>
           <Button

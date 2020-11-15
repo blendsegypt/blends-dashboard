@@ -4,17 +4,10 @@ import { Button } from "reactstrap";
 import classnames from "classnames";
 import { history } from "../../../../history";
 import { Edit, Trash, ChevronDown, Check, Plus } from "react-feather";
-import { connect } from "react-redux";
-import {
-  getData,
-  getInitialData,
-  deleteData,
-  updateData,
-  addData,
-  filterData,
-} from "../../../../redux/actions/data-list/";
+import axios from "../../../../axios";
 import Sidebar from "./DataListSidebar";
 import Chip from "../../../../components/@vuexy/chips/ChipComponent";
+import SweetAlert from "react-bootstrap-sweetalert";
 import Checkbox from "../../../../components/@vuexy/checkbox/CheckboxesVuexy";
 
 import "../../../../assets/scss/plugins/extensions/react-paginate.scss";
@@ -22,7 +15,15 @@ import "../../../../assets/scss/pages/data-list.scss";
 
 const chipColors = {
   Active: "success",
-  Expired: "warning",
+  Expired: "danger",
+};
+
+const promocodesTypes = {
+  percentage: "Percentage Discount",
+  fixed: "Fixed Discount",
+  free_delivery: "Free Delivery",
+  free_item: "Free Item",
+  cashback: "Cashback",
 };
 
 const selectedStyle = {
@@ -38,7 +39,8 @@ const selectedStyle = {
   },
 };
 
-function formatDate(d) {
+function formatDate(date) {
+  const d = new Date(date);
   let month = "" + (d.getMonth() + 1);
   let day = "" + d.getDate();
   let year = d.getFullYear();
@@ -80,7 +82,7 @@ const ActionsComponent = (props) => {
         className="cursor-pointer"
         size={20}
         onClick={() => {
-          //Delete Item
+          props.deleteWarning(props.row);
         }}
       />
     </div>
@@ -88,57 +90,34 @@ const ActionsComponent = (props) => {
 };
 
 class DataListConfig extends Component {
-  componentDidMount() {
-    const data = [
-      {
-        id: 1,
-        code: "FORDER",
-        type: "Fixed Discount",
-        start_date: new Date(2020, 10, 27),
-        end_date: new Date(2020, 11, 27),
-        max_usage_per_user: 1,
-        minimum_order_value: 0,
-        percentage_discount: "",
-        fixed_discount: 30,
-        free_item_id: 0,
-        free_item: "",
-        cashback_amount: "",
-      },
-      {
-        id: 2,
-        code: "FREELOT",
-        type: "Free Item",
-        start_date: new Date(2020, 3, 10),
-        end_date: new Date(2020, 5, 10),
-        max_usage_per_user: 1,
-        minimum_order_value: 50,
-        percentage_discount: "",
-        fixed_discount: 0,
-        free_item_id: 4,
-        free_item: "Lotus Biscuits (15g)",
-        cashback_amount: "",
-      },
-    ];
-
-    // Calculate Coupons "status" property
-    const today = new Date();
-    data.forEach((coupon) => {
-      let status = "Active";
-      if (coupon.end_date - today < 0) {
-        status = "Expired";
-      }
-      coupon.status = status;
-    });
-
-    this.setState({
-      data,
-      allData: data,
-      totalPages: 1,
-      currentPage: 1,
-      rowsPerPage: 1,
-      totalRecords: 2,
-    });
+  async componentDidMount() {
+    await this.getData();
   }
+
+  getData = async () => {
+    try {
+      const tags = await axios.get("admin/promo-codes");
+      // Calculate promocodes "status" property
+      const today = new Date();
+      tags.data.data.forEach((promocode) => {
+        let status = "Active";
+        if (new Date(promocode.end_date) - today < 0) {
+          status = "Expired";
+        }
+        promocode.status = status;
+      });
+      this.setState({
+        data: tags.data.data,
+        allData: tags.data.data,
+        totalPages: 1,
+        currentPage: 1,
+        rowsPerPage: 1,
+        totalRecords: 2,
+      });
+    } catch (error) {
+      alert("Error occured!: " + error);
+    }
+  };
 
   state = {
     data: [],
@@ -149,6 +128,7 @@ class DataListConfig extends Component {
         name: "ID",
         selector: "id",
         sortable: true,
+        width: "80px",
         cell: (row) => (
           <p title={row.id} className="text-truncate text-bold-500 mb-0">
             {row.id}
@@ -159,13 +139,14 @@ class DataListConfig extends Component {
         name: "Code",
         selector: "code",
         sortable: true,
+        width: "140px",
         cell: (row) => `${row.code}`,
       },
       {
         name: "Type",
         selector: "type",
         sortable: true,
-        cell: (row) => <b>{row.type}</b>,
+        cell: (row) => <b>{promocodesTypes[row.type]}</b>,
       },
       {
         name: "Status",
@@ -199,27 +180,39 @@ class DataListConfig extends Component {
       },
       {
         name: "Minimum Order value",
-        selector: "minimum_order_value",
+        selector: "min_order_value",
         sortable: true,
-        cell: (row) => `${row.minimum_order_value}`,
+        cell: (row) => {
+          if (!row.min_order_value) return ``;
+          return `${row.min_order_value}`;
+        },
       },
       {
         name: "Percentage Discount",
         selector: "percentage_discount",
         sortable: true,
-        cell: (row) => `${row.percentage_discount}`,
+        cell: (row) => {
+          if (!row.percentage_discount) return ``;
+          return `${row.percentage_discount}`;
+        },
       },
       {
         name: "Fixed Discount",
-        selector: "fixed_discount",
+        selector: "fixed_amount",
         sortable: true,
-        cell: (row) => `${row.fixed_discount}`,
+        cell: (row) => {
+          if (!row.fixed_amount) return ``;
+          return `${row.fixed_amount}`;
+        },
       },
       {
         name: "Free Item",
         selector: "free_item",
         sortable: true,
-        cell: (row) => `${row.free_item}`,
+        cell: (row) => {
+          if (!row.Product) return ``;
+          return `${row.Product.name}`;
+        },
       },
       {
         name: "Cashback Amount",
@@ -231,7 +224,11 @@ class DataListConfig extends Component {
         name: "Actions",
         sortable: true,
         cell: (row) => (
-          <ActionsComponent row={row} currentData={this.handleCurrentData} />
+          <ActionsComponent
+            row={row}
+            currentData={this.handleCurrentData}
+            deleteWarning={this.deleteWarning}
+          />
         ),
       },
     ],
@@ -244,6 +241,8 @@ class DataListConfig extends Component {
     totalRecords: 0,
     sortIndex: [],
     addNew: "",
+    targetRow: null,
+    deleteWarning: false,
   };
 
   thumbView = this.props.thumbView;
@@ -264,10 +263,20 @@ class DataListConfig extends Component {
   handleSidebar = (boolean, addNew = false) => {
     this.setState({ sidebar: boolean });
     if (addNew === true) this.setState({ currentData: null, addNew: true });
+    if (!boolean) this.getData();
   };
 
-  handleDelete = (row) => {
-    //Handle deletion of a row
+  deleteWarning = (row) => {
+    this.setState({ targetRow: row, deleteWarning: true });
+  };
+
+  handleDelete = async () => {
+    try {
+      await axios.delete(`admin/promo-codes/${this.state.targetRow.id}`);
+      this.getData();
+    } catch (error) {
+      alert("Error: " + error);
+    }
   };
 
   handleCurrentData = (obj) => {
@@ -299,76 +308,85 @@ class DataListConfig extends Component {
       sortIndex,
     } = this.state;
     return (
-      <div
-        className={`data-list ${
-          this.props.thumbView ? "thumb-view" : "list-view"
-        }`}
-      >
-        <DataTable
-          columns={columns}
-          data={value.length ? allData : data}
-          noHeader
-          subHeader
-          selectableRows
-          responsive
-          pointerOnHover
-          selectableRowsHighlight
-          onSelectedRowsChange={(data) =>
-            this.setState({ selected: data.selectedRows })
-          }
-          customStyles={selectedStyle}
-          sortIcon={<ChevronDown />}
-          selectableRowsComponent={Checkbox}
-          selectableRowsComponentProps={{
-            color: "primary",
-            icon: <Check className="vx-icon" size={12} />,
-            label: "",
-            size: "sm",
+      <>
+        <SweetAlert
+          title="Are you sure?"
+          warning
+          show={this.state.deleteWarning}
+          showCancel
+          reverseButtons
+          cancelBtnBsStyle="danger"
+          confirmBtnText="Yes, delete it!"
+          cancelBtnText="Cancel"
+          onConfirm={() => {
+            this.handleDelete();
+            this.setState({ deleteWarning: false });
           }}
-          subHeaderComponent={
-            <CustomHeader
-              handleSidebar={this.handleSidebar}
-              handleFilter={this.handleFilter}
-              handleRowsPerPage={this.handleRowsPerPage}
-              rowsPerPage={rowsPerPage}
-              total={totalRecords}
-              index={sortIndex}
-            />
-          }
-        />
-        <Sidebar
-          show={sidebar}
-          data={currentData}
-          updateData={this.props.updateData}
-          addData={this.props.addData}
-          handleSidebar={this.handleSidebar}
-          thumbView={this.props.thumbView}
-          getData={this.props.getData}
-          dataParams={this.props.parsedFilter}
-          addNew={this.state.addNew}
-        />
+          onCancel={() => {
+            this.setState({ deleteWarning: false });
+          }}
+        >
+          You won't be able to revert this!
+        </SweetAlert>
         <div
-          className={classnames("data-list-overlay", {
-            show: sidebar,
-          })}
-          onClick={() => this.handleSidebar(false, true)}
-        />
-      </div>
+          className={`data-list ${
+            this.props.thumbView ? "thumb-view" : "list-view"
+          }`}
+        >
+          <DataTable
+            defaultSortField="id"
+            columns={columns}
+            data={value.length ? allData : data}
+            noHeader
+            subHeader
+            selectableRows
+            responsive
+            pointerOnHover
+            selectableRowsHighlight
+            onSelectedRowsChange={(data) =>
+              this.setState({ selected: data.selectedRows })
+            }
+            customStyles={selectedStyle}
+            sortIcon={<ChevronDown />}
+            selectableRowsComponent={Checkbox}
+            selectableRowsComponentProps={{
+              color: "primary",
+              icon: <Check className="vx-icon" size={12} />,
+              label: "",
+              size: "sm",
+            }}
+            subHeaderComponent={
+              <CustomHeader
+                handleSidebar={this.handleSidebar}
+                handleFilter={this.handleFilter}
+                handleRowsPerPage={this.handleRowsPerPage}
+                rowsPerPage={rowsPerPage}
+                total={totalRecords}
+                index={sortIndex}
+              />
+            }
+          />
+          <Sidebar
+            show={sidebar}
+            data={currentData}
+            updateData={this.props.updateData}
+            addData={this.props.addData}
+            handleSidebar={this.handleSidebar}
+            thumbView={this.props.thumbView}
+            getData={this.props.getData}
+            dataParams={this.props.parsedFilter}
+            addNew={this.state.addNew}
+          />
+          <div
+            className={classnames("data-list-overlay", {
+              show: sidebar,
+            })}
+            onClick={() => this.handleSidebar(false, true)}
+          />
+        </div>
+      </>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    dataList: state.dataList,
-  };
-};
-
-export default connect(mapStateToProps, {
-  getData,
-  deleteData,
-  updateData,
-  addData,
-  getInitialData,
-  filterData,
-})(DataListConfig);
+export default DataListConfig;
