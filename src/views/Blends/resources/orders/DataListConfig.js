@@ -174,7 +174,7 @@ class DataListConfig extends Component {
         name: "Customer Phone Number",
         selector: "User.phone_number",
         sortable: true,
-        cell: (row) => `0${row.User.phone_number}`,
+        cell: (row) => `${row.User.phone_number}`,
       },
       {
         name: "Delivery Area",
