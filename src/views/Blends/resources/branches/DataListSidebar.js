@@ -19,6 +19,8 @@ const weekDays = [
 class DataListSidebar extends Component {
   state = {
     id: "",
+    active: true,
+    busy_threshold: 0,
     img: "",
     name: "",
     type: "type1",
@@ -61,6 +63,12 @@ class DataListSidebar extends Component {
       if (this.props.data.Areas !== prevState.Areas) {
         this.setState({ Areas: this.props.data.Areas });
       }
+      if (this.props.data.busy_threshold !== prevState.busy_threshold) {
+        this.setState({ busy_threshold: this.props.data.busy_threshold });
+      }
+      if (this.props.data.active !== prevState.active) {
+        this.setState({ active: this.props.data.active });
+      }
       if (
         this.props.data.max_parallel_orders !== prevState.max_parallel_orders
       ) {
@@ -72,6 +80,8 @@ class DataListSidebar extends Component {
     if (this.props.data === null && prevProps.data !== null) {
       this.setState({
         id: "",
+        active: true,
+        busy_threshold: 0,
         status: "open",
         name: "",
         type: "type1",
@@ -83,6 +93,8 @@ class DataListSidebar extends Component {
     if (this.addNew) {
       this.setState({
         id: "",
+        active: true,
+        busy_threshold: 0,
         status: "open",
         name: "",
         type: "type1",
@@ -105,7 +117,9 @@ class DataListSidebar extends Component {
       id: this.state.id,
       status: this.state.status,
       name: this.state.name,
+      busy_threshold: this.state.busy_threshold,
       type: this.state.type,
+      active: this.state.active,
       max_parallel_orders: Number(this.state.max_parallel_orders),
       working_hours: this.state.working_hours,
       SupportedAreas,
@@ -144,6 +158,8 @@ class DataListSidebar extends Component {
       closes_at,
       img,
       Areas,
+      active,
+      busy_threshold,
     } = this.state;
     return (
       <div
@@ -183,6 +199,18 @@ class DataListSidebar extends Component {
             </Input>
           </FormGroup>
           <FormGroup>
+            <Label for="data-active">Active (In Service)</Label>
+            <Input
+              type="select"
+              id="data-active"
+              value={active}
+              onChange={(e) => this.setState({ active: e.target.value })}
+            >
+              <option value={true}>Active</option>
+              <option value={false}>Not Active</option>
+            </Input>
+          </FormGroup>
+          <FormGroup>
             <Label for="data-popularity">Supported Areas</Label>
             <Select
               isMulti
@@ -212,6 +240,7 @@ class DataListSidebar extends Component {
               <option value="open">Open</option>
               <option value="busy">Busy</option>
               <option value="closed">Closed</option>
+              <option value="under_maintenance">Under Maintenance</option>
             </Input>
           </FormGroup>
           <FormGroup>
@@ -223,6 +252,18 @@ class DataListSidebar extends Component {
               placeholder="0 - 100"
               onChange={(e) =>
                 this.setState({ max_parallel_orders: e.target.value })
+              }
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="data-popularity">Busy threshold (Orders)</Label>
+            <Input
+              type="number"
+              value={busy_threshold}
+              id="data-popularity"
+              placeholder="0 - 100"
+              onChange={(e) =>
+                this.setState({ busy_threshold: e.target.value })
               }
             />
           </FormGroup>

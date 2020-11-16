@@ -35,6 +35,7 @@ const chipColors = {
   open: "success",
   busy: "warning",
   closed: "danger",
+  under_maintenance: "danger",
 };
 
 const selectedStyle = {
@@ -119,7 +120,7 @@ class DataListConfig extends Component {
         name: "ID",
         selector: "id",
         sortable: true,
-        width: "100px",
+        width: "70px",
       },
       {
         name: "Branch Name",
@@ -136,7 +137,7 @@ class DataListConfig extends Component {
         name: "Supported Areas",
         selector: "Areas",
         sortable: true,
-        minWidth: "140px",
+        minWidth: "110px",
         cell: (row) => {
           if (!row.Areas) return;
           return (
@@ -166,19 +167,37 @@ class DataListConfig extends Component {
         name: "Branch Status",
         selector: "status",
         sortable: true,
-        cell: (row) => (
-          <Chip
-            className="m-0"
-            color={chipColors[row.status]}
-            text={row.status}
-          />
-        ),
+        width: "130px",
+        cell: (row) => {
+          if (row.status === "under_maintenance") {
+            return (
+              <Chip
+                className="m-0"
+                color={chipColors[row.status]}
+                text="Under Maintenance"
+              />
+            );
+          }
+          return (
+            <Chip
+              className="m-0"
+              color={chipColors[row.status]}
+              text={row.status}
+            />
+          );
+        },
       },
       {
         name: "Max. Parallel Orders",
         selector: "max_parallel_orders",
         sortable: true,
         cell: (row) => `${row.max_parallel_orders}`,
+      },
+      {
+        name: "Busy threshold (Orders)",
+        selector: "busy_threshold",
+        sortable: true,
+        cell: (row) => `${row.busy_threshold}`,
       },
       {
         name: "Working Days",
@@ -207,6 +226,12 @@ class DataListConfig extends Component {
         selector: "closes_at",
         sortable: true,
         cell: (row) => `${row.working_hours[0].closes_at}`,
+      },
+      {
+        name: "Active",
+        selector: "active",
+        sortable: true,
+        cell: (row) => (row.active ? `Active` : "Not Active"),
       },
       {
         name: "Actions",
