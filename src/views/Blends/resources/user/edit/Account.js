@@ -105,6 +105,13 @@ class UserAccountTab extends React.Component {
   };
 
   hashPassword = (password) => {
+    if (!password) {
+      this.setState({
+        errorAlert: true,
+        errorMessage: "Password doesn't match password confirmation",
+      });
+      return;
+    }
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
@@ -116,7 +123,11 @@ class UserAccountTab extends React.Component {
 
   createUser = async () => {
     const user = Object.assign({}, this.state.user);
-    if (user.password !== user.password_confirmation) {
+    if (
+      user.password !== user.password_confirmation ||
+      user.password === "" ||
+      user.password_confirmation === ""
+    ) {
       this.setState({
         errorAlert: true,
         errorMessage: "Password doesn't match password confirmation",
