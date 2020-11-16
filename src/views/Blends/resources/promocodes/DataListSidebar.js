@@ -21,6 +21,7 @@ class DataListSidebar extends Component {
     percentage_discount: 0,
     fixed_amount: 0,
     free_product: "",
+    free_product_quantity: 1,
     cashback: 0,
   };
 
@@ -75,8 +76,13 @@ class DataListSidebar extends Component {
       if (this.props.data.free_product !== prevState.free_product) {
         this.setState({ free_product: this.props.data.free_product });
       }
-      if (this.props.data.free_item !== prevState.free_item) {
-        this.setState({ free_item: this.props.data.free_item });
+      if (
+        this.props.data.free_product_quantity !==
+        prevState.free_product_quantity
+      ) {
+        this.setState({
+          free_product_quantity: this.props.data.free_product_quantity,
+        });
       }
       if (this.props.data.cashback !== prevState.cashback) {
         this.setState({ cashback: this.props.data.cashback });
@@ -94,6 +100,7 @@ class DataListSidebar extends Component {
         percentage_discount: 0,
         fixed_amount: 0,
         free_product: "",
+        free_product_quantity: 1,
         cashback: 0,
       });
     }
@@ -119,6 +126,7 @@ class DataListSidebar extends Component {
       promocode.percentage_discount = this.state.percentage_discount;
     } else if (promocode.type === "free_item") {
       promocode.free_product = this.state.free_product.id;
+      promocode.free_product_quantity = this.state.free_product_quantity;
     } else if (promocode.type === "cashback") {
       promocode.cashback = this.state.cashback;
     }
@@ -153,6 +161,7 @@ class DataListSidebar extends Component {
       fixed_amount,
       cashback,
       free_product,
+      free_product_quantity,
       products_list,
     } = this.state;
     let selected_product = free_product;
@@ -263,19 +272,35 @@ class DataListSidebar extends Component {
             </Input>
           </FormGroup>
           {type === "free_item" && (
-            <FormGroup>
-              <Label for="data-product">Free Product</Label>
-              <Select
-                getOptionLabel={(option) => option.name}
-                getOptionValue={(option) => option.id}
-                className="React"
-                classNamePrefix="select"
-                value={selected_product}
-                name="clear"
-                options={products_list}
-                onChange={(product) => this.setState({ free_product: product })}
-              />
-            </FormGroup>
+            <>
+              <FormGroup>
+                <Label for="data-product">Free Product</Label>
+                <Select
+                  getOptionLabel={(option) => option.name}
+                  getOptionValue={(option) => option.id}
+                  className="React"
+                  classNamePrefix="select"
+                  value={selected_product}
+                  name="clear"
+                  options={products_list}
+                  onChange={(product) =>
+                    this.setState({ free_product: product })
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="data-product">Quantity</Label>
+                <Input
+                  type="text"
+                  value={free_product_quantity}
+                  placeholder="1"
+                  onChange={(e) =>
+                    this.setState({ free_product_quantity: e.target.value })
+                  }
+                  id="data-opens-at"
+                />
+              </FormGroup>
+            </>
           )}
           {type === "fixed" && (
             <FormGroup>

@@ -215,6 +215,15 @@ class DataListConfig extends Component {
         },
       },
       {
+        name: "Quantity",
+        selector: "free_product_quantity",
+        sortable: true,
+        cell: (row) => {
+          if (!row.Product) return ``;
+          return `${row.free_product_quantity}`;
+        },
+      },
+      {
         name: "Cashback Amount",
         selector: "cashback_amount",
         sortable: true,
