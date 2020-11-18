@@ -22,6 +22,7 @@
     "file-saver": "^2.0.2",
     "firebase": "^7.10.0",
     "flatpickr": "^4.6.3",
+    "form-data": "^3.0.0",
     "formik": "^2.1.3",
     "history": "^4.10.1",
     "intl-messageformat": "^7.8.4",
