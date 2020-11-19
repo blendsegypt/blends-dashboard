@@ -5,12 +5,13 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import classnames from "classnames";
 import Select from "react-select";
 import axios from "../../../../axios";
+import FormData from "form-data";
 
 class DataListSidebar extends Component {
   state = {
     id: "",
     product_category: "",
-    product_cover: "",
+    product_image_url: null,
     name: "",
     price: "",
     sale_price: "",
@@ -52,8 +53,8 @@ class DataListSidebar extends Component {
           product_category: this.props.data.product_category,
         });
       }
-      if (this.props.data.product_cover !== prevState.product_cover) {
-        this.setState({ product_cover: this.props.data.product_cover });
+      if (this.props.data.product_image_url !== prevState.product_image_url) {
+        this.setState({ product_image_url: this.props.data.product_image_url });
       }
       if (this.props.data.name !== prevState.name) {
         this.setState({ name: this.props.data.name });
@@ -98,7 +99,7 @@ class DataListSidebar extends Component {
       this.setState({
         id: "",
         product_category: "",
-        product_cover: "",
+        product_image_url: null,
         name: "",
         price: "",
         sale_price: "",
@@ -116,7 +117,7 @@ class DataListSidebar extends Component {
       this.setState({
         id: "",
         product_category: "",
-        product_cover: "",
+        product_image_url: null,
         name: "",
         price: "",
         sale_price: "",
@@ -134,9 +135,29 @@ class DataListSidebar extends Component {
   }
 
   handleSubmit = async () => {
+    let imageURL = null;
+    let data = new FormData();
+    data.append("file", this.state.product_image_url, this.state.name);
+    //If there's an image then upload it to S3 first
+    if (this.state.product_image_url) {
+      try {
+        const response = await axios.post("admin/images/upload", data, {
+          headers: {
+            accept: "application/json",
+            "Accept-Language": "en-US,en;q=0.8",
+            "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+          },
+        });
+        imageURL = response.data.data.URL;
+        console.log(imageURL);
+      } catch (error) {
+        alert("An error occured while uploading the image");
+      }
+    }
     const product = {
       id: this.state.id,
       name: this.state.name,
+      product_image_url: imageURL,
       price: Number(this.state.price),
       description: this.state.description,
       sale_price: Number(this.state.sale_price),
@@ -157,6 +178,7 @@ class DataListSidebar extends Component {
       // Update Product
       try {
         await axios.put(`admin/products/${this.state.id}`, product);
+        console.log(product);
       } catch (error) {
         alert("Error: " + error);
       }
@@ -176,7 +198,7 @@ class DataListSidebar extends Component {
     let { show, handleSidebar, data } = this.props;
     let {
       product_category,
-      product_cover,
+      product_image_url,
       name,
       price,
       sale_price,
@@ -202,7 +224,6 @@ class DataListSidebar extends Component {
           options={{ wheelPropagation: false }}
         >
           <FormGroup className="text-center">
-            <img className="img-fluid" src={product_cover} alt={name} />
             <div className="d-flex flex-wrap justify-content-between mt-2">
               <label
                 className="btn btn-flat-primary"
@@ -216,14 +237,14 @@ class DataListSidebar extends Component {
                   hidden
                   onChange={(e) =>
                     this.setState({
-                      product_cover: URL.createObjectURL(e.target.files[0]),
+                      product_image_url: e.target.files[0],
                     })
                   }
                 />
               </label>
               <Button
                 color="flat-danger"
-                onClick={() => this.setState({ product_cover: "" })}
+                onClick={() => this.setState({ product_image_url: "" })}
               >
                 Remove Image
               </Button>

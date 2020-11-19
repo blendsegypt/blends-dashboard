@@ -137,20 +137,21 @@ class DataListConfig extends Component {
           </p>
         ),
       },
-      // {
-      //   name: "Image",
-      //   selector: "product_cover",
-      //   sortable: true,
-      //   cell: (row) => {
-      //     return (
-      //       <img
-      //         src={row.product_cover}
-      //         alt={row.name}
-      //         style={{ width: "63px", height: "55px" }}
-      //       />
-      //     );
-      //   },
-      // },
+      {
+        name: "Image",
+        selector: "product_image_url",
+        sortable: true,
+        cell: (row) => {
+          if (!row.product_image_url) return "";
+          return (
+            <img
+              src={row.product_image_url}
+              alt={row.name}
+              style={{ width: "63px", height: "55px" }}
+            />
+          );
+        },
+      },
       {
         name: "Name",
         selector: "name",
