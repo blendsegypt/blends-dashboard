@@ -113,6 +113,13 @@ const navigationConfig = [
     icon: <Icon.Gift size={20} />,
     navLink: "/promocodes/list",
   },
+  {
+    id: "banners",
+    title: "Banners (In-App)",
+    type: "item",
+    icon: <Icon.MessageSquare size={20} />,
+    navLink: "/banners/list",
+  },
 ];
 
 export default navigationConfig;
