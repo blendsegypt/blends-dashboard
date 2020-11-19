@@ -76,6 +76,9 @@ const Promocodes = lazy(() =>
   import("./views/Blends/resources/promocodes/ListView")
 );
 
+//Banners Page
+const Banners = lazy(() => import("./views/Blends/resources/banners/ListView"));
+
 // Set Layout and Component Using App Route
 const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
   <Route
@@ -135,6 +138,7 @@ class AppRouter extends React.Component {
           <AppRoute path="/shipments/list" component={Shipments} />
           <AppRoute path="/promocodes/list" component={Promocodes} />
           <AppRoute path="/products/list" component={ProductsList} />
+          <AppRoute path="/banners/list" component={Banners} />
           {/* Blends End */}
           <AppRoute path="/misc/error/404" component={error404} fullLayout />
           <AppRoute path="/pages/login" component={Login} fullLayout />
