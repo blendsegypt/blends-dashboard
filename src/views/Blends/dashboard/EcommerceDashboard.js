@@ -2,8 +2,8 @@ import React from "react";
 import { Row, Col } from "reactstrap";
 import NewUsers from "../../ui-elements/cards/statistics/NewUsers";
 import RevenueGenerated from "../../ui-elements/cards/statistics/RevenueGenerated";
-import AppDownloads from "../../ui-elements/cards/statistics/AppDownloads";
 import OrdersReceived from "../../ui-elements/cards/statistics/OrdersReceived";
+import axios from "../../../axios";
 
 import "../../../assets/scss/plugins/charts/apex-charts.scss";
 
@@ -12,55 +12,90 @@ class EcommerceDashboard extends React.Component {
     super(props);
     this.state = {
       orders: {
-        today: 4,
-        yesterday: 19,
-        thisMonth: {
-          value: 232,
-          series: [40, 50, 20, 82],
+        today: 0,
+        yesterday: 0,
+        this_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
-        lastMonth: {
-          value: 424,
-          series: [50, 144, 102, 130],
+        previous_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
       },
       revenue: {
-        today: "232 EGP",
-        yesterday: "923 EGP",
-        thisMonth: {
-          value: 2499,
-          series: [300, 242, 502, 1023],
+        today: "0 EGP",
+        yesterday: "0 EGP",
+        this_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
-        lastMonth: {
-          value: 1992,
-          series: [230, 144, 420, 310],
+        previous_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
       },
       newUsers: {
-        today: 3,
-        yesterday: 1,
-        thisMonth: {
-          value: 42,
-          series: [12, 10, 8, 12],
+        today: 0,
+        yesterday: 0,
+        this_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
-        lastMonth: {
-          value: 34,
-          series: [10, 9, 12, 3],
+        previous_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
       },
       appDownloads: {
-        today: 8,
-        yesterday: 4,
-        thisMonth: {
-          value: 32,
-          series: [2, 14, 5, 9],
+        today: 0,
+        yesterday: 0,
+        this_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
-        lastMonth: {
-          value: 53,
-          series: [3, 23, 14, 9],
+        previous_month: {
+          total: 0,
+          weeks: [0, 0, 0, 0],
         },
       },
     };
   }
+  async componentDidMount() {
+    await this.getOrdersStats();
+    await this.getRevenueStats();
+    await this.getUsersStats();
+  }
+  getOrdersStats = async () => {
+    try {
+      const ordersStats = await axios.get("admin/statistics/delivered-orders");
+      this.setState({
+        orders: ordersStats.data.data,
+      });
+    } catch (error) {
+      alert("An error occured while fetching order statistics!");
+    }
+  };
+  getRevenueStats = async () => {
+    try {
+      const revenueStats = await axios.get("admin/statistics/revenue");
+      this.setState({
+        revenue: revenueStats.data.data,
+      });
+    } catch (error) {
+      alert("An error occured while fetching revenue statistics!");
+    }
+  };
+  getUsersStats = async () => {
+    try {
+      const usersStats = await axios.get("admin/statistics/created-users");
+      this.setState({
+        newUsers: usersStats.data.data,
+      });
+    } catch (error) {
+      alert("An error occured while fetching users statistics!");
+    }
+  };
   render() {
     return (
       <React.Fragment>
@@ -69,17 +104,14 @@ class EcommerceDashboard extends React.Component {
         </Row>
         {/* Today's Statistics */}
         <Row className="match-height">
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <OrdersReceived orders={this.state.orders.today} />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <RevenueGenerated revenue={this.state.revenue.today} />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <NewUsers newUsers={this.state.newUsers.today} />
-          </Col>
-          <Col lg="3" md="6" sm="6">
-            <AppDownloads appDownloads={this.state.appDownloads.today} />
           </Col>
         </Row>
         <Row style={{ marginLeft: 5 }}>
@@ -87,111 +119,107 @@ class EcommerceDashboard extends React.Component {
         </Row>
         {/* Yesterday's Statistics */}
         <Row className="match-height">
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <OrdersReceived orders={this.state.orders.yesterday} />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <RevenueGenerated revenue={this.state.revenue.yesterday} />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <NewUsers newUsers={this.state.newUsers.yesterday} />
-          </Col>
-          <Col lg="3" md="6" sm="6">
-            <AppDownloads appDownloads={this.state.appDownloads.yesterday} />
           </Col>
         </Row>
         <Row style={{ marginLeft: 5 }}>
-          <h2>This Month (March)</h2>
+          <h2>This Month</h2>
         </Row>
         {/* This Month's Statistics */}
         <Row className="match-height">
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <OrdersReceived
-              orders={this.state.orders.lastMonth.value}
+              orders={this.state.orders.this_month.total}
               ordersGraphData={[
                 {
                   name: "Orders(Week)",
-                  data: this.state.orders.lastMonth.series,
+                  data: this.state.orders.this_month.weeks,
                 },
               ]}
             />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <RevenueGenerated
-              revenue={this.state.revenue.lastMonth.value}
+              revenue={this.state.revenue.this_month.total}
               revenueGraphData={[
                 {
                   name: "Revenue(Week)",
-                  data: this.state.revenue.lastMonth.series,
+                  data: this.state.revenue.this_month.weeks,
                 },
               ]}
             />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <NewUsers
-              newUsers={this.state.newUsers.lastMonth.value}
+              newUsers={this.state.newUsers.this_month.total}
               newUsersGraphData={[
                 {
                   name: "New Users (Week)",
-                  data: this.state.newUsers.lastMonth.series,
-                },
-              ]}
-            />
-          </Col>
-          <Col lg="3" md="6" sm="6">
-            <AppDownloads
-              appDownloads={this.state.appDownloads.lastMonth.value}
-              appDownloadsGraphData={[
-                {
-                  name: "App Downloads (Week)",
-                  data: this.state.appDownloads.lastMonth.series,
+                  data: this.state.newUsers.this_month.weeks,
                 },
               ]}
             />
           </Col>
         </Row>
         <Row style={{ marginLeft: 5 }}>
-          <h2>Last Month (February)</h2>
+          <h2>Last Month</h2>
         </Row>
         {/* Last Month's Statistics */}
         <Row className="match-height">
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <OrdersReceived
-              orders={this.state.orders.thisMonth.value}
+              orders={this.state.orders.previous_month.total}
               ordersGraphData={[
-                { name: "Orders", data: this.state.orders.thisMonth.series },
+                {
+                  name: "Orders",
+                  data: this.state.orders.previous_month.weeks,
+                },
               ]}
             />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <RevenueGenerated
-              revenue={this.state.revenue.thisMonth.value}
+              revenue={this.state.revenue.previous_month.total}
               revenueGraphData={[
-                { name: "Revenue", data: this.state.revenue.thisMonth.series },
+                {
+                  name: "Revenue",
+                  data: this.state.revenue.previous_month.weeks,
+                },
               ]}
             />
           </Col>
-          <Col lg="3" md="6" sm="6">
+          <Col lg="4" md="6" sm="6">
             <NewUsers
-              newUsers={this.state.newUsers.thisMonth.value}
+              newUsers={this.state.newUsers.previous_month.total}
               newUsersGraphData={[
                 {
                   name: "New Users",
-                  data: this.state.newUsers.thisMonth.series,
+                  data: this.state.newUsers.previous_month.weeks,
                 },
               ]}
             />
           </Col>
-          <Col lg="3" md="6" sm="6">
-            <AppDownloads
-              appDownloads={this.state.appDownloads.thisMonth.value}
-              appDownloadsGraphData={[
-                {
-                  name: "App Downloads",
-                  data: this.state.appDownloads.thisMonth.series,
-                },
-              ]}
-            />
+        </Row>
+        <Row style={{ marginLeft: 5 }}>
+          <h2>All Time</h2>
+        </Row>
+        {/* All time Statistics */}
+        <Row className="match-height">
+          <Col lg="4" md="6" sm="6">
+            <OrdersReceived orders={this.state.orders.since_launch} />
+          </Col>
+          <Col lg="4" md="6" sm="6">
+            <RevenueGenerated revenue={this.state.revenue.since_launch} />
+          </Col>
+          <Col lg="4" md="6" sm="6">
+            <NewUsers newUsers={this.state.newUsers.since_launch} />
           </Col>
         </Row>
       </React.Fragment>
