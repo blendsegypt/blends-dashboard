@@ -53,9 +53,6 @@ class DataListSidebar extends Component {
           product_category: this.props.data.product_category,
         });
       }
-      if (this.props.data.product_image_url !== prevState.product_image_url) {
-        this.setState({ product_image_url: this.props.data.product_image_url });
-      }
       if (this.props.data.name !== prevState.name) {
         this.setState({ name: this.props.data.name });
       }
@@ -135,29 +132,9 @@ class DataListSidebar extends Component {
   }
 
   handleSubmit = async () => {
-    let imageURL = null;
-    let data = new FormData();
-    data.append("file", this.state.product_image_url, this.state.name);
-    //If there's an image then upload it to S3 first
-    if (this.state.product_image_url) {
-      try {
-        const response = await axios.post("admin/images/upload", data, {
-          headers: {
-            accept: "application/json",
-            "Accept-Language": "en-US,en;q=0.8",
-            "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
-          },
-        });
-        imageURL = response.data.data.URL;
-        console.log(imageURL);
-      } catch (error) {
-        alert("An error occured while uploading the image");
-      }
-    }
     const product = {
       id: this.state.id,
       name: this.state.name,
-      product_image_url: imageURL,
       price: Number(this.state.price),
       description: this.state.description,
       sale_price: Number(this.state.sale_price),
@@ -169,6 +146,23 @@ class DataListSidebar extends Component {
       product_category_id: this.state.product_category.id,
       product_tags: [],
     };
+    //If there's an image then upload it to S3 first
+    if (this.state.product_image_url) {
+      try {
+        let data = new FormData();
+        data.append("file", this.state.product_image_url, this.state.name);
+        const response = await axios.post("admin/images/upload", data, {
+          headers: {
+            accept: "application/json",
+            "Accept-Language": "en-US,en;q=0.8",
+            "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+          },
+        });
+        product.product_image_url = response.data.data.URL;
+      } catch (error) {
+        alert("An error occured while uploading the image");
+      }
+    }
     if (this.state.product_tags) {
       product.product_tags = this.state.product_tags.map((tag) => {
         return tag.id;
