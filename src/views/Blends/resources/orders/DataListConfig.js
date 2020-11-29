@@ -296,6 +296,15 @@ class DataListConfig extends Component {
         },
       },
       {
+        name: "Rating",
+        selector: "rating",
+        sortable: true,
+        cell: (row) => {
+          if (!row.rating) return ``;
+          return row.rating;
+        },
+      },
+      {
         name: "Actions",
         sortable: true,
         cell: (row) => (

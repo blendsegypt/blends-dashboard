@@ -193,12 +193,14 @@ class DataListSidebar extends Component {
         product_id: item.id,
         quantity: item.quantity,
         options: JSON.stringify(options),
+        price: item.price,
       };
     });
     // Calculate sub_total and total
     let sub_total = 0;
     this.state.OrderItems.forEach((item) => {
-      sub_total += item.price;
+      sub_total +=
+        (item.sale_price ? item.sale_price : item.price) * item.quantity;
       if (item.custom_options) {
         item.custom_options.forEach((option) => {
           sub_total += option.value ? option.value.price : 0;
