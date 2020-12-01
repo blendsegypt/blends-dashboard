@@ -10,7 +10,7 @@ const weekDays = [
   "Sunday",
   "Monday",
   "Tuesday",
-  "Wedensday",
+  "Wednesday",
   "Thursday",
   "Friday",
   "Saturday",

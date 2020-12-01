@@ -200,35 +200,35 @@ class DataListConfig extends Component {
           );
         },
       },
-      {
-        name: "Ordered Items",
-        selector: "OrderItems",
-        sortable: true,
-        cell: (row) => {
-          return (
-            <div style={{ padding: "10px 0 10px 0" }}>
-              {row.OrderItems.map((item) => {
-                return (
-                  <div style={{ marginTop: "10px" }}>
-                    <b>
-                      {item.quantity} x {item.Product.name}
-                    </b>
-                    <br></br>
-                    {JSON.parse(item.options).map((option) => {
-                      return (
-                        <span>
-                          {option.value}
-                          <br />
-                        </span>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        },
-      },
+      // {
+      //   name: "Ordered Items",
+      //   selector: "OrderItems",
+      //   sortable: true,
+      //   cell: (row) => {
+      //     return (
+      //       <div style={{ padding: "10px 0 10px 0" }}>
+      //         {row.OrderItems.map((item) => {
+      //           return (
+      //             <div style={{ marginTop: "10px" }}>
+      //               <b>
+      //                 {item.quantity} x {item.Product.name}
+      //               </b>
+      //               <br></br>
+      //               {JSON.parse(item.options).map((option) => {
+      //                 return (
+      //                   <span>
+      //                     {option.value}
+      //                     <br />
+      //                   </span>
+      //                 );
+      //               })}
+      //             </div>
+      //           );
+      //         })}
+      //       </div>
+      //     );
+      //   },
+      // },
       {
         name: "Timeline",
         selector: "total",
