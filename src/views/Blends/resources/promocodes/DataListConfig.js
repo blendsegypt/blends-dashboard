@@ -16,6 +16,7 @@ import "../../../../assets/scss/pages/data-list.scss";
 const chipColors = {
   Active: "success",
   Expired: "danger",
+  Inactive: "danger",
 };
 
 const promocodesTypes = {
@@ -101,6 +102,9 @@ class DataListConfig extends Component {
       const today = new Date();
       tags.data.data.forEach((promocode) => {
         let status = "Active";
+        if (!promocode.active) {
+          status = "Inactive";
+        }
         if (new Date(promocode.end_date) - today < 0) {
           status = "Expired";
         }
@@ -179,6 +183,12 @@ class DataListConfig extends Component {
         cell: (row) => <b>{row.max_usage_per_user}</b>,
       },
       {
+        name: "Maximum usage per Code",
+        selector: "max_usage_per_code",
+        sortable: true,
+        cell: (row) => <b>{row.max_usage_per_code}</b>,
+      },
+      {
         name: "Minimum Order value",
         selector: "min_order_value",
         sortable: true,
@@ -227,7 +237,10 @@ class DataListConfig extends Component {
         name: "Cashback Amount",
         selector: "cashback_amount",
         sortable: true,
-        cell: (row) => `${row.cashback_amount}`,
+        cell: (row) => {
+          if (!row.cashback) return ``;
+          return `${row.cashback}`;
+        },
       },
       {
         name: "Actions",

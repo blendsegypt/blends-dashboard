@@ -13,10 +13,13 @@ class DataListSidebar extends Component {
   state = {
     id: "",
     code: "",
+    active: true,
     type: "",
     start_date: new Date(),
     end_date: new Date(),
-    max_usage_per_user: 0,
+    max_usage_per_user: 1,
+    limited: false,
+    max_usage_per_code: null,
     min_order_value: 0,
     percentage_discount: 0,
     fixed_amount: 0,
@@ -44,6 +47,12 @@ class DataListSidebar extends Component {
       if (this.props.data.code !== prevState.code) {
         this.setState({ code: this.props.data.code });
       }
+      if (this.props.data.active !== prevState.active) {
+        this.setState({ active: this.props.data.active });
+      }
+      if (this.props.data.limited !== prevState.limited) {
+        this.setState({ limited: this.props.data.limited });
+      }
       if (this.props.data.type !== prevState.type) {
         this.setState({ type: this.props.data.type });
       }
@@ -56,6 +65,11 @@ class DataListSidebar extends Component {
       if (this.props.data.max_usage_per_user !== prevState.max_usage_per_user) {
         this.setState({
           max_usage_per_user: this.props.data.max_usage_per_user,
+        });
+      }
+      if (this.props.data.max_usage_per_code !== prevState.max_usage_per_code) {
+        this.setState({
+          max_usage_per_code: this.props.data.max_usage_per_code,
         });
       }
       if (this.props.data.min_order_value !== prevState.min_order_value) {
@@ -92,10 +106,13 @@ class DataListSidebar extends Component {
       this.setState({
         id: "",
         code: "",
+        active: true,
         type: "",
         start_date: new Date(),
         end_date: new Date(),
-        max_usage_per_user: 0,
+        max_usage_per_user: 1,
+        limited: false,
+        max_usage_per_code: null,
         min_order_value: 0,
         percentage_discount: 0,
         fixed_amount: 0,
@@ -110,16 +127,22 @@ class DataListSidebar extends Component {
   handleSubmit = async () => {
     const promocode = {
       code: this.state.code,
+      active: this.state.active,
       type: this.state.type,
       start_date: this.state.start_date,
       end_date: this.state.end_date,
       max_usage_per_user: this.state.max_usage_per_user,
+      limited: this.state.limited,
+      max_usage_per_code: null,
       min_order_value: this.state.min_order_value,
       free_product: null,
       fixed_amount: null,
       cashback: null,
       percentage_discount: null,
     };
+    if (promocode.limited) {
+      promocode.max_usage_per_code = this.state.max_usage_per_code;
+    }
     if (promocode.type === "fixed") {
       promocode.fixed_amount = this.state.fixed_amount;
     } else if (promocode.type === "percentage") {
@@ -152,10 +175,13 @@ class DataListSidebar extends Component {
     let { show, handleSidebar, data } = this.props;
     let {
       code,
+      active,
       type,
       start_date,
       end_date,
       max_usage_per_user,
+      max_usage_per_code,
+      limited,
       min_order_value,
       percentage_discount,
       fixed_amount,
@@ -198,6 +224,18 @@ class DataListSidebar extends Component {
             />
           </FormGroup>
           <FormGroup>
+            <Label for="data-active">Active</Label>
+            <Input
+              type="select"
+              id="data-active"
+              value={active}
+              onChange={(e) => this.setState({ active: e.target.value })}
+            >
+              <option value={true}>Active</option>
+              <option value={false}>Not Active</option>
+            </Input>
+          </FormGroup>
+          <FormGroup>
             <Label for="data-popularity">Maximum Usage Per User</Label>
             <Input
               type="text"
@@ -209,6 +247,32 @@ class DataListSidebar extends Component {
               id="data-opens-at"
             />
           </FormGroup>
+          <FormGroup>
+            <Label for="data-limited">Limited</Label>
+            <Input
+              type="select"
+              id="data-limited"
+              value={limited}
+              onChange={(e) => this.setState({ limited: e.target.value })}
+            >
+              <option value={true}>Limited</option>
+              <option value={false}>Not Limited</option>
+            </Input>
+          </FormGroup>
+          {limited && (
+            <FormGroup>
+              <Label for="data-popularity">Maximum Usage Per Code</Label>
+              <Input
+                type="text"
+                value={max_usage_per_code}
+                placeholder=""
+                onChange={(e) =>
+                  this.setState({ max_usage_per_code: e.target.value })
+                }
+                id="data-opens-at"
+              />
+            </FormGroup>
+          )}
           <FormGroup>
             <Label for="data-popularity">Minimum Order Value (EGP)</Label>
             <Input
