@@ -180,7 +180,12 @@ class DataListConfig extends Component {
         name: "Delivery Area",
         selector: "Address.Area.name",
         sortable: true,
-        cell: (row) => `${row.Address.Area.name}`,
+        cell: (row) => {
+          if (row.Address) {
+            return row.Address.Area.name;
+          }
+          return "Deleted Address";
+        },
       },
       {
         name: "Branch",

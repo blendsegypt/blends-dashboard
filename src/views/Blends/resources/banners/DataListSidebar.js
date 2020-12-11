@@ -17,9 +17,12 @@ class DataListSidebar extends Component {
 
   async componentDidMount() {
     try {
-      const products_list = await axios.get("admin/products");
+      const response = await axios.get("admin/products");
+      const products_list = response.data.data.filter(
+        (product) => !product.retail
+      );
       this.setState({
-        products_list: products_list.data.data,
+        products_list: products_list,
       });
     } catch (error) {
       alert("An error occured while fetching Products");
