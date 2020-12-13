@@ -1,7 +1,10 @@
 import Axios from "axios";
 
-const backendHost =
-  process.env.REACT_APP_BACKEND_HOST || `http://localhost:3000/`;
+let backendHost = "http://localhost:3000/";
+
+if (process.env.REACT_APP_NODE_ENV === "production") {
+  backendHost = "http://165.22.185.251/api/";
+}
 
 const axios = Axios.create({
   baseURL: backendHost,
