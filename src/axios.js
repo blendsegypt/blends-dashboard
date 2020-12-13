@@ -1,9 +1,9 @@
 import Axios from "axios";
 
-const port = process.env.BACK_END_PORT || 3000;
+const backendHost = process.env.BACKEND_HOST || `http://localhost:3000/`;
 
 const axios = Axios.create({
-  baseURL: `http://localhost:${port}`,
+  baseURL: backendHost,
 });
 
 export default axios;
