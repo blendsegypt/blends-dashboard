@@ -2,7 +2,7 @@ import Axios from "axios";
 
 let backendHost = "http://localhost:3000/";
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV == "production") {
   backendHost = "http://165.22.185.251/api/";
 }
 
