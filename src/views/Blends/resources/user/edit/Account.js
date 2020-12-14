@@ -15,7 +15,6 @@ import { history } from "../../../../../history";
 import "../../../../../assets/scss/plugins/forms/flatpickr/flatpickr.scss";
 import SweetAlert from "react-bootstrap-sweetalert";
 import "flatpickr/dist/themes/light.css";
-import bcrypt from "bcryptjs";
 
 class UserAccountTab extends React.Component {
   constructor(props) {
@@ -104,23 +103,6 @@ class UserAccountTab extends React.Component {
     }
   };
 
-  hashPassword = (password) => {
-    if (!password) {
-      this.setState({
-        errorAlert: true,
-        errorMessage: "Password doesn't match password confirmation",
-      });
-      return;
-    }
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-
-    return {
-      salt,
-      hash,
-    };
-  };
-
   createUser = async () => {
     const user = Object.assign({}, this.state.user);
     if (
@@ -140,11 +122,7 @@ class UserAccountTab extends React.Component {
       });
       return;
     }
-    const hashObject = this.hashPassword(user.password);
-    delete user.password;
     delete user.password_confirmation;
-    user.password_hash = hashObject.hash;
-    user.password_salt = hashObject.salt;
 
     try {
       await axios.post(`admin/users`, user);

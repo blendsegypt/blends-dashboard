@@ -2,13 +2,6 @@ import React from "react";
 import { Navbar } from "reactstrap";
 import { connect } from "react-redux";
 import classnames from "classnames";
-import { useAuth0 } from "../../../authServices/auth0/auth0Service";
-import {
-  logoutWithJWT,
-  logoutWithFirebase,
-} from "../../../redux/actions/auth/loginActions";
-import NavbarUser from "./NavbarUser";
-import userImg from "../../../assets/img/portrait/small/avatar-s-11.jpg";
 
 const UserName = (props) => {
   let username = "";
@@ -29,7 +22,6 @@ const UserName = (props) => {
   return username;
 };
 const ThemeNavbar = (props) => {
-  const { user } = useAuth0();
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"];
   const navbarTypes = ["floating", "static", "sticky", "hidden"];
   return (
@@ -73,30 +65,7 @@ const ThemeNavbar = (props) => {
               className="navbar-collapse d-flex"
               id="navbar-mobile"
               style={{ flexDirection: "column" }}
-            >
-              <NavbarUser
-                handleAppOverlay={props.handleAppOverlay}
-                changeCurrentLang={props.changeCurrentLang}
-                userName={<UserName userdata={user} {...props} />}
-                userImg={
-                  props.user.login.values !== undefined &&
-                  props.user.login.values.loggedInWith !== "jwt" &&
-                  props.user.login.values.photoUrl
-                    ? props.user.login.values.photoUrl
-                    : user !== undefined && user.picture
-                    ? user.picture
-                    : userImg
-                }
-                loggedInWith={
-                  props.user !== undefined &&
-                  props.user.login.values !== undefined
-                    ? props.user.login.values.loggedInWith
-                    : null
-                }
-                logoutWithJWT={props.logoutWithJWT}
-                logoutWithFirebase={props.logoutWithFirebase}
-              />
-            </div>
+            ></div>
           </div>
         </div>
       </Navbar>
@@ -110,8 +79,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  logoutWithJWT,
-  logoutWithFirebase,
-  useAuth0,
-})(ThemeNavbar);
+export default connect(mapStateToProps, {})(ThemeNavbar);

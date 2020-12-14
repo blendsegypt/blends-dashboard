@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Router, Switch, Route } from "react-router-dom";
 import { history } from "./history";
-import { connect } from "react-redux";
 import Spinner from "./components/@vuexy/spinner/Loading-spinner";
 import { ContextLayout } from "./utility/context/Layout";
 
@@ -106,13 +105,8 @@ const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
     }}
   />
 );
-const mapStateToProps = (state) => {
-  return {
-    user: state.auth.login.userRole,
-  };
-};
 
-const AppRoute = connect(mapStateToProps)(RouteConfig);
+const AppRoute = RouteConfig;
 
 class AppRouter extends React.Component {
   render() {
