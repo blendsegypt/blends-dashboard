@@ -118,7 +118,7 @@ class AppRouter extends React.Component {
   render() {
     return (
       // Set the directory path if you are deploying in sub-folder
-      <Router history={history}>
+      <Router history={history} basename={"dashboard"}>
         <Switch>
           {/* Blends Start */}
           <AppRoute path="/" component={ecommerceDashboard} exact />
