@@ -65,6 +65,7 @@
     "styled-components": "^5.0.1",
     "swiper": "^5.3.0",
     "thunk": "0.0.1",
+    "react-app-rewired": "^2.1.5",
     "yarn": "^1.21.1"
   },
   "scripts": {
