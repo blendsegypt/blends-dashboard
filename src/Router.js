@@ -1,8 +1,10 @@
 import React, { Suspense, lazy } from "react";
-import { Router, Switch, Route } from "react-router-dom";
+import { Router, Switch, Route, Redirect } from "react-router-dom";
 import { history } from "./history";
 import Spinner from "./components/@vuexy/spinner/Loading-spinner";
 import { ContextLayout } from "./utility/context/Layout";
+import { connect } from "react-redux";
+import { authInterceptor } from "./axios";
 
 // Route-based code splitting
 const Login = lazy(() => import("./views/pages/authentication/login/Login"));
@@ -79,10 +81,18 @@ const Promocodes = lazy(() =>
 const Banners = lazy(() => import("./views/Blends/resources/banners/ListView"));
 
 // Set Layout and Component Using App Route
-const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
+const RouteConfig = ({
+  loggedIn,
+  component: Component,
+  fullLayout,
+  ...rest
+}) => (
   <Route
     {...rest}
     render={(props) => {
+      if (!loggedIn) {
+        return <Redirect to="/pages/login" />;
+      }
       return (
         <ContextLayout.Consumer>
           {(context) => {
@@ -109,33 +119,103 @@ const RouteConfig = ({ component: Component, fullLayout, ...rest }) => (
 const AppRoute = RouteConfig;
 
 class AppRouter extends React.Component {
+  componentDidMount() {
+    if (localStorage.getItem("token")) {
+      authInterceptor.activate();
+    }
+  }
   render() {
+    const accessToken = localStorage.getItem("token");
+    const loggedIn = accessToken;
     return (
       // Set the directory path if you are deploying in sub-folder
       <Router history={history} basename={"dashboard"}>
         <Switch>
           {/* Blends Start */}
-          <AppRoute path="/" component={ecommerceDashboard} exact />
-          <AppRoute path="/app/user/list" component={userList} />
-          <AppRoute path="/app/user/edit" component={userEdit} />
-          <AppRoute path="/areas/list" component={AreasList} />
-          <AppRoute path="/branch/list" component={BranchesList} />
-          <AppRoute path="/orders/list" component={OrdersList} />
+          <AppRoute
+            path="/pages/login"
+            component={Login}
+            fullLayout
+            loggedIn={true}
+          />
+          <AppRoute
+            path="/"
+            component={ecommerceDashboard}
+            exact
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/app/user/list"
+            component={userList}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/app/user/edit"
+            component={userEdit}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/areas/list"
+            component={AreasList}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/branch/list"
+            component={BranchesList}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/orders/list"
+            component={OrdersList}
+            loggedIn={loggedIn}
+          />
           <AppRoute
             path="/internal_categories/list"
             component={InternalCategoriesList}
+            loggedIn={loggedIn}
           />
-          <AppRoute path="/categories/list" component={ProductsCategories} />
-          <AppRoute path="/products_tags/list" component={ProductsTags} />
-          <AppRoute path="/products_options/list" component={ProductsOptions} />
-          <AppRoute path="/inventory/list" component={Inventory} />
-          <AppRoute path="/shipments/list" component={Shipments} />
-          <AppRoute path="/promocodes/list" component={Promocodes} />
-          <AppRoute path="/products/list" component={ProductsList} />
-          <AppRoute path="/banners/list" component={Banners} />
+          <AppRoute
+            path="/categories/list"
+            component={ProductsCategories}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/products_tags/list"
+            component={ProductsTags}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/products_options/list"
+            component={ProductsOptions}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/inventory/list"
+            component={Inventory}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/shipments/list"
+            component={Shipments}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/promocodes/list"
+            component={Promocodes}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/products/list"
+            component={ProductsList}
+            loggedIn={loggedIn}
+          />
+          <AppRoute
+            path="/banners/list"
+            component={Banners}
+            loggedIn={loggedIn}
+          />
           {/* Blends End */}
           <AppRoute path="/misc/error/404" component={error404} fullLayout />
-          <AppRoute path="/pages/login" component={Login} fullLayout />
           <AppRoute component={error404} fullLayout />
         </Switch>
       </Router>
@@ -143,4 +223,8 @@ class AppRouter extends React.Component {
   }
 }
 
-export default AppRouter;
+const mapStateToProps = (state) => ({
+  isSignedIn: state.auth.login.isSignedIn,
+});
+
+export default connect(mapStateToProps, null)(AppRouter);

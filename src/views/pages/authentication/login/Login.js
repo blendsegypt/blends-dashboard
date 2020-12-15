@@ -5,26 +5,28 @@ import {
   CardTitle,
   Row,
   Col,
-  Nav,
-  NavItem,
-  NavLink,
+  FormGroup,
+  Input,
+  Label,
+  Button,
   TabContent,
-  TabPane,
+  CardBody,
 } from "reactstrap";
-import classnames from "classnames";
 import loginImg from "../../../../assets/img/pages/login.png";
+import logo from "../../../../assets/img/logo/blends.png";
 import "../../../../assets/scss/pages/authentication.scss";
+import { loginWithJWT } from "../../../../redux/actions/auth/loginActions";
+import { connect } from "react-redux";
 
 class Login extends React.Component {
   state = {
-    activeTab: "1",
+    email: "",
+    password: "",
   };
-  toggle = (tab) => {
-    if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab,
-      });
-    }
+
+  onSubmit = () => {
+    const { email, password } = this.state;
+    this.props.login(email, password);
   };
   render() {
     return (
@@ -48,50 +50,58 @@ class Login extends React.Component {
                 <Card className="rounded-0 mb-0 px-2 login-tabs-container">
                   <CardHeader className="pb-1">
                     <CardTitle>
-                      <h4 className="mb-0">Login</h4>
+                      <img
+                        src={logo}
+                        alt="loginImg"
+                        style={{ marginTop: "30px" }}
+                      />
+                      <h4 className="mb-0" style={{ marginTop: "40px" }}>
+                        Login
+                      </h4>
                     </CardTitle>
                   </CardHeader>
                   <p className="px-2 auth-title">
                     Welcome back, please login to your account.
                   </p>
-                  <Nav tabs className="px-2">
-                    <NavItem>
-                      <NavLink
-                        className={classnames({
-                          active: this.state.activeTab === "1",
-                        })}
-                        onClick={() => {
-                          this.toggle("1");
-                        }}
-                      >
-                        JWT
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={classnames({
-                          active: this.state.activeTab === "2",
-                        })}
-                        onClick={() => {
-                          this.toggle("2");
-                        }}
-                      >
-                        Firebase
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        className={classnames({
-                          active: this.state.activeTab === "3",
-                        })}
-                        onClick={() => {
-                          this.toggle("3");
-                        }}
-                      >
-                        Auth0
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
+                  <CardBody className="pt-1 pb-0">
+                    <FormGroup className="form-label-group">
+                      <Input
+                        type="text"
+                        placeholder="Email"
+                        required
+                        value={this.state.email}
+                        onChange={(e) =>
+                          this.setState({
+                            ...this.state,
+                            email: e.target.value,
+                          })
+                        }
+                      />
+                      <Label>Email</Label>
+                    </FormGroup>
+                    <FormGroup className="form-label-group">
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        required
+                        value={this.state.password}
+                        onChange={(e) =>
+                          this.setState({
+                            ...this.state,
+                            password: e.target.value,
+                          })
+                        }
+                      />
+                      <Label>Password</Label>
+                    </FormGroup>
+                    <Button
+                      color="primary"
+                      className="ml-1"
+                      onClick={this.onSubmit}
+                    >
+                      Login
+                    </Button>
+                  </CardBody>
                   <TabContent activeTab={this.state.activeTab}></TabContent>
                 </Card>
               </Col>
@@ -102,4 +112,9 @@ class Login extends React.Component {
     );
   }
 }
-export default Login;
+
+const mapDispatchToProps = (dispatch) => ({
+  login: (email, password) => dispatch(loginWithJWT(email, password)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
