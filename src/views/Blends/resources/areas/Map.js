@@ -75,7 +75,8 @@ function Map(props) {
 
   const onPolygonComplete = (pol) => {
     const polygon = [];
-    pol.getPath().i.forEach((coord) => {
+    //console.log(pol.getPath());
+    pol.getPath().Mb.forEach((coord) => {
       polygon.push({
         lat: coord.lat(),
         lng: coord.lng(),
