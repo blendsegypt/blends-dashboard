@@ -4,7 +4,7 @@ import { history } from "./history";
 import Spinner from "./components/@vuexy/spinner/Loading-spinner";
 import { ContextLayout } from "./utility/context/Layout";
 import { connect } from "react-redux";
-import { authInterceptor } from "./axios";
+import axios, { authInterceptor } from "./axios";
 
 // Route-based code splitting
 const Login = lazy(() => import("./views/pages/authentication/login/Login"));
@@ -119,9 +119,24 @@ const RouteConfig = ({
 const AppRoute = RouteConfig;
 
 class AppRouter extends React.Component {
-  componentDidMount() {
-    if (localStorage.getItem("token")) {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loggedIn: true,
+    };
+  }
+  async componentDidMount() {
+    // Test the validity of access token
+    try {
       authInterceptor.activate();
+      await axios.get("admin/branches");
+    } catch (error) {
+      const statusCode = error.response.status;
+      console.log(error.response);
+      if (statusCode === 401) {
+        localStorage.setItem("token", null);
+        history.push("/pages/login");
+      }
     }
   }
   render() {

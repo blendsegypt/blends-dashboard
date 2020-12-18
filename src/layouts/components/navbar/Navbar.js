@@ -1,26 +1,9 @@
 import React from "react";
-import { Navbar } from "reactstrap";
+import { Navbar, Button } from "reactstrap";
 import { connect } from "react-redux";
 import classnames from "classnames";
+import { history } from "../../../history";
 
-const UserName = (props) => {
-  let username = "";
-  if (props.userdata !== undefined) {
-    username = props.userdata.name;
-  } else if (props.user.login.values !== undefined) {
-    username = props.user.login.values.name;
-    if (
-      props.user.login.values.loggedInWith !== undefined &&
-      props.user.login.values.loggedInWith === "jwt"
-    ) {
-      username = props.user.login.values.loggedInUser.name;
-    }
-  } else {
-    username = "Khalid Khalil";
-  }
-
-  return username;
-};
 const ThemeNavbar = (props) => {
   const colorsArr = ["primary", "danger", "success", "info", "warning", "dark"];
   const navbarTypes = ["floating", "static", "sticky", "hidden"];
@@ -65,7 +48,18 @@ const ThemeNavbar = (props) => {
               className="navbar-collapse d-flex"
               id="navbar-mobile"
               style={{ flexDirection: "column" }}
-            ></div>
+            >
+              <Button
+                color="danger"
+                style={{ alignSelf: "flex-end", marginRight: "20px" }}
+                onClick={() => {
+                  localStorage.setItem("token", null);
+                  history.push("/pages/login");
+                }}
+              >
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </Navbar>
